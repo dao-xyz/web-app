@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import logo from "./logo.png";
 import "./App.css";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home/Home";
 import {
   createTheme,
@@ -22,6 +22,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
+import { NewChannel } from "./pages/channels/NewChannnel/NewChannel";
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
 });
@@ -59,6 +60,9 @@ function App() {
 
               <Header />
               <Router basename='/' >
+                <Routes >
+                  <Route path="/channels/new" element={<NewChannel />} />
+                </Routes>
                 <Routes >
                   <Route path="/" element={<Home />} />
                 </Routes>

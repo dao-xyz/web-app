@@ -1,0 +1,12 @@
+.Home-outlet {
+  display: flex;
+  flex-direction: row;
+}
+
+.Home-sidebar {
+  width: 300px;
+}
+
+.Home-content {
+  width: calc(100% - 300px);
+}

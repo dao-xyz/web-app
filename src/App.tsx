@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import logo from "./logo.png";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home/Home";
 import {
   createTheme,
@@ -23,7 +23,7 @@ import Typography from "@mui/material/Typography";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 export const ColorModeContext = React.createContext({
-  toggleColorMode: () => {}, // For some reason this should just be like this
+  toggleColorMode: () => { }, // For some reason this should just be like this
 });
 const drawerWidth = 250;
 
@@ -58,8 +58,8 @@ function App() {
               <h1>It's a light theme!</h1> */}
 
               <Header />
-              <Router>
-                <Routes>
+              <Router basename='/' >
+                <Routes >
                   <Route path="/" element={<Home />} />
                 </Routes>
               </Router>

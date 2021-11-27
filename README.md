@@ -1,6 +1,13 @@
-# Getting Started with Create React App
+# Solve Web App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Live (currently) at Github pages
+
+https://the-solvei.github.io/solvei-app/
+
+
+Web application written in React to interact with the [Solvei protocol](https://github.com/the-solvei/solvei-protocol).
+
+
 
 ## Available Scripts
 

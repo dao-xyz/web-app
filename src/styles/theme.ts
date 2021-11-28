@@ -23,45 +23,32 @@ export  interface ThemeInterface {
 import { createTheme, PaletteMode } from "@mui/material";
 import { amber, blue, deepOrange, grey, lightBlue } from "@mui/material/colors";
 
-declare module "@mui/material/styles" {
-  interface Theme {
-    status: {
-      danger: string;
-    };
-  }
-  // allow configuration using `createTheme`
-  interface ThemeOptions {
-    status?: {
-      danger?: string;
-    };
-  }
-}
 
 export const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
     mode,
     ...(mode === "light"
       ? {
-          // palette values for light mode
-          primary: blue,
-          divider: blue[200],
-          text: {
-            primary: grey[900],
-            secondary: grey[800],
-          },
-        }
+        // palette values for light mode
+        primary: blue,
+        divider: blue[200],
+        text: {
+          primary: grey[900],
+          secondary: grey[800],
+        },
+      }
       : {
-          // palette values for dark mode
-          primary: lightBlue,
-          divider: lightBlue[200],
-          background: {
-            //default: deepOrange[900],
-            //paper: deepOrange[900],
-          },
-          text: {
-            primary: grey[100],
-            secondary: grey[500],
-          },
-        }),
+        // palette values for dark mode
+        primary: lightBlue,
+        divider: lightBlue[200],
+        background: {
+          //default: deepOrange[900],
+          //paper: deepOrange[900],
+        },
+        text: {
+          primary: grey[100],
+          secondary: grey[500],
+        },
+      }),
   },
 });

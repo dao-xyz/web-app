@@ -1,4 +1,4 @@
-# Solve Web App
+# Solvei web app
 
 Live (currently) at Github pages
 

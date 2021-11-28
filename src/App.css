@@ -1,29 +1,11 @@
-.App {
-  text-align: center;
-}
-
 .App-logo {
-  height: 30px;
+  height: 40px;
   margin-left: 10px;
   margin-right: 10px;
   pointer-events: none;
 }
 
-.App-header {
-  background-color: #282c34;
-  height: 40px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 
-  justify-content: left;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
 
 @keyframes App-logo-spin {
   from {

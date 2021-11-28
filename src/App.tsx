@@ -1,28 +1,18 @@
 import React, { useState } from "react";
-import logo from "./logo.png";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home/Home";
 import {
   createTheme,
   CssBaseline,
-  Divider,
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   PaletteMode,
   ThemeProvider,
 } from "@mui/material";
 import { getDesignTokens } from "./styles/theme";
 import Box from "@mui/material/Box";
 import Header from "./components/Header";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import { NewChannel } from "./pages/channels/NewChannnel/NewChannel";
+import { Network } from "./components/Wallet/Network";
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
 });
@@ -48,16 +38,11 @@ function App() {
   //const [theme, setTheme] = useState(lightTheme);
 
   return (
-    <div className="App">
-      <ColorModeContext.Provider value={colorMode}>
-        <ThemeProvider theme={theme}>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <Network>
           <Box sx={{ display: "flex" }}>
             <CssBaseline>
-              {/* <Header/>
-              
-              <Button onClick={toggleTheme} variant="contained" color="primary">Toggle theme</Button>
-              <h1>It's a light theme!</h1> */}
-
               <Header />
               <Router basename='/' >
                 <Routes >
@@ -69,9 +54,9 @@ function App() {
               </Router>
             </CssBaseline>
           </Box>
-        </ThemeProvider>
-      </ColorModeContext.Provider>
-    </div>
+        </Network>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 }
 export default App;

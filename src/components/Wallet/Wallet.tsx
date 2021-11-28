@@ -20,12 +20,14 @@ import {
 } from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
 
+import { WalletMultiButtonMui } from "./WalletMultiButton";
+
 // Default styles that can be overridden by your app
 require("@solana/wallet-adapter-react-ui/styles.css");
 
-export const Wallet: FC = () => {
+export const Wallet = () => {
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
-  const network = WalletAdapterNetwork.Devnet;
+  /* const network = type;
 
   // You can also provide a custom RPC endpoint
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
@@ -45,16 +47,22 @@ export const Wallet: FC = () => {
       getSolletExtensionWallet({ network }),
     ],
     [network]
-  );
+  ); */
 
+  /*   return (
+      <ConnectionProvider endpoint={endpoint}>
+        <WalletProvider wallets={wallets} autoConnect>
+          <WalletModalProvider logo="https://avatars.githubusercontent.com/u/94802457?s=200&v=4">
+            <WalletMultiButton />
+            <WalletDisconnectButton />
+          </WalletModalProvider>
+        </WalletProvider>
+      </ConnectionProvider>
+    ); */
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider logo="https://avatars.githubusercontent.com/u/94802457?s=200&v=4">
-          <WalletMultiButton />
-          <WalletDisconnectButton />
-        </WalletModalProvider>
-      </WalletProvider>
-    </ConnectionProvider>
-  );
+    <WalletModalProvider logo="https://avatars.githubusercontent.com/u/94802457?s=200&v=4">
+      <WalletMultiButtonMui />
+    </WalletModalProvider>
+  )
 };
+

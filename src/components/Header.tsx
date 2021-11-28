@@ -15,6 +15,7 @@ import Link from "@mui/material/Link";
 import logo from "./../logo.png";
 import { ColorModeContext } from "../App";
 import ThemeToggle from "./ThemeToggle";
+import { Wallet } from "./Wallet/Wallet";
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
@@ -37,7 +38,7 @@ const Header = () => {
     setAnchorElUser(null);
   };
 
-  const navigateToSourcCode = () => {
+  const navigateToSourceCode = () => {
     window.location.href = "https://github.com/the-solvei";
   };
 
@@ -45,6 +46,7 @@ const Header = () => {
 
   return (
     <AppBar
+      color="default"
       position="fixed"
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
@@ -66,7 +68,6 @@ const Header = () => {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
             >
               <MenuIcon />
             </IconButton>
@@ -88,8 +89,8 @@ const Header = () => {
                 display: { xs: "block", md: "none" },
               }}
             >
-              <MenuItem key="github" onClick={navigateToSourcCode}>
-                <Typography color="inherit">Source code</Typography>
+              <MenuItem key="github" onClick={navigateToSourceCode}>
+                <Typography >Source code</Typography>
               </MenuItem>
             </Menu>
           </Box>
@@ -102,41 +103,15 @@ const Header = () => {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             <Button
               key="github"
-              onClick={navigateToSourcCode}
-              sx={{ my: 2, color: "white", display: "block" }}
+              onClick={navigateToSourceCode}
+              sx={{ my: 2, display: "block" }}
             >
               Source code
             </Button>
           </Box>
           <ThemeToggle />
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+            <Wallet></Wallet>
           </Box>
         </Toolbar>
       </Container>

@@ -41,6 +41,7 @@ export function Channels() {
                     </ListItem>
                 ))}
             </List>
+
         </Box>
     );
 }

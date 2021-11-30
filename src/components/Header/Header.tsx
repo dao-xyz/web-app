@@ -12,16 +12,19 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Link from "@mui/material/Link";
-import logo from "./../logo.png";
-import { ColorModeContext } from "../App";
-import ThemeToggle from "./ThemeToggle";
-import { Wallet } from "./Wallet/Wallet";
-
+import logo from "./../../logo.png";
+import { ColorModeContext } from "../../App";
+import ThemeToggle from "../ThemeToggle";
+import { Wallet } from "../Wallet/Wallet";
+import "./Header.css"
+import { Link as RouterLink } from "react-router-dom";
+import { useWallet } from "@solana/wallet-adapter-react";
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const { publicKey } = useWallet();
 
   const handleOpenNavMenu = (event: any) => {
     setAnchorElNav(event.currentTarget);
@@ -52,13 +55,22 @@ const Header = () => {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters variant="dense">
+
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
           >
-            <img src={logo} className="App-logo" alt="logo" />
+            <IconButton sx={{
+              height: "40px",
+              width: "40px",
+            }}
+              component={RouterLink}
+              to="/"
+            >
+              <img src={logo} className="Header-logo" alt="logo" />
+            </IconButton>
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -110,9 +122,38 @@ const Header = () => {
             </Button>
           </Box>
           <ThemeToggle />
-          <Box sx={{ flexGrow: 0 }}>
-            <Wallet></Wallet>
-          </Box>
+          <Wallet></Wallet>
+
+          {publicKey ? (<Box sx={{ flexGrow: 0, ml: 2 }}>
+
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>) : <></>}
         </Toolbar>
       </Container>
     </AppBar>

@@ -2113,22 +2113,22 @@
     superstruct "^0.14.2"
     tweetnacl "^1.0.0"
 
-"@solvei/borsh@^0.0.17":
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/@solvei/borsh/-/borsh-0.0.17.tgz#61a45b515262a9cfcbeb1adc7c6ffc8ba3075b51"
-  integrity sha512-9+sP2n85/wSSshoqr8Bgd5VVJlAc2/TlLW/xDXHffy572j9Gvia7CZ5XBIBqyDi439NnARhQqQH+hrkfEPHJwg==
+"@solvei/borsh@^0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@solvei/borsh/-/borsh-0.0.20.tgz#d0a5aeef1a35efc8ee8f93daa395a5e323f9f2af"
+  integrity sha512-ijZ2cFEzDTR0W46efkNrZFHKWKu4YSh3NBQNU+6vFDLBmX+YNPSBm0/7Iz9iO7kEqX+13EyB2GB6KeUas/9QYA==
   dependencies:
     bn.js "^5.2.0"
     bs58 "^4.0.0"
     text-encoding-utf-8 "^1.0.2"
 
-"@solvei/solvei-client@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@solvei/solvei-client/-/solvei-client-0.0.6.tgz#5f81f96f9b5b0b1d7a9b6908da6073c6f6fc53cf"
-  integrity sha512-KpI1pjO2WW4F5o7E+Di/pPwwBNlEZbtDtlJiFMKEaWeLJSNg5zzSQFAGGAzJsDaAnfrV996rPyxJbHxTNI0V5A==
+"@solvei/solvei-client@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@solvei/solvei-client/-/solvei-client-0.0.10.tgz#85bf539c44b787a28051119aa62ef3de81b8ae0e"
+  integrity sha512-1lx7RFuV7Pt0xJtUa0t+BAB2LDoLq5EV2e6GCYe01DFDqYe2n5a8rw7RLzY1O5arf0CNBowhrDhSGTl5VLwzyw==
   dependencies:
     "@solana/web3.js" "^1.7.0"
-    "@solvei/borsh" "^0.0.17"
+    "@solvei/borsh" "^0.0.20"
     mz "^2.7.0"
     reflect-metadata "^0.1.13"
     yaml "^1.10.2"

@@ -1,0 +1,9 @@
+.Header-logo {
+    height: inherit;
+    width: inherit;
+    margin-left: 10px;
+    margin-right: 10px;
+    pointer-events: none;
+}
+  
+  

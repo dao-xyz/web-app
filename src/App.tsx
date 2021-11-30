@@ -10,9 +10,12 @@ import {
 } from "@mui/material";
 import { getDesignTokens } from "./styles/theme";
 import Box from "@mui/material/Box";
-import Header from "./components/Header";
+import Header from "./components/Header/Header";
 import { NewChannel } from "./pages/channels/NewChannnel/NewChannel";
+import { MyChannels } from "./pages/channels/MyChannels/MyChannels";
+
 import { Network } from "./components/Wallet/Network";
+
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
 });
@@ -43,8 +46,11 @@ function App() {
         <Network>
           <Box sx={{ display: "flex" }}>
             <CssBaseline>
-              <Header />
               <Router basename='/' >
+                <Header />
+                <Routes >
+                  <Route path="/channels/my" element={<MyChannels />} />
+                </Routes>
                 <Routes >
                   <Route path="/channels/new" element={<NewChannel />} />
                 </Routes>

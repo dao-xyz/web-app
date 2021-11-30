@@ -1,6 +1,5 @@
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { PublicKey } from "@solana/web3.js";
-import { NetworkType } from "../types/chain";
 
 export interface NetworkConfig {
     rpcUrl: string,
@@ -9,22 +8,19 @@ export interface NetworkConfig {
 
 const MAIN_NET: NetworkConfig = {
     rpcUrl: "https://api.mainnet-beta.solana.com",
-    programId: new PublicKey("5mjy8kWLEFyLCyoZBSrWSSh7TioQevz93TqeA5D8PguP") // TODO FIX WRONG ADDRESS
+    programId: new PublicKey("DYTqD3bSsCwCqTuV9Ver7LjHhghqLLsVmQVxHsD8pjMs") // TODO FIX WRONG ADDRESS
 };
 const DEV_NET: NetworkConfig = {
     rpcUrl: "https://api.devnet.solana.com",
-    programId: new PublicKey("5mjy8kWLEFyLCyoZBSrWSSh7TioQevz93TqeA5D8PguP")
+    programId: new PublicKey("DYTqD3bSsCwCqTuV9Ver7LjHhghqLLsVmQVxHsD8pjMs")
 };
 
 
-export const getNetworkConfig = (type: NetworkType) => {
-    if (type == 'devnet')
+export const getNetworkConfig = (type: WalletAdapterNetwork) => {
+    if (type == WalletAdapterNetwork.Devnet)
         return DEV_NET
+    if (type == WalletAdapterNetwork.Testnet)
+        throw new Error("Unsupported network")
     throw MAIN_NET
-}
-export const getWalletAdapterNetwork = (type: NetworkType) => {
-    if (type == 'devnet')
-        return WalletAdapterNetwork.Devnet
-    return WalletAdapterNetwork.Mainnet
 }
 

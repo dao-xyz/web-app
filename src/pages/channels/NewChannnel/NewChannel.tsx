@@ -1,19 +1,20 @@
 import { Button, Checkbox, Container, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Input, InputLabel, Radio, RadioGroup, Toolbar, Typography } from '@mui/material';
-import React, { useContext } from "react";
 import Box from '@mui/material/Box';
-import { NetworkType } from '../../../types/chain';
-import { createChannelAccount, createChannelAccountTransaction, SendConfirm } from '@solvei/solvei-client';
-import { getNetworkConfig, getWalletAdapterNetwork } from '../../../services/network';
+import { createChannelTransaction, } from '@solvei/solvei-client';
+import { getNetworkConfig } from '../../../services/network';
 import { Connection, Transaction } from '@solana/web3.js';
 import { Send } from '../../../components/Wallet/Send';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Wallet } from '../../../components/Wallet/Wallet';
 import { NetworkContext } from '../../../components/Wallet/Network';
+import { WalletAdapterNetwork, WalletNotConnectedError } from "@solana/wallet-adapter-base";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
+import React, { FC, useCallback, useContext } from "react";
 
 interface NewChannelForm {
 
     name: string,
-    network: NetworkType,
+    network: WalletAdapterNetwork,
     encrypted: boolean,
     password: string,
     passwordConfirm: string
@@ -21,12 +22,16 @@ interface NewChannelForm {
 
 
 
+
 export function NewChannel() {
     const { wallet } = useWallet();
+    const { publicKey, sendTransaction } = useWallet();
+    const { connection } = useConnection();
+
     const [state, setState] = React.useState({
         name: "",
         encrypted: false,
-        network: 'devnet',
+        network: WalletAdapterNetwork.Devnet,
         password: "",
         passwordConfirm: ""
     } as NewChannelForm);
@@ -34,6 +39,17 @@ export function NewChannel() {
     const [changingNetwork, setChanginNetwork] = React.useState(false);
     const { disconnect } = useWallet();
 
+    const onClick = useCallback(async () => {
+        if (!publicKey)
+            throw new WalletNotConnectedError();
+
+        const networkConfig = getNetworkConfig(state.network);
+        const user = PublicKey.default;
+        const [transaction, _] = await createChannelTransaction(state.name, publicKey, user, networkConfig.programId);
+        const signature = await sendTransaction(new Transaction().add(transaction), connection);
+
+        await connection.confirmTransaction(signature, "processed");
+    }, [publicKey, sendTransaction, connection]);
 
     const validate = async (channel: NewChannelForm) => {
 
@@ -80,7 +96,7 @@ export function NewChannel() {
                 // For some reason we need a bit of timout here
                 setChanginNetwork(true)
                 setTimeout(() => {
-                    networkContext.changeNetwork(getWalletAdapterNetwork(state.network))
+                    networkContext.changeNetwork(state.network)
                     setChanginNetwork(false)
                 }, 3000) // Arbitrary delay to prevent sideffects
 
@@ -112,12 +128,12 @@ export function NewChannel() {
                         <FormControl component="fieldset">
                             <FormLabel component="legend">Network</FormLabel>
                             <RadioGroup defaultValue="mainnet" row aria-label="network" name="network-group" onClick={handleChange("network")}>
-                                <FormControlLabel value="devnet" control={<Radio />} label="Devnet" />
-                                <FormControlLabel value="mainnet" control={<Radio />} label="Mainnet" />
+                                <FormControlLabel value={WalletAdapterNetwork.Devnet} control={<Radio />} label="Devnet" />
+                                <FormControlLabel value={WalletAdapterNetwork.Mainnet} control={<Radio />} label="Mainnet" />
                             </RadioGroup>
                         </FormControl>
                         <FormControl margin="dense">
-                            <FormControlLabel id="encypted" control={<Checkbox disabled onChange={handleChange('encrypted')} value="encrypted" />} label="Encrypted (not available yet)" />
+                            <FormControlLabel id="encypted" control={<Checkbox disabled onChange={handleChange('encrypted')} value="encrypted" />} label="Encryption (not available yet)" />
                         </FormControl>
                         {
                             state.encrypted ?
@@ -142,7 +158,10 @@ export function NewChannel() {
                         </Typography>}
                         {<Box sx={{ display: "flex", justifyContent: "right", mt: 2 }}>
                             <Wallet></Wallet>
-                            <Send disabled={changingNetwork || (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0)} name={state.name} network={state.network}></Send>
+                            <Button onClick={onClick} disabled={changingNetwork || (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0)} >
+                                Create
+                            </Button>
+                            {/* <Send disabled={changingNetwork || (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0)} name={state.name} network={state.network}></Send> */}
                         </Box>}
 
                     </Box>

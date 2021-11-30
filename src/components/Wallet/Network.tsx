@@ -15,9 +15,11 @@ import {
 } from "@solana/wallet-adapter-wallets";
 
 import { clusterApiUrl } from "@solana/web3.js";
+import { getNetworkConfig } from "../../services/network";
 
 export const NetworkContext = React.createContext({
-    changeNetwork: (network: WalletAdapterNetwork) => { }
+    changeNetwork: (network: WalletAdapterNetwork) => { },
+    config: getNetworkConfig(WalletAdapterNetwork.Devnet)
 });
 
 export const Network = ({ children }: { children: JSX.Element }) => {
@@ -37,9 +39,11 @@ export const Network = ({ children }: { children: JSX.Element }) => {
                     }, 1000);
                     return network
                 })
-            }
+
+            },
+            config: getNetworkConfig(network)
         }),
-        []
+        [network]
     );
     const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 

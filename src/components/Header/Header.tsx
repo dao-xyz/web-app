@@ -19,6 +19,8 @@ import { Wallet } from "../Wallet/Wallet";
 import "./Header.css"
 import { Link as RouterLink } from "react-router-dom";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { UserContext } from "../../contexts/UserContext";
+import { SelectNetwork } from "../Wallet/SelectNetwork";
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const Header = () => {
@@ -46,6 +48,7 @@ const Header = () => {
   };
 
   const colorMode = React.useContext(ColorModeContext);
+  const { user } = React.useContext(UserContext);
 
   return (
     <AppBar
@@ -121,39 +124,44 @@ const Header = () => {
               Source code
             </Button>
           </Box>
+          <SelectNetwork />
           <ThemeToggle />
           <Wallet></Wallet>
+          {/*  {publicKey ?
+            user ? (<Box sx={{ flexGrow: 0, ml: 2 }}>
 
-          {publicKey ? (<Box sx={{ flexGrow: 0, ml: 2 }}>
-
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>) : <Button
+              key="create-user"
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>) : <></>}
+              Create user
+            </Button> : (<></>)} */}
         </Toolbar>
       </Container>
     </AppBar>

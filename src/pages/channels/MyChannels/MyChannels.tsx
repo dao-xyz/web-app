@@ -2,7 +2,6 @@ import { Button, Checkbox, Container, FormControl, FormControlLabel, FormGroup, 
 import React, { useContext } from "react";
 import Box from '@mui/material/Box';
 import { Connection, Transaction } from '@solana/web3.js';
-import { Send } from '../../../components/Wallet/Send';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Wallet } from '../../../components/Wallet/Wallet';
 import { NetworkContext } from '../../../components/Wallet/Network';

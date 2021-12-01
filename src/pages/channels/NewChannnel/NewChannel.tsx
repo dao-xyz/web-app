@@ -1,19 +1,20 @@
-import { Button, Checkbox, Container, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Input, InputLabel, Radio, RadioGroup, Toolbar, Typography } from '@mui/material';
+import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Input, InputLabel, Radio, RadioGroup, Toolbar, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import { createChannelTransaction, } from '@solvei/solvei-client';
 import { getNetworkConfig } from '../../../services/network';
-import { Connection, Transaction } from '@solana/web3.js';
-import { Send } from '../../../components/Wallet/Send';
+import { Transaction } from '@solana/web3.js';
 import { Wallet } from '../../../components/Wallet/Wallet';
 import { NetworkContext } from '../../../components/Wallet/Network';
 import { WalletAdapterNetwork, WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
-import React, { FC, useCallback, useContext } from "react";
+import { PublicKey } from "@solana/web3.js";
+import React, { useCallback, useContext } from "react";
+import { DescriptionString } from '@solvei/solvei-client/schema';
 
 interface NewChannelForm {
 
     name: string,
+    description: string,
     network: WalletAdapterNetwork,
     encrypted: boolean,
     password: string,
@@ -45,7 +46,7 @@ export function NewChannel() {
 
         const networkConfig = getNetworkConfig(state.network);
         const user = PublicKey.default;
-        const [transaction, _] = await createChannelTransaction(state.name, publicKey, user, networkConfig.programId);
+        const [transaction, _] = await createChannelTransaction(state.name, new DescriptionString(state.description), publicKey, user, networkConfig.programId);
         const signature = await sendTransaction(new Transaction().add(transaction), connection);
 
         await connection.confirmTransaction(signature, "processed");
@@ -75,7 +76,6 @@ export function NewChannel() {
 
     const networkContext = useContext(NetworkContext);
     const handleChange = (name: string) => async (event: any) => {
-        console.log('event change')
         switch (name) {
             case 'encrypted':
                 setState({ ...state, [name]: event.target.checked });
@@ -121,9 +121,14 @@ export function NewChannel() {
                     <h1>Create a new channel</h1>
                     <FormGroup >
                         <FormControl margin="dense" required>
-                            <InputLabel htmlFor="channel-name">Channel name</InputLabel>
+                            <InputLabel htmlFor="channel-name">Channel</InputLabel>
                             <Input id="channel-name" aria-describedby="channel-name-help" onChange={handleChange("name")} />
                             <FormHelperText id="channel-name-help">Name can not be changed and has to be unique if channel is public</FormHelperText>
+                        </FormControl>
+                        <FormControl margin="dense">
+                            <InputLabel htmlFor="channel-description">Description</InputLabel>
+                            <Input id="channel-description" aria-describedby="channel-description-help" onChange={handleChange("description")} />
+                            <FormHelperText id="channel-description-help">What is this channel about?</FormHelperText>
                         </FormControl>
                         <FormControl component="fieldset">
                             <FormLabel component="legend">Network</FormLabel>
@@ -158,7 +163,7 @@ export function NewChannel() {
                         </Typography>}
                         {<Box sx={{ display: "flex", justifyContent: "right", mt: 2 }}>
                             <Wallet></Wallet>
-                            <Button onClick={onClick} disabled={changingNetwork || (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0)} >
+                            <Button onClick={onClick} disabled={changingNetwork || (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0) || !publicKey} >
                                 Create
                             </Button>
                             {/* <Send disabled={changingNetwork || (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0)} name={state.name} network={state.network}></Send> */}

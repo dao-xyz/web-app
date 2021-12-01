@@ -5,7 +5,7 @@ import { Keypair, PublicKey, SystemProgram, Transaction } from "@solana/web3.js"
 import { createChannelTransaction } from "@solvei/solvei-client";
 import React, { FC, useCallback } from "react";
 import { getNetworkConfig } from "../../services/network";
-
+/*
 export const Send = (props: { disabled?: boolean, name: string, network: NetworkType }) => {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
@@ -29,3 +29,4 @@ export const Send = (props: { disabled?: boolean, name: string, network: Network
     </Button>
   );
 };
+ */

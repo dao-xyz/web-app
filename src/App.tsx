@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Home } from "./pages/Home/Home";
 import {
   createTheme,
@@ -15,11 +15,14 @@ import { NewChannel } from "./pages/channels/NewChannnel/NewChannel";
 import { MyChannels } from "./pages/channels/MyChannels/MyChannels";
 
 import { Network } from "./components/Wallet/Network";
+import { UserProvider } from "./contexts/UserContext";
+import { NewUser } from "./pages/user/NewUser/NewUser";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
 });
 const drawerWidth = 250;
+
 
 function App() {
   const [mode, setMode] = React.useState<PaletteMode>("dark");
@@ -44,22 +47,26 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <Network>
-          <Box sx={{ display: "flex" }}>
-            <CssBaseline>
-              <Router basename='/' >
-                <Header />
-                <Routes >
-                  <Route path="/channels/my" element={<MyChannels />} />
-                </Routes>
-                <Routes >
-                  <Route path="/channels/new" element={<NewChannel />} />
-                </Routes>
-                <Routes >
-                  <Route path="/" element={<Home />} />
-                </Routes>
-              </Router>
-            </CssBaseline>
-          </Box>
+          <UserProvider>
+            <Box sx={{ display: "flex" }}>
+              <CssBaseline>
+                <Router basename='/' >
+                  <Routes >
+                    <Route path=":network/*" element={<>
+                      <Header />
+                      <Routes>
+                        <Route path="user/new" element={<NewUser />} />
+                        <Route path="channels/my" element={<MyChannels />} />
+                        <Route path="channels/new" element={<NewChannel />} />
+                        <Route path="/" element={<Home />} />
+                      </Routes>
+                    </>} />
+                    <Route path="/" element={<Navigate replace to="/main" />} />
+                  </Routes>
+                </Router>
+              </CssBaseline>
+            </Box>
+          </UserProvider>
         </Network>
       </ThemeProvider>
     </ColorModeContext.Provider>

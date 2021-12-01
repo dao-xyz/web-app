@@ -1,9 +1,10 @@
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import React, { createContext, useReducer } from "react";
 import { getNetworkConfig, NetworkConfig } from "../services/network";
 
 
 
-const initialState = getNetworkConfig('devnet');
+const initialState = getNetworkConfig(WalletAdapterNetwork.Devnet);
 
 export const Context = createContext<[NetworkConfig, React.Dispatch<any>]>([initialState, () => { }]);
 

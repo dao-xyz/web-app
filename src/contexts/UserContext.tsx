@@ -32,7 +32,7 @@ export const UserContext = React.createContext<IUserContext>({
     user: null
 
 });
-
+const STORAGE_KEY_MISSING_USER_EVENT = "dialogs.missing_user"
 export const UserProvider = ({ children }: { children: JSX.Element }) => {
 
     const { connection } = useConnection();
@@ -44,6 +44,10 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
     useEffect(() => {
         if (publicKey) {
             // check if user exist
+            const alreadyNotified = localStorage.getItem(STORAGE_KEY_MISSING_USER_EVENT) === "true";
+            if (alreadyNotified)
+                return;
+
             getUserByOwner(publicKey, connection, config.programId).then((user) => {
                 if (!user) {
                     setMissingUser(true);
@@ -82,6 +86,7 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
                 content="In order to create posts, channels and interact with the content on this site you need a user account. Create one now?"
                 redirectPath={getPathWithNetwork("/user/new")}
                 open={missingUser} onClose={() => {
+                    localStorage.setItem(STORAGE_KEY_MISSING_USER_EVENT, "true");
                     setMissingUser(false);
                 }} />
             {children}

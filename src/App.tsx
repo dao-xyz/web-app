@@ -7,6 +7,7 @@ import {
   CssBaseline,
   PaletteMode,
   ThemeProvider,
+  Toolbar,
 } from "@mui/material";
 import { getDesignTokens } from "./styles/theme";
 import Box from "@mui/material/Box";
@@ -17,6 +18,8 @@ import { MyChannels } from "./pages/channels/MyChannels/MyChannels";
 import { Network } from "./components/Wallet/Network";
 import { UserProvider } from "./contexts/UserContext";
 import { NewUser } from "./pages/user/NewUser/NewUser";
+import { ConditionalRedirect } from "./components/navigation/ConditionalRedirect";
+import { getNetworkConfigFromPath, getNetworkConfigFromPathParam } from "./services/network";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
@@ -38,6 +41,7 @@ function App() {
     []
   );
 
+
   // Update the theme only if the mode changes
   const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
@@ -53,15 +57,21 @@ function App() {
                 <Router basename='/' >
                   <Routes >
                     <Route path=":network/*" element={<>
-                      <Header />
-                      <Routes>
-                        <Route path="user/new" element={<NewUser />} />
-                        <Route path="channels/my" element={<MyChannels />} />
-                        <Route path="channels/new" element={<NewChannel />} />
-                        <Route path="/" element={<Home />} />
-                      </Routes>
+                      <ConditionalRedirect validatePath={(_, params) => !!getNetworkConfigFromPathParam(params)} to="/main" >
+                        <Header />
+                        <Box className="column" sx={{ width: "100%" }}>
+                          <Toolbar />
+                          <Box sx={{ padding: 2 }}>
+                            <Routes>
+                              <Route path="user/new" element={<NewUser />} />
+                              <Route path="channels/my" element={<MyChannels />} />
+                              <Route path="channels/new" element={<NewChannel />} />
+                              <Route path="/" element={<Home />} />
+                            </Routes>
+                          </Box>
+                        </Box>
+                      </ConditionalRedirect>
                     </>} />
-                    <Route path="/" element={<Navigate replace to="/main" />} />
                   </Routes>
                 </Router>
               </CssBaseline>
@@ -69,7 +79,7 @@ function App() {
           </UserProvider>
         </Network>
       </ThemeProvider>
-    </ColorModeContext.Provider>
+    </ColorModeContext.Provider >
   );
 }
 export default App;

@@ -57,7 +57,7 @@ export const WalletMultiButtonMui: FC<ButtonProps> = ({ children, ...props }) =>
         };
     }, [ref, closeDropdown]);
 
-    if (!wallet) return <WalletModalButton {...props} />;
+    if (!wallet) return <WalletModalButton {...props} onClick={onClick} />;
     if (!base58) return <WalletConnectButton {...props} />;
 
     return (

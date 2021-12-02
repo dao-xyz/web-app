@@ -24,8 +24,11 @@ import { WalletMultiButtonMui } from "./WalletMultiButton";
 
 // Default styles that can be overridden by your app
 require("@solana/wallet-adapter-react-ui/styles.css");
+const STORAGE_KEY_CONNECT_CLICK_ONCE = "wallet.connected_click_once"
 
+export const walletConnectClickOnce = (): boolean => localStorage.getItem(STORAGE_KEY_CONNECT_CLICK_ONCE) === "true"
 export const Wallet = () => {
+
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   /* const network = type;
 
@@ -66,3 +69,4 @@ export const Wallet = () => {
   )
 };
 
+// onClick={() => localStorage.setItem(STORAGE_KEY_CONNECT_CLICK_ONCE, "true")}

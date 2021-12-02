@@ -10,6 +10,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import React, { useCallback, useContext } from "react";
 import { DescriptionString } from '@solvei/solvei-client/schema';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 interface NewChannelForm {
 
@@ -38,6 +39,8 @@ export function NewChannel() {
     } as NewChannelForm);
 
     const [changingNetwork, setChanginNetwork] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+
     const { disconnect } = useWallet();
 
     const onClick = useCallback(async () => {
@@ -50,7 +53,7 @@ export function NewChannel() {
         const signature = await sendTransaction(new Transaction().add(transaction), connection);
 
         await connection.confirmTransaction(signature, "processed");
-    }, [publicKey, sendTransaction, connection]);
+    }, [publicKey, sendTransaction, connection, state]);
 
     const validate = async (channel: NewChannelForm) => {
 
@@ -110,7 +113,6 @@ export function NewChannel() {
 
     return (
         <Box>
-            <Toolbar />
             <Box sx={{ display: "flex", justifyContent: "center", width: "100vw", mt: 20 }}>
                 <Box sx={{
                     display: "flex",
@@ -163,9 +165,9 @@ export function NewChannel() {
                         </Typography>}
                         {<Box sx={{ display: "flex", justifyContent: "right", mt: 2 }}>
                             <Wallet></Wallet>
-                            <Button onClick={onClick} disabled={changingNetwork || (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0) || !publicKey} >
+                            <LoadingButton loading={loading} onClick={onClick} disabled={changingNetwork || (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0) || !publicKey} >
                                 Create
-                            </Button>
+                            </LoadingButton>
                             {/* <Send disabled={changingNetwork || (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0)} name={state.name} network={state.network}></Send> */}
                         </Box>}
 

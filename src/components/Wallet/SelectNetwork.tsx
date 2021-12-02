@@ -36,7 +36,7 @@ export const SelectNetwork = () => {
             <Select
                 labelId="network-label"
                 id="network-select"
-                value={config.type}
+                value={config?.type}
                 onChange={handleChange}
             >
                 {ALL_CONFIGS.map(config => (<MenuItem key={config.name} value={config.type}>{config.name}</MenuItem>))}

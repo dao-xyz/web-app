@@ -37,7 +37,7 @@ export default function RedirectDialog(props: { title: string, content: string, 
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Maybe later</Button>
-                    <Button aria-label="new" href={props.redirectPath} autoFocus>
+                    <Button aria-label="new" onClick={handleClose} href={props.redirectPath} autoFocus >
                         Take me there
                     </Button>
                 </DialogActions>

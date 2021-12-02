@@ -9,6 +9,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import React, { useCallback, useContext } from "react";
 import { getUserByName } from '@solvei/solvei-client';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 
 interface NewUser {
@@ -21,92 +22,109 @@ export function NewUser() {
     const { publicKey, sendTransaction } = useWallet();
     const { connection } = useConnection();
     const { config } = useContext(NetworkContext);
-
     const [state, setState] = React.useState({
         name: ""
     } as NewUser);
+    console.log('mount', state)
 
-    const [changingNetwork, setChanginNetwork] = React.useState(false);
-    const { disconnect } = useWallet();
 
     const [usernameValid, setUsernameValid] = React.useState<boolean | undefined>(undefined);
-
+    const [loading, setLoading] = React.useState(false);
 
     const onClick = useCallback(async () => {
         if (!publicKey)
             throw new WalletNotConnectedError();
+        setLoading(false)
 
-        const user = PublicKey.default;
-        const [transaction, _] = await createUserTransaction(state.name, publicKey, config.programId);
+        const [transaction, c] = await createUserTransaction(state.name, publicKey, config.programId);
+        console.log('payer', publicKey)
+        console.log('name', state.name)
+
+        console.log(transaction, c)
+
         const signature = await sendTransaction(new Transaction().add(transaction), connection);
-        await connection.confirmTransaction(signature, "processed");
+        await connection.confirmTransaction(signature, "finalized");
+        setLoading(true)
 
-    }, [publicKey, sendTransaction, connection]);
+
+    }, [publicKey, sendTransaction, connection, state]);
 
     const userExist = async (name: string): Promise<boolean> => {
-        return !!await getUserByName(name, connection, config.programId);
+        const user = await getUserByName(name, connection, config.programId);
+        console.log(name, user)
+        return !!user;
     }
 
-    const networkContext = useContext(NetworkContext);
-    const handleChange = (name: string) => async (event: any) => {
-        switch (name) {
+    const handleChange = (field: string) => (event: any) => {
+        console.log('CHANGE', field, event)
+        switch (field) {
             case 'name':
                 {
-                    if (name) {
+                    const name = event.target.value;
+                    setState({ ...state, [field]: event.target.value });
+                    if (field) {
+                        setLoading(true)
                         userExist(name).then((exist) => {
                             setUsernameValid(!exist);
+                        }).finally(() => {
+                            setLoading(false)
                         });
                     }
                     else {
-
                         // just to remove error ui
                         setUsernameValid(true);
                     }
-                    setState({ ...state, [name]: event.target.value });
+
                     break;
                 }
 
             default:
-                setState({ ...state, [name]: event.target.value });
+                setState({ ...state, [field]: event.target.value });
         }
 
     };
 
     return (
         <Box>
-            New user?
-            <Toolbar />
-            <Box sx={{ display: "flex", justifyContent: "center", width: "100vw", mt: 20 }}>
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <Box sx={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "flex-start",
                     maxWidth: "350px"
                 }}>
-                    <h1>Give yourself a name</h1>
-                    <FormGroup >
-                        <FormControl margin="dense" required error={usernameValid === false}>
-                            <InputLabel htmlFor="name">Username</InputLabel>
+                    <h1>What should we call you?</h1>
+                    <FormGroup sx={{ width: "100%" }} >
+                        <FormControl fullWidth margin="dense" required error={usernameValid === false}>
+                            <InputLabel htmlFor="name">Your alias</InputLabel>
                             <Input id="name" aria-describedby="name-help" onChange={handleChange("name")} />
-                            {!publicKey ? <FormHelperText id="name-help">A unique name</FormHelperText> :
-                                <FormHelperText error id="name-error">Just must be connected with a wallet to create a user</FormHelperText>}
 
-
+                            <FormHelperText error={usernameValid === false} id="name-help">{
+                                {
+                                    'undefined': 'Must be unique',
+                                    'false': 'Name is already taken!',
+                                    'true': 'Great name!'
+                                }[JSON.stringify(usernameValid)]
+                            }</FormHelperText>
                         </FormControl>
                     </FormGroup>
 
-                    <Box sx={{ mt: 2 }}>
-                        {<Box sx={{ display: "flex", justifyContent: "right", mt: 2 }}>
-                            <Button onClick={onClick} disabled={!state.name || !usernameValid || !publicKey} >
-                                Create
-                            </Button>
-                            {/* <Send disabled={changingNetwork || (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0)} name={state.name} network={state.network}></Send> */}
-                        </Box>}
+                    <Box sx={{ alignItems: "end", width: "100%" }} className="column" >
+                        <Box sx={{
+                            alignItems: "end"
+                        }} className="column">
+                            <LoadingButton loading={loading} onClick={onClick} disabled={!state.name || !usernameValid || !publicKey
+                            } >
+                                Create user
+                            </LoadingButton>
+                            {!publicKey && <FormHelperText error id="connect-wallet-help">Connect a wallet to create a user</FormHelperText>}
 
+                            {/* <Send disabled={changingNetwork || (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0)} name={state.name} network={state.network}></Send> */}
+                        </Box>
                     </Box>
                 </Box>
 
-            </Box>
+            </Box >
 
         </Box >
     )

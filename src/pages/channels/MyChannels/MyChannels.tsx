@@ -35,7 +35,6 @@ export function MyChannels() {
 
     return (
         <Box>
-            <Toolbar />
             <h1>My channels</h1>
             <IconButton size="large" edge="end" color="inherit">
                 <RefreshIcon onClick={updateChannels} />

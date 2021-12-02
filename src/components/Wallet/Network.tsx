@@ -17,6 +17,7 @@ import {
 import { clusterApiUrl } from "@solana/web3.js";
 import { getNetworkConfig } from "../../services/network";
 import { useParams } from "react-router-dom";
+import { walletConnectClickOnce } from "./Wallet";
 
 export const NetworkContext = React.createContext({
     changeNetwork: (network: WalletAdapterNetwork) => { },
@@ -24,10 +25,11 @@ export const NetworkContext = React.createContext({
     getPathWithNetwork: (href: string): string => ''
 });
 
+
 export const Network = ({ children }: { children: JSX.Element }) => {
 
     const [network, setNetwork] = React.useState<WalletAdapterNetwork>(WalletAdapterNetwork.Devnet);
-    const [autoConnect, setAutoConnect] = React.useState(true);
+    //const [autoConnect, setAutoConnect] = React.useState(true);
     let { networkType } = useParams();
     console.log(networkType)
     const networkMemo = React.useMemo(
@@ -54,7 +56,7 @@ export const Network = ({ children }: { children: JSX.Element }) => {
         [network]
     );
     const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-
+    const walletConnectedOnce = walletConnectClickOnce()
     // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking --
     // Only the wallets you configure here will be compiled into your application
     const wallets = useMemo(
@@ -76,7 +78,7 @@ export const Network = ({ children }: { children: JSX.Element }) => {
     return (
         <NetworkContext.Provider value={networkMemo}>
             <ConnectionProvider endpoint={endpoint}>
-                <WalletProvider wallets={wallets} autoConnect={autoConnect}>
+                <WalletProvider wallets={wallets} autoConnect={walletConnectedOnce} >
                     {children}
                 </WalletProvider>
             </ConnectionProvider>

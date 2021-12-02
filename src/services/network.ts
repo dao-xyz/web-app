@@ -43,7 +43,7 @@ export const getNetworkConfigFromPathParam = (params: Readonly<Params<"network">
         if (params.network == config.path)
             return config
     }
-    throw new Error("Undefined network")
+    return undefined
 }
 
 

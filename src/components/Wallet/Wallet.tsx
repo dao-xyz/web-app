@@ -27,6 +27,8 @@ require("@solana/wallet-adapter-react-ui/styles.css");
 const STORAGE_KEY_CONNECT_CLICK_ONCE = "wallet.connected_click_once"
 
 export const walletConnectClickOnce = (): boolean => localStorage.getItem(STORAGE_KEY_CONNECT_CLICK_ONCE) === "true"
+const walletConnectClicked = (): void => localStorage.setItem(STORAGE_KEY_CONNECT_CLICK_ONCE, "true")
+
 export const Wallet = () => {
 
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
@@ -64,7 +66,7 @@ export const Wallet = () => {
     ); */
   return (
     <WalletModalProvider logo="https://avatars.githubusercontent.com/u/94802457?s=200&v=4">
-      <WalletMultiButtonMui />
+      <WalletMultiButtonMui onWalletModalClick={walletConnectClicked} />
     </WalletModalProvider>
   )
 };

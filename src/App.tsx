@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { Home } from "./pages/Home/Home";
 import {
   createTheme,
   CssBaseline,
@@ -12,14 +11,12 @@ import {
 import { getDesignTokens } from "./styles/theme";
 import Box from "@mui/material/Box";
 import Header from "./components/Header/Header";
-import { NewChannel } from "./pages/channels/NewChannnel/NewChannel";
-import { MyChannels } from "./pages/channels/MyChannels/MyChannels";
-
-import { Network } from "./components/Wallet/Network";
+import { Network } from "./contexts/Network";
 import { UserProvider } from "./contexts/UserContext";
-import { NewUser } from "./pages/user/NewUser/NewUser";
 import { ConditionalRedirect } from "./components/navigation/ConditionalRedirect";
-import { getNetworkConfigFromPath, getNetworkConfigFromPathParam } from "./services/network";
+import { getNetworkConfigFromPathParam } from "./services/network";
+import { AlertProvider } from "./contexts/AlertContext";
+import { ContentRoutes } from "./routes/routes";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
@@ -50,34 +47,38 @@ function App() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <Network>
-          <UserProvider>
-            <Box sx={{ display: "flex" }}>
-              <CssBaseline>
-                <Router basename='/' >
-                  <Routes >
-                    <Route path=":network/*" element={<>
-                      <ConditionalRedirect validatePath={(_, params) => !!getNetworkConfigFromPathParam(params)} to="/main" >
-                        <Header />
-                        <Box className="column" sx={{ width: "100%" }}>
-                          <Toolbar />
-                          <Box sx={{ padding: 2 }}>
-                            <Routes>
-                              <Route path="user/new" element={<NewUser />} />
-                              <Route path="channels/my" element={<MyChannels />} />
-                              <Route path="channels/new" element={<NewChannel />} />
-                              <Route path="/" element={<Home />} />
-                            </Routes>
+
+        <Box >
+          <CssBaseline>
+            <Router basename='/' >
+              <Routes >
+                <Route path="/" element={
+                  <Navigate to="/main" />
+                } />
+                {<Route path=":network/*" element={<>
+                  <Network>
+                    <AlertProvider>
+                      <UserProvider>
+                        <ConditionalRedirect validatePath={(_, params) => !!getNetworkConfigFromPathParam(params)} to="/" >
+                          <Header />
+                          <Box className="column" sx={{ width: "100%" }}>
+                            <Toolbar />
+                            <Box sx={{ padding: 2 }}>
+                              <ContentRoutes />
+                            </Box>
                           </Box>
-                        </Box>
-                      </ConditionalRedirect>
-                    </>} />
-                  </Routes>
-                </Router>
-              </CssBaseline>
-            </Box>
-          </UserProvider>
-        </Network>
+                        </ConditionalRedirect>
+                      </UserProvider>
+                    </AlertProvider>
+                  </Network>
+                </>} />}
+
+
+              </Routes>
+            </Router>
+          </CssBaseline>
+        </Box>
+
       </ThemeProvider>
     </ColorModeContext.Provider >
   );

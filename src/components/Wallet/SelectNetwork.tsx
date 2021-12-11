@@ -4,7 +4,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { NetworkContext } from './Network';
+import { NetworkContext } from '../../contexts/Network';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { useLocation, useParams, useNavigate } from 'react-router';
 import { ALL_CONFIGS, getNetworkConfigFromPathParam, getPathForNetwork } from '../../services/network';
@@ -12,9 +12,7 @@ import { ALL_CONFIGS, getNetworkConfigFromPathParam, getPathForNetwork } from '.
 export const SelectNetwork = () => {
     let { state, pathname } = useLocation();
     let navigator = useNavigate();
-    const config = getNetworkConfigFromPathParam(useParams());
-    console.log(config, state, pathname)
-    const { changeNetwork } = React.useContext(NetworkContext);
+    const { config, changeNetwork } = React.useContext(NetworkContext);
     const handleChange = (event: SelectChangeEvent<WalletAdapterNetwork>) => {
         // changeNetwork(event.target.value as WalletAdapterNetwork)
         console.log('EVENT', event)
@@ -22,15 +20,16 @@ export const SelectNetwork = () => {
             case WalletAdapterNetwork.Mainnet.toString():
                 navigator({ pathname: getPathForNetwork(WalletAdapterNetwork.Mainnet, pathname) })
                 return changeNetwork(WalletAdapterNetwork.Mainnet)
-            case WalletAdapterNetwork.Devnet.toString():
-                navigator({ pathname: getPathForNetwork(WalletAdapterNetwork.Devnet, pathname) })
-                return changeNetwork(WalletAdapterNetwork.Devnet)
+            case WalletAdapterNetwork.Testnet.toString():
+                navigator({ pathname: getPathForNetwork(WalletAdapterNetwork.Testnet, pathname) })
+                return changeNetwork(WalletAdapterNetwork.Testnet)
             default:
                 throw new Error("Unsupported network: " + event.target.value)
         }
 
     }
     return (
+
         <FormControl size="small" >
 
             <Select

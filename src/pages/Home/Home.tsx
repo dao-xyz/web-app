@@ -8,9 +8,9 @@ import { Feed } from "../../components/channels/Feed/Feed";
 const drawerWidth = 240;
 
 export function Home() {
-  let { networkType } = useParams();
   return (
     <Box sx={{ display: "flex" }}>
+
       <Drawer
         variant="permanent"
         sx={{

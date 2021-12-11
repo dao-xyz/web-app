@@ -1,10 +1,7 @@
-import { Button, Checkbox, Container, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, IconButton, Input, InputLabel, Radio, RadioGroup, Toolbar, Typography } from '@mui/material';
 import React, { useContext } from "react";
 import Box from '@mui/material/Box';
-import { Connection, Transaction } from '@solana/web3.js';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Wallet } from '../../../components/Wallet/Wallet';
-import { NetworkContext } from '../../../components/Wallet/Network';
+import { NetworkContext } from '../../../contexts/Network';
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { getChannels } from '@solvei/solvei-client'
 import { ChannelAccount } from '@solvei/solvei-client/schema';
@@ -17,6 +14,7 @@ import Avatar from '@mui/material/Avatar';
 import ImageIcon from '@mui/icons-material/Image';
 import WorkIcon from '@mui/icons-material/Work';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
+import { IconButton } from "@mui/material";
 
 
 export function MyChannels() {

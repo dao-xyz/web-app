@@ -16,39 +16,38 @@ import logo from "./../../logo.png";
 import { ColorModeContext } from "../../App";
 import ThemeToggle from "../ThemeToggle";
 import { Wallet } from "../Wallet/Wallet";
-import "./Header.css"
-import { Link as RouterLink } from "react-router-dom";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useWallet, WalletContext } from "@solana/wallet-adapter-react";
 import { UserContext } from "../../contexts/UserContext";
 import { SelectNetwork } from "../Wallet/SelectNetwork";
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
-
-const Header = () => {
+import { getPathForNetwork } from "../../services/network";
+import { NetworkContext } from "../../contexts/Network";
+import UserMenu from "./UserMenu";
+import { START, USER_NEW } from "../../routes/routes";
+export default function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const { publicKey } = useWallet();
+  const network = React.useContext(NetworkContext);
+  const { publicKey } = React.useContext(WalletContext);
+  const { user } = React.useContext(UserContext);
 
+  const navigate = useNavigate();
   const handleOpenNavMenu = (event: any) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event: any) => {
-    setAnchorElUser(event.currentTarget);
-  };
+
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
 
+  const navigateToStartInfo = () => {
+    navigate(network.getPathWithNetwork(START))
+    handleCloseNavMenu();
+  }
   const navigateToSourceCode = () => {
     window.location.href = "https://github.com/the-solvei";
   };
-
-  const colorMode = React.useContext(ColorModeContext);
-  const { user } = React.useContext(UserContext);
 
   return (
     <AppBar
@@ -65,14 +64,14 @@ const Header = () => {
             component="div"
             sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
           >
-            <IconButton sx={{
-              height: "40px",
-              width: "40px",
-            }}
+            <IconButton
               component={RouterLink}
               to="/"
+              size='small'
             >
-              <img src={logo} className="Header-logo" alt="logo" />
+              <Box sx={{ width: '30px', height: '30px', display: 'flex' }}>
+                <img src={logo} alt="logo" />
+              </Box>
             </IconButton>
           </Typography>
 
@@ -104,8 +103,11 @@ const Header = () => {
                 display: { xs: "block", md: "none" },
               }}
             >
-              <MenuItem key="github" onClick={navigateToSourceCode}>
-                <Typography >Source code</Typography>
+              <MenuItem key="github" onClick={navigateToStartInfo}>
+                <Typography>Getting started</Typography>
+              </MenuItem>
+              <MenuItem key="start" onClick={navigateToSourceCode}>
+                <Typography>Source code</Typography>
               </MenuItem>
             </Menu>
           </Box>
@@ -115,7 +117,9 @@ const Header = () => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           ></Typography>
+
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+
             <Button
               key="github"
               onClick={navigateToSourceCode}
@@ -123,48 +127,27 @@ const Header = () => {
             >
               Source code
             </Button>
+            <Button
+              key="start"
+              onClick={navigateToStartInfo}
+              sx={{ my: 2, display: "block" }}
+            >
+              About
+            </Button>
           </Box>
           <SelectNetwork />
           <ThemeToggle />
           <Wallet></Wallet>
-          {/*  {publicKey ?
-            user ? (<Box sx={{ flexGrow: 0, ml: 2 }}>
-
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
+          {
+            publicKey ?
+              (user ? <UserMenu></UserMenu> : <Button
+                key="create-user"
+                component={RouterLink} to={network.getPathWithNetwork(USER_NEW)}
               >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>) : <Button
-              key="create-user"
-            >
-              Create user
-            </Button> : (<></>)} */}
+                Create user
+              </Button>) : (<>No pub</>)}
         </Toolbar>
       </Container>
-    </AppBar>
+    </AppBar >
   );
 };
-export default Header;

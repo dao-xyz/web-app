@@ -7,7 +7,7 @@ import { WalletModalButton } from './WalletModalButton';
 
 
 
-export const WalletMultiButtonMui: FC<ButtonProps> = ({ children, ...props }) => {
+export const WalletMultiButtonMui: FC<ButtonProps & { onWalletModalClick: () => void }> = ({ children, onWalletModalClick, ...props }) => {
     const { publicKey, wallet, disconnect } = useWallet();
     const { setVisible } = useWalletModal();
     const [copied, setCopied] = useState(false);
@@ -57,7 +57,7 @@ export const WalletMultiButtonMui: FC<ButtonProps> = ({ children, ...props }) =>
         };
     }, [ref, closeDropdown]);
 
-    if (!wallet) return <WalletModalButton {...props} onClick={onClick} />;
+    if (!wallet) return <WalletModalButton {...props} onClick={onWalletModalClick} />;
     if (!base58) return <WalletConnectButton {...props} />;
 
     return (

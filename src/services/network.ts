@@ -15,25 +15,24 @@ const MAIN_NET: NetworkConfig = {
     type: WalletAdapterNetwork.Mainnet,
     name: "Mainnet",
     rpcUrl: "https://api.mainnet-beta.solana.com",
-    programId: new PublicKey("DYTqD3bSsCwCqTuV9Ver7LjHhghqLLsVmQVxHsD8pjMs"), // TODO FIX WRONG ADDRESS
+    programId: new PublicKey("SorX4wAC24VgVvRFFCHoRQj3V7MsJt6pLSsRVygxero"), // TODO FIX WRONG ADDRESS
     path: 'main'
 };
-const DEV_NET: NetworkConfig = {
-    type: WalletAdapterNetwork.Devnet,
-    name: "Devnet",
-    rpcUrl: "https://api.devnet.solana.com",
-    programId: new PublicKey("DYTqD3bSsCwCqTuV9Ver7LjHhghqLLsVmQVxHsD8pjMs"),
-    path: 'dev'
+const TEST_NET: NetworkConfig = {
+    type: WalletAdapterNetwork.Testnet,
+    name: "Testnet",
+    rpcUrl: "https://api.testnet.solana.com",
+    programId: new PublicKey("SorX4wAC24VgVvRFFCHoRQj3V7MsJt6pLSsRVygxero"),
+    path: 'test'
 };
-export const ALL_CONFIGS = [MAIN_NET, DEV_NET]
+export const ALL_CONFIGS = [MAIN_NET, TEST_NET]
 
-export const getNetworkConfig = (type: WalletAdapterNetwork) => {
-    if (type == WalletAdapterNetwork.Devnet)
-        return DEV_NET
-    if (type == WalletAdapterNetwork.Testnet) {
-        throw new Error("Unsupported network")
+export const getNetworkConfig = (type: WalletAdapterNetwork): NetworkConfig => {
+    const network = ALL_CONFIGS.find((config) => config.type === type)
+    if (!network) {
+        throw Error("No netowrk found for type: " + type)
     }
-    return MAIN_NET
+    return network as NetworkConfig;
 }
 
 

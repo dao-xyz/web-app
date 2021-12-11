@@ -4,7 +4,7 @@ import { createChannelTransaction, } from '@solvei/solvei-client';
 import { getNetworkConfig } from '../../../services/network';
 import { Transaction } from '@solana/web3.js';
 import { Wallet } from '../../../components/Wallet/Wallet';
-import { NetworkContext } from '../../../components/Wallet/Network';
+import { NetworkContext } from '../../../contexts/Network';
 import { WalletAdapterNetwork, WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
@@ -33,7 +33,7 @@ export function NewChannel() {
     const [state, setState] = React.useState({
         name: "",
         encrypted: false,
-        network: WalletAdapterNetwork.Devnet,
+        network: WalletAdapterNetwork.Testnet,
         password: "",
         passwordConfirm: ""
     } as NewChannelForm);
@@ -135,7 +135,7 @@ export function NewChannel() {
                         <FormControl component="fieldset">
                             <FormLabel component="legend">Network</FormLabel>
                             <RadioGroup defaultValue="mainnet" row aria-label="network" name="network-group" onClick={handleChange("network")}>
-                                <FormControlLabel value={WalletAdapterNetwork.Devnet} control={<Radio />} label="Devnet" />
+                                <FormControlLabel value={WalletAdapterNetwork.Testnet} control={<Radio />} label="Testnet" />
                                 <FormControlLabel value={WalletAdapterNetwork.Mainnet} control={<Radio />} label="Mainnet" />
                             </RadioGroup>
                         </FormControl>

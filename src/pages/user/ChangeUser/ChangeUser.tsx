@@ -7,16 +7,17 @@ import { UserContext } from '../../../contexts/UserContext';
 import { UserAccount } from '@solvei/solvei-client/schema';
 import { USER_NEW } from '../../../routes/routes';
 import { Link } from 'react-router-dom';
+import { AccountDeserialized } from '@solvei/solvei-client/models';
 
 export function ChangeUser() {
     const { publicKey, sendTransaction } = useWallet();
     const { user, setUser } = useContext(UserContext);
-    const [users, setUsers] = React.useState<UserAccount[]>([]);
+    const [users, setUsers] = React.useState<AccountDeserialized<UserAccount>[]>([]);
     const { connection } = useConnection();
     const network = useContext(NetworkContext);
 
     const userChange = (_: any, name: string) => {
-        const newUser = users.find((user) => user.name === name)
+        const newUser = users.find((user) => user.data.name === name)
         console.log('NEW USER', name)
         if (newUser)
             setUser(newUser);
@@ -27,7 +28,6 @@ export function ChangeUser() {
             // check if user exist
 
             getUsersByOwner(publicKey, connection, network.config.programId).then((users) => {
-                console.log("GOT USERS", users);
                 setUsers(users);
             })
 
@@ -50,13 +50,13 @@ export function ChangeUser() {
                             <FormLabel component="legend">Set active user</FormLabel>
                             <RadioGroup
                                 aria-label="user"
-                                value={user?.name}
+                                value={user?.data?.name ?? ''}
                                 name="radio-buttons-group"
                                 onChange={userChange}
                             >
                                 {
                                     users.map((user) => {
-                                        return <FormControlLabel key={user.name} value={user.name} control={<Radio />} label={user.name} />
+                                        return <FormControlLabel key={user.data.name} value={user.data.name} control={<Radio />} label={user.data.name} />
                                     })
                                 }
                             </RadioGroup>

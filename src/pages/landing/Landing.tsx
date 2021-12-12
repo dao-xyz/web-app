@@ -2,7 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
-import Channels from "../../components/channels/Channel/Channel";
+import Channels from "../../components/channels/Channels/ChannelsList";
 import { useParams } from "react-router";
 import { Feed } from "../../components/channels/Feed/Feed";
 import Card from '@mui/material/Card';
@@ -19,6 +19,7 @@ import { getPathForNetwork } from "../../services/network";
 import { Link as RouterLink } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 import { NetworkContext } from "../../contexts/Network";
+import { HOME } from "../../routes/routes";
 
 // Landing page for choosing network
 export default function Landing() {
@@ -145,7 +146,7 @@ export default function Landing() {
       <Container sx={{ mt: 10, mb: 10 }}>
         <Grid container spacing={2} justifyContent="center">
           <Grid item  >
-            <Button size="large" variant="contained" component={RouterLink} to={getPathForNetwork(config.config.type, "/")} >
+            <Button size="large" variant="contained" component={RouterLink} to={config.getPathWithNetwork(HOME)} >
               Get started
             </Button>
           </Grid>

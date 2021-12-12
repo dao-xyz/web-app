@@ -15,11 +15,12 @@ import ImageIcon from '@mui/icons-material/Image';
 import WorkIcon from '@mui/icons-material/Work';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import { IconButton } from "@mui/material";
+import { AccountDeserialized } from "@solvei/solvei-client/models";
 
 
 export function MyChannels() {
     const { wallet } = useWallet();
-    const [channels, setChannels] = React.useState<ChannelAccount[]>([]);
+    const [channels, setChannels] = React.useState<AccountDeserialized<ChannelAccount>[]>([]);
     const { connection } = useConnection();
     const { config } = useContext(NetworkContext);
 

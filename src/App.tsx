@@ -17,6 +17,7 @@ import { ConditionalRedirect } from "./components/navigation/ConditionalRedirect
 import { getNetworkConfigFromPathParam } from "./services/network";
 import { AlertProvider } from "./contexts/AlertContext";
 import { ContentRoutes } from "./routes/routes";
+import { ChannelsProvider } from "./contexts/ChannelsContext";
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
@@ -58,17 +59,19 @@ function App() {
                 {<Route path=":network/*" element={<>
                   <Network>
                     <AlertProvider>
-                      <UserProvider>
-                        <ConditionalRedirect validatePath={(_, params) => !!getNetworkConfigFromPathParam(params)} to="/" >
-                          <Header />
-                          <Box className="column" sx={{ width: "100%" }}>
-                            <Toolbar />
-                            <Box sx={{ padding: 2 }}>
-                              <ContentRoutes />
+                      <ChannelsProvider>
+                        <UserProvider>
+                          <ConditionalRedirect validatePath={(_, params) => !!getNetworkConfigFromPathParam(params)} to="/" >
+                            <Header />
+                            <Box className="column" sx={{ width: "100%" }}>
+                              <Toolbar />
+                              <Box sx={{ padding: 2 }}>
+                                <ContentRoutes />
+                              </Box>
                             </Box>
-                          </Box>
-                        </ConditionalRedirect>
-                      </UserProvider>
+                          </ConditionalRedirect>
+                        </UserProvider>
+                      </ChannelsProvider>
                     </AlertProvider>
                   </Network>
                 </>} />}

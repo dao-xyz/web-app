@@ -4,6 +4,7 @@ import {
     useWallet,
 } from "@solana/wallet-adapter-react";
 import { UserAccount } from "@solvei/solvei-client/schema";
+import { AccountDeserialized } from "@solvei/solvei-client/models";
 import { createUserTransaction, getUserByName, getUsersByOwner } from "@solvei/solvei-client";
 import { NetworkContext } from "./Network";
 import RedirectDialog from "../components/dialogs/RedirectDialog/RedirectDialog";
@@ -13,12 +14,12 @@ import { useLocation } from "react-router";
 
 interface IUserContext {
     createUser: (username: string) => Promise<void>,
-    setUser: (user: UserAccount) => void,
-    user: UserAccount | null
+    setUser: (user: AccountDeserialized<UserAccount>) => void,
+    user: AccountDeserialized<UserAccount> | null
 }
 export const UserContext = React.createContext<IUserContext>({
     createUser: async (_: string) => { },
-    setUser: (_: UserAccount) => { },
+    setUser: (_: AccountDeserialized<UserAccount>) => { },
     user: null
 
 });
@@ -30,27 +31,30 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
     const { connection } = useConnection();
     const location = useLocation();
     const { publicKey, sendTransaction } = useWallet();
-    const [user, setUser] = React.useState<UserAccount | null>(null);
+    const [user, setUser] = React.useState<AccountDeserialized<UserAccount> | null>(null);
     const [missingUserNotified, setMissingUserNotified] = React.useState<boolean>(localStorage.getItem(STORAGE_KEY_MISSING_USER_EVENT) === "true");
 
     const network = React.useContext(NetworkContext);
+    const preferredUser = localStorage.getItem(STORAGE_KEY_PREFRERRED_USER);
+
     useEffect(() => {
         if (publicKey) {
             // check if user exist
-            const preferredUser = localStorage.getItem(STORAGE_KEY_PREFRERRED_USER);
-            console.log("PREFERED USER?", user)
 
             if (preferredUser) {
-                getUserByName(preferredUser, connection, network.config.programId).then((users) => {
-                    if (user) {
-                        console.log("PREFERED USER", user)
 
-                        setUser(user);
+                getUserByName(preferredUser, connection, network.config.programId).then((userByName) => {
+                    if (userByName) {
+
+                        setUser(userByName);
                     }
+                    console.log("FOUND USER?", userByName)
+
                 })
             }
             else {
                 // get first user
+
                 getUsersByOwner(publicKey, connection, network.config.programId).then((users) => {
                     if (users?.length > 0) {
                         const user = users[0];
@@ -62,11 +66,12 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
                         }
                     }
                 })
+
             }
 
 
         }
-    }, [publicKey, user?.name])
+    }, [publicKey, user?.data?.name])
 
     const userMemo = React.useMemo(
         () => ({
@@ -78,14 +83,17 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
                     await connection.confirmTransaction(signature);
                     const newUser = await getUserByName(username, connection, network.config.programId)
                     // Set user to new user
-                    localStorage.setItem(STORAGE_KEY_PREFRERRED_USER, newUser.name);
+                    localStorage.setItem(STORAGE_KEY_PREFRERRED_USER, newUser.data.name);
                     setUser(newUser)
                 }
-                throw new Error("Can not create user since no Wallet is connected");
+                else {
+                    throw new Error("Can not create user since no Wallet is connected");
+
+                }
             },
 
-            setUser: (user: UserAccount) => {
-                localStorage.setItem(STORAGE_KEY_PREFRERRED_USER, user.name);
+            setUser: (user: AccountDeserialized<UserAccount>) => {
+                localStorage.setItem(STORAGE_KEY_PREFRERRED_USER, user.data.name);
                 setUser(user);
             },
             user: user
@@ -102,7 +110,7 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
                 title={"No user account associated with this wallet on this network: " + network.config.name}
                 content="In order to create posts, channels and interact with the content on this site you need a user account. Create one now?"
                 redirectPath={network.getPathWithNetwork(USER_NEW)}
-                open={!missingUserNotified && network.getPathWithNetwork(USER_NEW) != location.pathname}
+                open={!!publicKey && !missingUserNotified && network.getPathWithNetwork(USER_NEW) != location.pathname}
                 onClose={() => {
                     localStorage.setItem(STORAGE_KEY_MISSING_USER_EVENT, "true");
                     setMissingUserNotified(true);

@@ -2233,10 +2233,10 @@
     bs58 "^4.0.0"
     text-encoding-utf-8 "^1.0.2"
 
-"@solvei/solvei-client@^0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@solvei/solvei-client/-/solvei-client-0.0.16.tgz#78bba791476be81af639da1acd9ec4e8f4e56e43"
-  integrity sha512-jdfEQsfRhtXURLhIJhu7dxrQgEyRD4fO1A3uRKg6Pgix27I5CMs/Cn5eMLUtdssjHN2LTSdRelH1hYPq2BuS/Q==
+"@solvei/solvei-client@^0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@solvei/solvei-client/-/solvei-client-0.0.17.tgz#6070f6ae4bdbc6b62c9c064a40ea7cb7a26f8b1e"
+  integrity sha512-FOPmAbuEr7snGuuWbtxFTeZ55VRWYELi8au9ZfmobBmjZtxP1S32BbyPN8e4z8Hg1kimfLTG15hzBsqt3TT7pg==
   dependencies:
     "@solana/spl-token" "^0.1.8"
     "@solana/web3.js" "^1.7.0"

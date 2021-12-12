@@ -15,30 +15,47 @@ import Link from "@mui/material/Link";
 import logo from "./../../logo.png";
 import { ColorModeContext } from "../../App";
 import ThemeToggle from "../ThemeToggle";
-import { Wallet } from "../Wallet/Wallet";
+import { Wallet } from "../network/Wallet/Wallet";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useWallet, WalletContext } from "@solana/wallet-adapter-react";
 import { UserContext } from "../../contexts/UserContext";
-import { SelectNetwork } from "../Wallet/SelectNetwork";
+import { SelectNetwork } from "../network/SelectNetwork";
 import { getPathForNetwork } from "../../services/network";
 import { NetworkContext } from "../../contexts/Network";
 import UserMenu from "./UserMenu";
 import { START, USER_NEW } from "../../routes/routes";
+import { PersonAdd, Settings } from "@mui/icons-material";
+import { ListItemIcon } from "@mui/material";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import ChangeNetworkDialog from "../network/ChangeNetworkDialog";
 export default function Header() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElMenuNav, setAnchorElMenuNav] = React.useState(null);
+  const [anchorElSettingsNav, setAnchorElSettingsNav] = React.useState(null);
+  const [openChangeNetworkDialog, setOpenChangeNetworkDialog] = React.useState(false);
+
   const network = React.useContext(NetworkContext);
   const { publicKey } = React.useContext(WalletContext);
   const { user } = React.useContext(UserContext);
 
   const navigate = useNavigate();
   const handleOpenNavMenu = (event: any) => {
-    setAnchorElNav(event.currentTarget);
+    setAnchorElMenuNav(event.currentTarget);
   };
 
 
   const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+    setAnchorElMenuNav(null);
   };
+
+  const handleOpenNavSettings = (event: any) => {
+    setAnchorElSettingsNav(event.currentTarget);
+  };
+
+
+  const handleCloseNavSettings = () => {
+    setAnchorElSettingsNav(null);
+  };
+
 
 
   const navigateToStartInfo = () => {
@@ -78,7 +95,7 @@ export default function Header() {
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="menu of site"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -87,7 +104,7 @@ export default function Header() {
             </IconButton>
             <Menu
               id="menu-appbar"
-              anchorEl={anchorElNav}
+              anchorEl={anchorElMenuNav}
               anchorOrigin={{
                 vertical: "bottom",
                 horizontal: "left",
@@ -97,7 +114,7 @@ export default function Header() {
                 vertical: "top",
                 horizontal: "left",
               }}
-              open={Boolean(anchorElNav)}
+              open={Boolean(anchorElMenuNav)}
               onClose={handleCloseNavMenu}
               sx={{
                 display: { xs: "block", md: "none" },
@@ -135,19 +152,68 @@ export default function Header() {
               About
             </Button>
           </Box>
-          <SelectNetwork />
-          <ThemeToggle />
-          <Wallet></Wallet>
-          {
-            publicKey ?
-              (user ? <UserMenu></UserMenu> : <Button
-                key="create-user"
-                component={RouterLink} to={network.getPathWithNetwork(USER_NEW)}
-              >
-                Create user
-              </Button>) : (<>No pub</>)}
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent: "right", alignItems: "center" }}>
+            <SelectNetwork />
+            <ThemeToggle />
+            <Wallet></Wallet>
+            {
+              publicKey ?
+                (user ? <UserMenu displayName={true}></UserMenu> : <Button
+                  key="create-user"
+                  variant="contained"
+                  component={RouterLink} to={network.getPathWithNetwork(USER_NEW)}
+                  endIcon={<PersonAdd />}
+                >
+                  Create user
+                </Button>) : (<></>)}
+          </Box>
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" }, justifyContent: "right", alignItems: "center" }}>
+
+            <Wallet />
+
+            {
+              publicKey ?
+                (user ? <UserMenu displayName={false}></UserMenu> : <IconButton
+                  component={RouterLink} to={network.getPathWithNetwork(USER_NEW)}
+                >
+                  <PersonAdd />
+                </IconButton>) : (<></>)}
+
+            <IconButton
+              size="large"
+              aria-label="settings of user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavSettings}
+            >
+              <Settings />
+            </IconButton>
+            <Menu
+              id="settings-appbar"
+              anchorEl={anchorElSettingsNav}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              open={Boolean(anchorElSettingsNav)}
+              onClose={handleCloseNavSettings}
+              sx={{
+                display: { xs: "block", md: "none" },
+              }}
+            >
+
+              <ThemeToggle menuItem={true} />
+              <MenuItem onClick={() => setOpenChangeNetworkDialog(true)}>Change network</MenuItem>
+            </Menu>
+          </Box>
         </Toolbar>
       </Container>
+      <ChangeNetworkDialog open={openChangeNetworkDialog} onClose={() => setOpenChangeNetworkDialog(false)}></ChangeNetworkDialog>
     </AppBar >
   );
 };

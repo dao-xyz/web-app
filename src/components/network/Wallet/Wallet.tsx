@@ -21,6 +21,7 @@ import {
 import { clusterApiUrl } from "@solana/web3.js";
 
 import { WalletMultiButtonMui } from "./WalletMultiButton";
+import { ButtonProps } from "@mui/material";
 
 // Default styles that can be overridden by your app
 require("@solana/wallet-adapter-react-ui/styles.css");
@@ -29,7 +30,7 @@ const STORAGE_KEY_CONNECT_CLICK_ONCE = "wallet.connected_click_once"
 export const walletConnectClickOnce = (): boolean => localStorage.getItem(STORAGE_KEY_CONNECT_CLICK_ONCE) === "true"
 const walletConnectClicked = (): void => localStorage.setItem(STORAGE_KEY_CONNECT_CLICK_ONCE, "true")
 
-export const Wallet = () => {
+export const Wallet: FC<ButtonProps> = ({ children, ...props }) => {
 
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   /* const network = type;
@@ -66,7 +67,7 @@ export const Wallet = () => {
     ); */
   return (
     <WalletModalProvider logo="https://avatars.githubusercontent.com/u/94802457?s=200&v=4">
-      <WalletMultiButtonMui onWalletModalClick={walletConnectClicked} />
+      <WalletMultiButtonMui onWalletModalClick={walletConnectClicked} {...props} />
     </WalletModalProvider>
   )
 };

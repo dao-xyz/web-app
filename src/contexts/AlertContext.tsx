@@ -4,15 +4,17 @@ import React, { useState } from 'react';
 export interface SimpleAlert { text: string, severity: 'error' | 'warning' | 'info' | 'success' }
 
 interface IAlertContext {
-    alert: (alert: SimpleAlert, timeout?: number) => void,
+    alert: (alert: SimpleAlert, timeout?: number) => Promise<void>,
     clear: () => void
 }
 
 const AlertContext = React.createContext<IAlertContext>({
-    alert: () => { },
+    alert: async () => { },
     clear: () => { }
 });
-
+const wait = (delay: number) => {
+    return new Promise(res => setTimeout(res, delay));
+}
 const SlideTransition = (props: any) => {
     return <Slide {...props} direction="up" />;
 }
@@ -21,12 +23,10 @@ const AlertProvider = ({ children }: { children: JSX.Element }) => {
     return (
         <AlertContext.Provider
             value={{
-                alert: (alert: SimpleAlert, timeout: number = 10000) => {
+                alert: async (alert: SimpleAlert, timeout: number = alert.severity === 'error' ? 15000 : 7000) => {
                     setAlert(alert);
-                    setTimeout(() => {
-                        setAlert(undefined);
-                    }, timeout)
-
+                    await wait(timeout)
+                    setAlert(undefined);
                 },
                 clear: () => (setAlert(undefined)),
             }}

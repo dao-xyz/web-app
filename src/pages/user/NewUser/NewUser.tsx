@@ -3,14 +3,14 @@ import Box from '@mui/material/Box';
 import { NetworkContext } from '../../../contexts/Network';
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import { getUserByName } from '@solvei/solvei-client';
 import LoadingButton from '@mui/lab/LoadingButton';
 import AlertContext from '../../../contexts/AlertContext';
 import { UserContext } from '../../../contexts/UserContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getRedirect } from '../../../routes/utils';
-import { getPathForNetwork } from '../../../services/network';
+import { HOME } from '../../../routes/routes';
 
 
 interface NewUser {
@@ -21,7 +21,7 @@ interface NewUser {
 export function NewUser() {
     const { publicKey, sendTransaction } = useWallet();
     const { connection } = useConnection();
-    const { config } = useContext(NetworkContext);
+    const network = useContext(NetworkContext);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -36,38 +36,39 @@ export function NewUser() {
         if (!publicKey)
             throw new WalletNotConnectedError();
         setLoading(true)
+        let success = false;
         try {
             await createUser(state.name);
+            alertContext.alert({
+                severity: 'success',
+                text: "Success!"
+            });
+            success = true;
+            // navigate to redirect if exist, else to home
+
         }
         catch (error) {
-            console.log('ALERT ERROR')
             alertContext.alert({
                 severity: 'error',
-                text: JSON.stringify(error)
+                text: "Something went wrong. Error: " + JSON.stringify(error, Object.getOwnPropertyNames(error))
             });
         }
         setLoading(false)
-        alertContext.alert({
-            severity: 'success',
-            text: "Success!"
-        });
-
-        // navigate to redirect if exist, else to home
-        /* const redirect = getRedirect(location);
-        if (redirect) {
-            navigate(redirect)
+        if (success) {
+            const redirect = getRedirect(location, network.config.type);
+            if (redirect) {
+                navigate(redirect)
+            }
+            else {
+                navigate(network.getPathWithNetwork(HOME));
+            }
         }
-        else {
-            navigate(getPathForNetwork(config.type, '/'));
-        } */
-
 
     }, [publicKey, sendTransaction, connection, state]);
 
 
-
     const userExist = async (name: string): Promise<boolean> => {
-        const user = await getUserByName(name, connection, config.programId);
+        const user = await getUserByName(name, connection, network.config.programId);
         return !!user;
     }
 
@@ -75,7 +76,7 @@ export function NewUser() {
         switch (field) {
             case 'name':
                 {
-                    const name = event.target.value;
+                    const name = event.target.value.trim();
                     setState({ ...state, [field]: event.target.value });
                     if (field) {
                         setLoading(true)

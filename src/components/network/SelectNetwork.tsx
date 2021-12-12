@@ -9,20 +9,19 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { useLocation, useParams, useNavigate } from 'react-router';
 import { ALL_CONFIGS, getNetworkConfigFromPathParam, getPathForNetwork } from '../../services/network';
 
-export const SelectNetwork = () => {
-    let { state, pathname } = useLocation();
+export const SelectNetwork = (props: { toggle?: boolean }) => {
+    let { pathname } = useLocation();
     let navigator = useNavigate();
+
     const { config, changeNetwork } = React.useContext(NetworkContext);
     const handleChange = (event: SelectChangeEvent<WalletAdapterNetwork>) => {
         // changeNetwork(event.target.value as WalletAdapterNetwork)
-        console.log('EVENT', event)
+        // Navigate and force reload
         switch (event.target.value) {
             case WalletAdapterNetwork.Mainnet.toString():
-                navigator({ pathname: getPathForNetwork(WalletAdapterNetwork.Mainnet, pathname) })
-                return changeNetwork(WalletAdapterNetwork.Mainnet)
+                return changeNetwork(WalletAdapterNetwork.Mainnet, pathname)
             case WalletAdapterNetwork.Testnet.toString():
-                navigator({ pathname: getPathForNetwork(WalletAdapterNetwork.Testnet, pathname) })
-                return changeNetwork(WalletAdapterNetwork.Testnet)
+                return changeNetwork(WalletAdapterNetwork.Testnet, pathname)
             default:
                 throw new Error("Unsupported network: " + event.target.value)
         }
@@ -31,7 +30,6 @@ export const SelectNetwork = () => {
     return (
 
         <FormControl size="small" >
-
             <Select
                 labelId="network-label"
                 id="network-select"

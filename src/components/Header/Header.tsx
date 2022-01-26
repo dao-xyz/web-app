@@ -63,7 +63,7 @@ export default function Header() {
     handleCloseNavMenu();
   }
   const navigateToSourceCode = () => {
-    window.location.href = "https://github.com/the-solvei";
+    window.location.href = "https://github.com/westake";
   };
 
   return (
@@ -153,7 +153,7 @@ export default function Header() {
             </Button>
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent: "right", alignItems: "center" }}>
-            <SelectNetwork />
+            {/*  <SelectNetwork /> */}
             <ThemeToggle />
             <Wallet></Wallet>
             {
@@ -208,7 +208,7 @@ export default function Header() {
             >
 
               <ThemeToggle menuItem={true} />
-              <MenuItem onClick={() => setOpenChangeNetworkDialog(true)}>Change network</MenuItem>
+              {/* <MenuItem onClick={() => setOpenChangeNetworkDialog(true)}>Change network</MenuItem> */}
             </Menu>
           </Box>
         </Toolbar>

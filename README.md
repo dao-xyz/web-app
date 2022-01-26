@@ -1,8 +1,8 @@
-# Solvei web app
+# WeStake web app
 
 Live (currently) at Github pages
 
-https://the-solvei.github.io/solvei-app/
+https://westake.github.io/westake-app/
 
 
-Web application written in React to interact with the [Solvei protocol](https://github.com/the-solvei/solvei-protocol).
+Web application written in React to interact with the [WeStake protocol](https://github.com/westake/westake-protocol).

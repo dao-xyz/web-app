@@ -1,8 +1,8 @@
 {
-  "name": "solvei-app",
+  "name": "westake-app",
   "version": "0.1.1",
   "private": false,
-  "homepage": "https://the-solvei.github.io/solvei-app/",
+  "homepage": "https://westake.github.io/westake-app/",
   "license": "Apache-2.0",
   "dependencies": {
     "@emotion/react": "^11.7.0",
@@ -23,6 +23,8 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "ipfs-car": "^0.6.1",
+    "nft.storage": "^5.1.3",
     "prettier": "^2.5.0",
     "react": "^17.0.2",
     "react-app-rewired": "^2.1.8",

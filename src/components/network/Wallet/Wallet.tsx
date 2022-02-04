@@ -4,15 +4,7 @@ import {
   WalletProvider,
 } from "@solana/wallet-adapter-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import {
-  getLedgerWallet,
-  getPhantomWallet,
-  getSlopeWallet,
-  getSolflareWallet,
-  getSolletExtensionWallet,
-  getSolletWallet,
-  getTorusWallet,
-} from "@solana/wallet-adapter-wallets";
+
 import {
   WalletModalProvider,
   WalletDisconnectButton,
@@ -66,7 +58,7 @@ export const Wallet: FC<ButtonProps> = ({ children, ...props }) => {
       </ConnectionProvider>
     ); */
   return (
-    <WalletModalProvider logo="https://avatars.githubusercontent.com/u/94802457?s=200&v=4">
+    <WalletModalProvider >
       <WalletMultiButtonMui onWalletModalClick={walletConnectClicked} {...props} />
     </WalletModalProvider>
   )

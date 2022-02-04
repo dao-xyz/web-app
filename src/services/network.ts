@@ -1,5 +1,7 @@
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { PublicKey } from "@solana/web3.js";
+import { PROGRAM_ID } from "@s2g/program";
+
 import { config } from "process";
 import { Params, useParams } from "react-router";
 
@@ -15,22 +17,31 @@ const MAIN_NET: NetworkConfig = {
     type: WalletAdapterNetwork.Mainnet,
     name: "Mainnet",
     rpcUrl: "https://api.mainnet-beta.solana.com",
-    programId: new PublicKey("SorX4wAC24VgVvRFFCHoRQj3V7MsJt6pLSsRVygxero"), // TODO FIX WRONG ADDRESS
+    programId: PROGRAM_ID, // TODO FIX WRONG ADDRESS
     path: 'main'
 };
 const TEST_NET: NetworkConfig = {
     type: WalletAdapterNetwork.Testnet,
     name: "Testnet",
     rpcUrl: "https://api.testnet.solana.com",
-    programId: new PublicKey("SorX4wAC24VgVvRFFCHoRQj3V7MsJt6pLSsRVygxero"),
-    path: 'test'
+    programId: PROGRAM_ID,
+    path: 'testnet'
 };
-export const ALL_CONFIGS = [MAIN_NET, TEST_NET]
+
+const DEV_NET: NetworkConfig = {
+    type: WalletAdapterNetwork.Devnet,
+    name: "devnet",
+    rpcUrl: "https://api.devnet.solana.com",
+    programId: PROGRAM_ID,
+    path: 'devnet'
+};
+
+export const ALL_CONFIGS = [MAIN_NET, TEST_NET, DEV_NET]
 
 export const getNetworkConfig = (type: WalletAdapterNetwork): NetworkConfig => {
     const network = ALL_CONFIGS.find((config) => config.type === type)
     if (!network) {
-        throw Error("No netowrk found for type: " + type)
+        throw Error("No network found for type: " + type)
     }
     return network as NetworkConfig;
 }
@@ -60,7 +71,7 @@ export const getNetworkConfigFromPath = (currentPath: string): NetworkConfig => 
 
 export const getPathForNetwork = (network: WalletAdapterNetwork, currentPath: string) => {
 
-    const currentNetworkFromPath = getNetworkConfigFromPath(currentPath);
+    /* const currentNetworkFromPath = getNetworkConfigFromPath(currentPath);
 
     if (currentNetworkFromPath.type == network) {
         return currentPath;
@@ -71,6 +82,7 @@ export const getPathForNetwork = (network: WalletAdapterNetwork, currentPath: st
 
     if (currentPath.startsWith(`/${currentNetworkFromPath.path}/`))
         return '/' + configFromNetwork.path + currentPath.split(`/${currentNetworkFromPath.path}`)[1];
+    return currentPath; */
     return currentPath;
 
 }

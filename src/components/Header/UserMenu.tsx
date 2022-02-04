@@ -4,12 +4,12 @@ import { Box } from '@mui/system';
 import * as React from 'react';
 import { useNavigate } from 'react-router';
 import { NetworkContext } from '../../contexts/Network';
-import { UserContext } from '../../contexts/UserContext';
-import { USER_CHANGE } from '../../routes/routes';
+import { UserContext, useUser } from '../../contexts/UserContext';
+import { userProfilePath, USER_PROFILE, USER_SETTINGS } from '../../routes/routes';
 
 export default function UserMenu(props: { displayName?: boolean }) {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
-    const { user } = React.useContext(UserContext);
+    const { user } = useUser();
     const config = React.useContext(NetworkContext);
 
     const navigate = useNavigate();
@@ -20,12 +20,17 @@ export default function UserMenu(props: { displayName?: boolean }) {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
-
-    const handleChangeUser = () => {
-        navigate(config.getPathWithNetwork(USER_CHANGE));
-        setAnchorElUser(null);
-
+    const handeNavigateProfile = () => {
+        if (user) {
+            navigate(userProfilePath(user.data.name));
+            setAnchorElUser(null);
+        }
     };
+    /*   const handleChangeUser = () => {
+          navigate(USER_CHANGE);
+          setAnchorElUser(null);
+  
+      }; */
     return (<Box sx={{ flexGrow: 0, ml: 2 }}>
         {/*  <IconButton  sx={{ p: 0 }}>
             <Avatar />
@@ -54,15 +59,12 @@ export default function UserMenu(props: { displayName?: boolean }) {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
         >
-            <MenuItem key='posts' onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">Posts</Typography>
+            <MenuItem key='profile' onClick={handleCloseUserMenu}>
+                <Typography textAlign="center" onClick={handeNavigateProfile}>Profile</Typography>
             </MenuItem>
-            <MenuItem key='stakes' onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">Stakes</Typography>
-            </MenuItem>
-            <MenuItem key='changeUser' onClick={handleChangeUser}>
+            {/*  <MenuItem key='changeUser' onClick={handleChangeUser}>
                 <Typography textAlign="center">Manage users</Typography>
-            </MenuItem>
+            </MenuItem> */}
         </Menu>
     </Box>)
 }

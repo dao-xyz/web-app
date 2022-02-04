@@ -24,7 +24,6 @@ export default function RedirectDialog(props: { title: string, content: string, 
     };
 
     const handleNavigation = () => {
-        console.log(location)
         let searchParams = new URLSearchParams(window.location.search);
         searchParams.set(REDIRECT_URL_PARAM_KEY, location.pathname);
         navigate(props.redirectPath + '?' + searchParams.toString())

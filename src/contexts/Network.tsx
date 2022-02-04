@@ -5,13 +5,13 @@ import {
     WalletProvider,
 } from "@solana/wallet-adapter-react";
 import {
-    getLedgerWallet,
-    getPhantomWallet,
-    getSlopeWallet,
-    getSolflareWallet,
-    getSolletExtensionWallet,
-    getSolletWallet,
-    getTorusWallet,
+    LedgerWalletAdapter,
+    PhantomWalletAdapter,
+    SlopeWalletAdapter,
+    SolflareWalletAdapter,
+    SolletExtensionWalletAdapter,
+    SolletWalletAdapter,
+    TorusWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 
 import { clusterApiUrl } from "@solana/web3.js";
@@ -21,9 +21,11 @@ import { walletConnectClickOnce } from "../components/network/Wallet/Wallet";
 
 export const NetworkContext = React.createContext({
     changeNetwork: (network: WalletAdapterNetwork, pathname: string) => { },
-    config: getNetworkConfig(WalletAdapterNetwork.Testnet),
-    getPathWithNetwork: (href: string): string => ''
+    config: getNetworkConfig(WalletAdapterNetwork.Mainnet),
+    // getPathWithNetwork: (href: string): string => ''
 });
+
+export const useNetwork = () => React.useContext(NetworkContext);
 
 /* const STORAGE_KEY_PREFERRED_NETWORK = "settings.network"
 const getPreferedNetwork = () => {
@@ -34,12 +36,22 @@ const getPreferedNetwork = () => {
 
 }
 const PREFERRED_NETWORK = getPreferedNetwork(); */
+const defaultNetwork = (): WalletAdapterNetwork => {
+    /*  if (!process.env.REACT_APP_NETWORK)
+         return WalletAdapterNetwork.Mainnet
+     if (process.env.REACT_APP_NETWORK == 'devnet')
+         return WalletAdapterNetwork.Devnet
+     if (process.env.REACT_APP_NETWORK == 'testnet')
+         return WalletAdapterNetwork.Testnet
+     throw Error("Undefiend network from configuration: " + process.env); */
+    return WalletAdapterNetwork.Devnet;
 
+}
 export const Network = ({ children }: { children: JSX.Element }) => {
     const params = useParams()
-
     const config = getNetworkConfigFromPathParam(useParams());
-    const [network, setNetwork] = React.useState<WalletAdapterNetwork>(config?.type ? config?.type : WalletAdapterNetwork.Testnet);
+    const [network, setNetwork] = React.useState<WalletAdapterNetwork>(defaultNetwork()); // config?.type ? config?.type :
+
     //const [autoConnect, setAutoConnect] = React.useState(true);
 
     const networkMemo = React.useMemo(
@@ -51,12 +63,12 @@ export const Network = ({ children }: { children: JSX.Element }) => {
 
             },
             config: getNetworkConfig(network),
-            getPathWithNetwork: (href: string) => {
-                const path = "/" + getNetworkConfig(network).path;
-                if (href)
-                    return path + "/" + href;
-                return path
-            }
+            /*   getPathWithNetwork: (href: string) => {
+                  const path = "/" + getNetworkConfig(network).path;
+                  if (href)
+                      return path + "/" + href;
+                  return path
+              } */
 
         }),
         [network]
@@ -67,15 +79,13 @@ export const Network = ({ children }: { children: JSX.Element }) => {
     // Only the wallets you configure here will be compiled into your application
     const wallets = useMemo(
         () => [
-            getPhantomWallet(),
-            getSlopeWallet(),
-            getSolflareWallet(),
-            getTorusWallet({
-                options: { clientId: "Get a client ID @ https://developer.tor.us" },
-            }),
-            getLedgerWallet(),
-            getSolletWallet({ network }),
-            getSolletExtensionWallet({ network }),
+            new PhantomWalletAdapter(),
+            new SlopeWalletAdapter(),
+            new SolflareWalletAdapter({ network }),
+            new TorusWalletAdapter(),
+            new LedgerWalletAdapter(),
+            new SolletWalletAdapter({ network }),
+            new SolletExtensionWalletAdapter({ network }),
         ],
         [network]
     );

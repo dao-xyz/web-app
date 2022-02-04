@@ -1,8 +1,8 @@
-# WeStake web app
+# Stake Together web app
 
 Live (currently) at Github pages
 
-https://westake.github.io/westake-app/
+https://s2gprotocol.github.io/s2g-app/
 
 
-Web application written in React to interact with the [WeStake protocol](https://github.com/westake/westake-protocol).
+Web application written in React to interact with the [S2G protocol](https://github.com/s2gprotocol/s2g-protocol).

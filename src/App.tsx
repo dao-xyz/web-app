@@ -17,10 +17,8 @@ import { ConditionalRedirect } from "./components/navigation/ConditionalRedirect
 import { getNetworkConfigFromPathParam } from "./services/network";
 import { AlertProvider } from "./contexts/AlertContext";
 import { ContentRoutes } from "./routes/routes";
-import { ChannelsProvider } from "./contexts/ChannelsContext";
-import { IPFSProvider } from "./contexts/IPFSContext";
-
-
+import { EncryptionProvider } from "./contexts/EncryptionContext";
+import { IpfsServiceProvider } from "./contexts/IpfsServiceContext";
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
 });
@@ -50,41 +48,31 @@ function App() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-
-        <Box >
+        <Router basename='/' >
           <CssBaseline>
-            <Router basename='/' >
-              <Routes >
-                <Route path="/" element={
-                  <Navigate to="/main" />
-                } />
-                {<Route path=":network/*" element={<>
-                  <IPFSProvider>
-                    <Network>
-                      <AlertProvider>
-                        <ChannelsProvider>
-                          <UserProvider>
-                            <ConditionalRedirect validatePath={(_, params) => !!getNetworkConfigFromPathParam(params)} to="/" >
-                              <Header />
-                              <Box className="column" sx={{ width: "100%" }}>
-                                <Toolbar />
-                                <Box sx={{ padding: 2 }}>
-                                  <ContentRoutes />
-                                </Box>
-                              </Box>
-                            </ConditionalRedirect>
-                          </UserProvider>
-                        </ChannelsProvider>
-                      </AlertProvider>
-                    </Network>
-                  </IPFSProvider>
-                </>} />}
-
-
-              </Routes>
-            </Router>
+            <Network>
+              <AlertProvider>
+                <IpfsServiceProvider>
+                  {/*               <EncryptionProvider>
+                 */}
+                  <UserProvider>
+                    <Box>
+                      <Header />
+                      <Box className="column" sx={{ width: "100%" }}>
+                        <Toolbar />
+                        <Box sx={{ padding: 2 }}>
+                          <ContentRoutes />
+                        </Box>
+                      </Box>
+                    </Box>
+                  </UserProvider>
+                </IpfsServiceProvider>
+                {/*                  
+                </EncryptionProvider> */}
+              </AlertProvider>
+            </Network>
           </CssBaseline>
-        </Box>
+        </Router>
 
       </ThemeProvider>
     </ColorModeContext.Provider >

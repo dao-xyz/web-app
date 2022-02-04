@@ -18,7 +18,7 @@ import ThemeToggle from "../ThemeToggle";
 import { Wallet } from "../network/Wallet/Wallet";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useWallet, WalletContext } from "@solana/wallet-adapter-react";
-import { UserContext } from "../../contexts/UserContext";
+import { UserContext, useUser } from "../../contexts/UserContext";
 import { SelectNetwork } from "../network/SelectNetwork";
 import { getPathForNetwork } from "../../services/network";
 import { NetworkContext } from "../../contexts/Network";
@@ -35,7 +35,7 @@ export default function Header() {
 
   const network = React.useContext(NetworkContext);
   const { publicKey } = React.useContext(WalletContext);
-  const { user } = React.useContext(UserContext);
+  const { user } = useUser();
 
   const navigate = useNavigate();
   const handleOpenNavMenu = (event: any) => {
@@ -59,11 +59,11 @@ export default function Header() {
 
 
   const navigateToStartInfo = () => {
-    navigate(network.getPathWithNetwork(START))
+    navigate(START)
     handleCloseNavMenu();
   }
   const navigateToSourceCode = () => {
-    window.location.href = "https://github.com/westake";
+    window.location.href = "https://github.com/s2gprotocol";
   };
 
   return (
@@ -151,6 +151,12 @@ export default function Header() {
             >
               About
             </Button>
+
+          </Box>
+          <Box>
+            {network.config.type != WalletAdapterNetwork.Mainnet ? (<Typography
+              variant="h6">Network: {network.config.type}</Typography>
+            ) : (<></>)}
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent: "right", alignItems: "center" }}>
             {/*  <SelectNetwork /> */}
@@ -161,7 +167,7 @@ export default function Header() {
                 (user ? <UserMenu displayName={true}></UserMenu> : <Button
                   key="create-user"
                   variant="contained"
-                  component={RouterLink} to={network.getPathWithNetwork(USER_NEW)}
+                  component={RouterLink} to={USER_NEW}
                   endIcon={<PersonAdd />}
                 >
                   Create user
@@ -174,7 +180,7 @@ export default function Header() {
             {
               publicKey ?
                 (user ? <UserMenu displayName={false}></UserMenu> : <IconButton
-                  component={RouterLink} to={network.getPathWithNetwork(USER_NEW)}
+                  component={RouterLink} to={USER_NEW}
                 >
                   <PersonAdd />
                 </IconButton>) : (<></>)}

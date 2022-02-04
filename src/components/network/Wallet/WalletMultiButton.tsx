@@ -65,8 +65,9 @@ export const WalletMultiButtonMui: FC<ButtonProps & { onWalletModalClick: () => 
             <Button
                 aria-expanded={active}
                 //  className="wallet-adapter-button-trigger"
-                style={{ pointerEvents: active ? 'none' : 'auto', ...props.style }}
+                sx={{ pointerEvents: active ? 'none' : 'auto', ...props.style }}
                 onClick={openDropdown}
+                // TODO Sollet icon does not work well with this
                 startIcon={<WalletIcon wallet={wallet} />}
                 {...props}
             >

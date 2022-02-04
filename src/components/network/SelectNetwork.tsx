@@ -22,6 +22,8 @@ export const SelectNetwork = (props: { toggle?: boolean }) => {
                 return changeNetwork(WalletAdapterNetwork.Mainnet, pathname)
             case WalletAdapterNetwork.Testnet.toString():
                 return changeNetwork(WalletAdapterNetwork.Testnet, pathname)
+            case WalletAdapterNetwork.Devnet.toString():
+                return changeNetwork(WalletAdapterNetwork.Devnet, pathname)
             default:
                 throw new Error("Unsupported network: " + event.target.value)
         }

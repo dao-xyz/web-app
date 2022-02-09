@@ -2,6 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { Routes, Route } from 'react-router';
 import { ConditionalRedirect } from '../components/navigation/ConditionalRedirect';
 import { useUser } from '../contexts/UserContext';
+import { Deposit } from '../pages/account/Deposit';
 import Join from '../pages/join/Join';
 import Landing from '../pages/landing/Landing';
 import { NewUser } from '../pages/user/NewUser';
@@ -13,6 +14,9 @@ export const USER_PROFILE = 'user/:' + USERNAME_PATH_PARAM;
 export const userProfilePath = (user: string) => 'user/' + user;
 export const HOME = '';
 export const WAIT_LIST = 'wait'
+export const DEPOSIT = 'deposit'
+export const WITHDRAW = 'withdraw'
+
 export const START = HOME;
 
 export function ContentRoutes() {
@@ -23,6 +27,8 @@ export function ContentRoutes() {
         <Route path={USER_NEW} element={<NewUser />} />
         <Route path={USER_SETTINGS} element={<SettingsUser />} />
         <Route path={USER_PROFILE} element={<ProfileUser />} />
+        <Route path={DEPOSIT} element={<Deposit />} />
+
         <Route path={WAIT_LIST} element={<Join />} />
         <Route path={HOME} element={<Landing />} />
 

@@ -2880,38 +2880,38 @@
     nft.storage "5.2.2"
     patch-package "^6.4.7"
 
-"@s2g/program@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@s2g/program/-/program-0.0.6.tgz#806ecc08505bf9f4e1eafd310a713094d1a595ea"
-  integrity sha512-U5Faq/m3NjEApNkhY/Vb0HSMn4Z/iRxwRudHU/hGBUMumTJqRCjgf+Eu2H0gGSrUzW/+LaJkkZCyP0HG8XVIaQ==
+"@s2g/program@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@s2g/program/-/program-0.0.7.tgz#6a6440f3f70eab9da93ef2ece5f212ca8856c51c"
+  integrity sha512-9PC478p5t1wBs47qmuw1wkYO05Wt7zZ370tD+qL9Z+H4wI41kI8BeFSHYLwYm4AzpoQ4I07GWfe2QVHDb90XDg==
   dependencies:
-    "@solana/web3.js" "^1.20.0"
+    "@solana/web3.js" "^1.32.0"
 
-"@s2g/social@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@s2g/social/-/social-0.0.10.tgz#d3f70517b07b1105f3bd3eb2e5aa83d32f98fbd9"
-  integrity sha512-/KOQdSooDm0abXwkHCWLMwIVE8/ZGLQLcLRRcZCtFo82KpNXdaWfLdtWUaLNsoM1mXT69OCcC3wKepNK6Q6D9w==
+"@s2g/social@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@s2g/social/-/social-0.0.11.tgz#37b1a1b6bca2319e900c601b1eff58967c9d20d7"
+  integrity sha512-pMgZiYyV+OSar27kHVuUM/bSa1xpS1vUlQKmr69g8tjby5+vbCH2eI1o2HWwve/I6KURJzYIRbilQKwJSuQDXQ==
   dependencies:
     "@pinata/sdk" "^1.1.23"
     "@s2g/borsh" "^1.1.3"
     "@s2g/ipfs-pinning-adapter" "^0.1.7"
-    "@s2g/program" "^0.0.6"
-    "@solana/web3.js" "^1.20.0"
+    "@s2g/program" "^0.0.7"
+    "@solana/web3.js" "^1.32.0"
     "@types/bs58" "^4.0.1"
     bs58 "^4.0.1"
     ipfs-car "^0.6.1"
     nft.storage "5.2.2"
     reflect-metadata "^0.1.13"
 
-"@s2g/stake-pool@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@s2g/stake-pool/-/stake-pool-0.0.10.tgz#998bc7e06abfb13a8c7938c301cfcc1c47219d39"
-  integrity sha512-MBSFKAfvL8HNMm0iJeoPvLnQjmrotM9TJBiFmDXSY9lMzg1AkXRjj/JuN5JYBvQfo82INi2ZmcxrHykpDhhdfQ==
+"@s2g/stake-pool@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@s2g/stake-pool/-/stake-pool-0.0.12.tgz#713761accdbd4661950a362fc18b3f37b05d75b3"
+  integrity sha512-JUZ2BVYzuLTF6UcTFU22vqPkTwSDtYLGa6HvbEyOQLoV43gRYw06g2atLia09rjLML8dRFHaPMmViyHTloImqg==
   dependencies:
     "@s2g/borsh" "^1.1.3"
-    "@s2g/program" "^0.0.6"
+    "@s2g/program" "^0.0.7"
     "@solana/spl-token" "^0.1.8"
-    "@solana/web3.js" "^1.20.0"
+    "@solana/web3.js" "^1.32.0"
     reflect-metadata "^0.1.13"
 
 "@sinonjs/commons@^1.7.0":
@@ -3161,6 +3161,26 @@
   version "1.31.0"
   resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.31.0.tgz#7a313d4c1a90b77f27ddbfe845a10d6883e06452"
   integrity sha512-7nHHx1JNFnrt15e9y8m38I/EJCbaB+bFC3KZVM1+QhybCikFxGMtGA5r7PDC3GEL1R2RZA8yKoLkDKo3vzzqnw==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    "@ethersproject/sha2" "^5.5.0"
+    "@solana/buffer-layout" "^3.0.0"
+    bn.js "^5.0.0"
+    borsh "^0.4.0"
+    bs58 "^4.0.1"
+    buffer "6.0.1"
+    cross-fetch "^3.1.4"
+    jayson "^3.4.4"
+    js-sha3 "^0.8.0"
+    rpc-websockets "^7.4.2"
+    secp256k1 "^4.0.2"
+    superstruct "^0.14.2"
+    tweetnacl "^1.0.0"
+
+"@solana/web3.js@^1.32.0":
+  version "1.33.0"
+  resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.33.0.tgz#3b8c0b4cd259ffe8764937f1001f79958c5d9533"
+  integrity sha512-R53wvQQsUKCCJ9UmOfDlxCwC94jzjmpjr6wT/Xf1uFavZblSLAtzLaF4vbGIS465lk3mW6oJMtASd8cqSnr8Mw==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@ethersproject/sha2" "^5.5.0"
@@ -10943,10 +10963,10 @@ react-app-polyfill@^3.0.0:
     regenerator-runtime "^0.13.9"
     whatwg-fetch "^3.6.2"
 
-react-app-rewired@^2.1.8:
-  version "2.1.8"
-  resolved "https://registry.yarnpkg.com/react-app-rewired/-/react-app-rewired-2.1.8.tgz#e192f93b98daf96889418d33d3e86cf863812b56"
-  integrity sha512-wjXPdKPLscA7mn0I1de1NHrbfWdXz4S1ladaGgHVKdn1hTgKK5N6EdGIJM0KrS6bKnJBj7WuqJroDTsPKKr66Q==
+react-app-rewired@^2.1.11:
+  version "2.1.11"
+  resolved "https://registry.yarnpkg.com/react-app-rewired/-/react-app-rewired-2.1.11.tgz#ad5781e3ef5e506be935898bb7642f7f9d50b61a"
+  integrity sha512-zRIqJUPsCoPnfYtea3xgPbKR42vx0NoH5oo8R8FELXqzkjJHa39V6zD8CAdkLJoYL8V3JScWHAfKMZOzi1Ydmw==
   dependencies:
     semver "^5.6.0"
 
@@ -12455,7 +12475,7 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typescript@^4.5.4:
+typescript@^4.5.5:
   version "4.5.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.5.tgz#d8c953832d28924a9e3d37c73d729c846c5896f3"
   integrity sha512-TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==
@@ -12688,7 +12708,7 @@ web-streams-polyfill@^3.1.1:
   resolved "https://registry.yarnpkg.com/web-streams-polyfill/-/web-streams-polyfill-3.2.0.tgz#a6b74026b38e4885869fb5c589e90b95ccfc7965"
   integrity sha512-EqPmREeOzttaLRm5HS7io98goBgZ7IVz79aDvqjD0kYXLtFZTc0T/U6wHTPKyIjb+MdN7DFIIX6hgdBEpWmfPA==
 
-web-vitals@^2.1.2:
+web-vitals@^2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-2.1.4.tgz#76563175a475a5e835264d373704f9dde718290c"
   integrity sha512-sVWcwhU5mX6crfI5Vd2dC4qchyTqxV8URinzt25XqVh+bHEPGH4C3NPrNionCP7Obx59wrYEbNlw4Z8sjALzZg==

@@ -2,6 +2,7 @@ import { Button, ButtonProps } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal, WalletIcon } from '@solana/wallet-adapter-react-ui';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState, MouseEvent, ReactElement, CSSProperties } from 'react';
+import { usePublicKeyToCopy } from '../../../services/keys';
 import { WalletConnectButton } from './WalletConnectButton';
 import { WalletModalButton } from './WalletModalButton';
 
@@ -14,20 +15,26 @@ export const WalletMultiButtonMui: FC<ButtonProps & { onWalletModalClick: () => 
     const [active, setActive] = useState(false);
     const ref = useRef<HTMLUListElement>(null);
 
-    const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
-    const content = useMemo(() => {
-        if (children) return children;
-        if (!wallet || !base58) return null;
-        return base58.slice(0, 4) + '..' + base58.slice(-4);
-    }, [children, wallet, base58]);
+    /*  const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
+     const content = useMemo(() => {
+         if (children) return children;
+         if (!wallet || !base58) return null;
+         return base58.slice(0, 4) + '..' + base58.slice(-4);
+     }, [children, wallet, base58]);
+ 
+     const copyAddress = useCallback(async () => {
+         if (base58) {
+             await navigator.clipboard.writeText(base58);
+             setCopied(true);
+             setTimeout(() => setCopied(false), 400);
+         }
+     }, [base58]); */
 
-    const copyAddress = useCallback(async () => {
-        if (base58) {
-            await navigator.clipboard.writeText(base58);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 400);
-        }
-    }, [base58]);
+    const {
+        base58,
+        copyAddress,
+        content
+    } = usePublicKeyToCopy(publicKey, wallet, children, setCopied);
 
     const openDropdown = useCallback(() => setActive(true), [setActive]);
 

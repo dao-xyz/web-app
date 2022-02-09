@@ -24,6 +24,8 @@ export const ProfileUser: FC = () => {
     const [canEdit, setCanEdit] = useState(false);
     // const { user } = useUser();
     const [thisUser, setThisUser] = useState<AccountInfoDeserialized<UserAccount> | undefined>(undefined);
+    const [showEdit, setShowEdit] = useState<AccountInfoDeserialized<UserAccount> | undefined>(undefined);
+
     const { user } = useUser();
     const { connection } = useConnection();
     const { config } = useNetwork();
@@ -40,8 +42,6 @@ export const ProfileUser: FC = () => {
     }, [user, thisUser])
 
     useEffect(() => {
-        setCanEdit(thisUser?.data.name == params.user)
-
         if (profile?.image) {
             fetchNFTManifestImageUrl(profile.image).then((url) => {
                 setProfileImageUrl(url)
@@ -80,7 +80,8 @@ export const ProfileUser: FC = () => {
                         sx={{ width: 100, height: 100 }}
                     />
                 </Grid>
-                <Grid item container direction="column" width="initial" justifyContent="center">
+                <Grid item container direction="row" width="initial" justifyContent="center">
+
                     <Grid item>
                         <Typography variant="h4" component="h4" gutterBottom>{params.user}</Typography>
                         {profile ? <>
@@ -88,10 +89,11 @@ export const ProfileUser: FC = () => {
                             {profile.description ? <Typography>{profile.description}</Typography> : <Typography fontStyle="italic">No description exist</Typography>}
                         </> : canEdit ? <Typography fontStyle='italic'>No user info</Typography> : <></>}
                     </Grid>
+                    {canEdit ? <Grid item>
+                        <IconButton  > <EditIcon /></IconButton>
+                    </Grid> : <></>}
                 </Grid>
-                {canEdit ? <Grid item>
-                    <IconButton > <EditIcon /></IconButton>
-                </Grid> : <></>}
+
             </Grid>
             <Grid item sx={{ mt: 2 }}>
                 <TabContext value={value}>

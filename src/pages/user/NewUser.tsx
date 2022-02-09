@@ -6,7 +6,6 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { getUserByName } from '@s2g/social';
 import LoadingButton from '@mui/lab/LoadingButton';
-import AlertContext from '../../contexts/AlertContext';
 import { UserContext, useUser } from '../../contexts/UserContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getRedirect } from '../../routes/utils';
@@ -15,6 +14,7 @@ import { Metadata } from '@metaplex-foundation/mpl-token-metadata';
 import { makeStyles } from '@mui/styles';
 import { UserProfileSettings } from '../../components/user/UserProfileImageSetting';
 import { ConditionalRedirect } from '../../components/navigation/ConditionalRedirect';
+import { useAlert } from '../../contexts/AlertContext';
 
 interface User {
     username: string
@@ -43,7 +43,7 @@ export const NewUser: FC = () => {
     } as User);
     const [usernameState, setUsernameState] = React.useState<UserNameState>(UserNameState.EMPTY);
 
-    const alertContext = useContext(AlertContext)
+    const { alert, alertError } = useAlert();
 
 
 
@@ -55,7 +55,7 @@ export const NewUser: FC = () => {
         let success = false;
         try {
             await createUser(state.username);
-            alertContext.alert({
+            alert({
                 severity: 'success',
                 text: "Success!"
             });
@@ -64,10 +64,7 @@ export const NewUser: FC = () => {
 
         }
         catch (error) {
-            alertContext.alert({
-                severity: 'error',
-                text: "Something went wrong. Error: " + JSON.stringify(error, Object.getOwnPropertyNames(error))
-            });
+            alertError(error);
         }
         setLoading(false)
         if (success) {

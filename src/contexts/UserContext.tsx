@@ -118,6 +118,9 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
                     await connection.confirmTransaction(signature);
                     const newUser = await getUserByName(username, connection, network.config.programId)
                     // Set user to new user
+                    if (!newUser) {
+                        throw new Error("Could not find newly created user");  // Most likely connection error
+                    }
                     localStorage.setItem(STORAGE_KEY_PREFRERRED_USER, newUser.data.name);
                     setUser(newUser)
                 }

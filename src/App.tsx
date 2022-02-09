@@ -19,6 +19,7 @@ import { AlertProvider } from "./contexts/AlertContext";
 import { ContentRoutes } from "./routes/routes";
 import { EncryptionProvider } from "./contexts/EncryptionContext";
 import { IpfsServiceProvider } from "./contexts/IpfsServiceContext";
+import { AccountProvider } from "./contexts/AccountContext";
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
 });
@@ -52,23 +53,25 @@ function App() {
           <CssBaseline>
             <Network>
               <AlertProvider>
-                <IpfsServiceProvider>
-                  {/*               <EncryptionProvider>
+                <AccountProvider>
+                  <IpfsServiceProvider>
+                    {/*               <EncryptionProvider>
                  */}
-                  <UserProvider>
-                    <Box>
-                      <Header />
-                      <Box className="column" sx={{ width: "100%" }}>
-                        <Toolbar />
-                        <Box sx={{ padding: 2 }}>
-                          <ContentRoutes />
+                    <UserProvider>
+                      <Box>
+                        <Header />
+                        <Box className="column" sx={{ width: "100%" }}>
+                          <Toolbar />
+                          <Box sx={{ padding: 2 }}>
+                            <ContentRoutes />
+                          </Box>
                         </Box>
                       </Box>
-                    </Box>
-                  </UserProvider>
-                </IpfsServiceProvider>
-                {/*                  
+                    </UserProvider>
+                  </IpfsServiceProvider>
+                  {/*                  
                 </EncryptionProvider> */}
+                </AccountProvider>
               </AlertProvider>
             </Network>
           </CssBaseline>

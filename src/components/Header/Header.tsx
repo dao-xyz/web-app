@@ -161,7 +161,7 @@ export default function Header() {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent: "right", alignItems: "center" }}>
             {/*  <SelectNetwork /> */}
             <ThemeToggle />
-            <Wallet></Wallet>
+
             {
               publicKey ?
                 (user ? <UserMenu displayName={true}></UserMenu> : <Button
@@ -171,11 +171,11 @@ export default function Header() {
                   endIcon={<PersonAdd />}
                 >
                   Create user
-                </Button>) : (<></>)}
+                </Button>) : (<Wallet />)}
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" }, justifyContent: "right", alignItems: "center" }}>
 
-            <Wallet />
+
 
             {
               publicKey ?
@@ -183,7 +183,7 @@ export default function Header() {
                   component={RouterLink} to={USER_NEW}
                 >
                   <PersonAdd />
-                </IconButton>) : (<></>)}
+                </IconButton>) : (<Wallet />)}
 
             <IconButton
               size="large"

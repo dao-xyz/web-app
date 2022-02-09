@@ -1,8 +1,8 @@
-# Solvei web app
+# Stake Together web app
 
 Live (currently) at Github pages
 
-https://the-solvei.github.io/solvei-app/
+https://s2gprotocol.github.io/s2g-app/
 
 
-Web application written in React to interact with the [Solvei protocol](https://github.com/the-solvei/solvei-protocol).
+Web application written in React to interact with the [S2G protocol](https://github.com/s2gprotocol/s2g-protocol).

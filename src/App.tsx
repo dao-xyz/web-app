@@ -1,23 +1,25 @@
 import React, { useState } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { Home } from "./pages/Home/Home";
 import {
   createTheme,
   CssBaseline,
   PaletteMode,
   ThemeProvider,
+  Toolbar,
 } from "@mui/material";
 import { getDesignTokens } from "./styles/theme";
 import Box from "@mui/material/Box";
 import Header from "./components/Header/Header";
-import { NewChannel } from "./pages/channels/NewChannnel/NewChannel";
-import { MyChannels } from "./pages/channels/MyChannels/MyChannels";
-
-import { Network } from "./components/Wallet/Network";
+import { Network } from "./contexts/Network";
 import { UserProvider } from "./contexts/UserContext";
-import { NewUser } from "./pages/user/NewUser/NewUser";
-
+import { ConditionalRedirect } from "./components/navigation/ConditionalRedirect";
+import { getNetworkConfigFromPathParam } from "./services/network";
+import { AlertProvider } from "./contexts/AlertContext";
+import { ContentRoutes } from "./routes/routes";
+import { EncryptionProvider } from "./contexts/EncryptionContext";
+import { IpfsServiceProvider } from "./contexts/IpfsServiceContext";
+import { AccountProvider } from "./contexts/AccountContext";
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
 });
@@ -38,6 +40,7 @@ function App() {
     []
   );
 
+
   // Update the theme only if the mode changes
   const theme = React.useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
@@ -46,30 +49,36 @@ function App() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <Network>
-          <UserProvider>
-            <Box sx={{ display: "flex" }}>
-              <CssBaseline>
-                <Router basename='/' >
-                  <Routes >
-                    <Route path=":network/*" element={<>
-                      <Header />
-                      <Routes>
-                        <Route path="user/new" element={<NewUser />} />
-                        <Route path="channels/my" element={<MyChannels />} />
-                        <Route path="channels/new" element={<NewChannel />} />
-                        <Route path="/" element={<Home />} />
-                      </Routes>
-                    </>} />
-                    <Route path="/" element={<Navigate replace to="/main" />} />
-                  </Routes>
-                </Router>
-              </CssBaseline>
-            </Box>
-          </UserProvider>
-        </Network>
+        <Router basename='/' >
+          <CssBaseline>
+            <Network>
+              <AlertProvider>
+                <AccountProvider>
+                  <IpfsServiceProvider>
+                    {/*               <EncryptionProvider>
+                 */}
+                    <UserProvider>
+                      <Box>
+                        <Header />
+                        <Box className="column" sx={{ width: "100%" }}>
+                          <Toolbar />
+                          <Box sx={{ padding: 2 }}>
+                            <ContentRoutes />
+                          </Box>
+                        </Box>
+                      </Box>
+                    </UserProvider>
+                  </IpfsServiceProvider>
+                  {/*                  
+                </EncryptionProvider> */}
+                </AccountProvider>
+              </AlertProvider>
+            </Network>
+          </CssBaseline>
+        </Router>
+
       </ThemeProvider>
-    </ColorModeContext.Provider>
+    </ColorModeContext.Provider >
   );
 }
 export default App;

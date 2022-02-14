@@ -14,7 +14,7 @@ export function Home() {
 
     const [channels, setChannels] = useState<AccountInfoDeserialized<ChannelAccount>[]>([]);
     return (
-        <Container maxWidth="sm" component="main" sx={{ pt: 8, pb: 6 }}>
+        <Container maxWidth="md" component="main" sx={{ pt: 8, pb: 6 }}>
             <Grid container flexDirection="column" spacing={2}>
                 <Grid item>
                     <ChannelsFilter onChange={(channels) => {

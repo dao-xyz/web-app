@@ -1,14 +1,12 @@
 import {
-    Box,
+    Checkbox,
     CircularProgress,
+    FormControlLabel,
     Grid,
-    List,
-    ListItem,
-    ListItemText,
-    ListSubheader,
+
+    Paper,
     TextField,
-    Toolbar,
-    Typography,
+
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import { Send } from "@mui/icons-material";
@@ -24,9 +22,9 @@ import { IpfsWalletContext, useIpfsProviderModal } from "../ipfs/useIpfsProvider
 import { IpfsServiceModal } from "../ipfs/IpfsServiceModal";
 import { useAlert } from "../../contexts/AlertContext";
 import IpfsProviderPasswordDialog from "../ipfs/IpfsProviderPasswordDialog";
+import ReactMarkdown from 'react-markdown'
 
-
-export function NewPost(props: { channel: PublicKey }) {
+export function NewPost(props: { channel: PublicKey, onCreation: (post: PublicKey) => any }) {
     const { connection } = useConnection();
     const [text, setText] = React.useState('');
     const [loading, setLoading] = React.useState(false);
@@ -37,48 +35,58 @@ export function NewPost(props: { channel: PublicKey }) {
     const { connected, getAdapter, checkPassword, reset } = useIpfsService();
     const [ipfsDialogVisible, setIpfsDialogVisible] = React.useState(false);
     const [passwordDialogVisible, setPasswordDialogVisible] = React.useState(false);
+    const [previewMarkdown, setPreviewMarkdown] = React.useState(false);
 
     const { alertError, alert } = useAlert();
     const createPost = useCallback(async () => {
+        console.log('create post', password, !connected, !await checkPassword(password))
         if (!connected) {
             setIpfsDialogVisible(true);
             return;
         }
 
-
-
-
-        if (!password || !await checkPassword(password)) {
+        if (!await checkPassword(password)) {
             setPasswordDialogVisible(true);
             return;
         }
+        // Upload content
+        setLoading(true)
 
-        // upload to ipfs
-        getAdapter()
+        const adapter = await getAdapter(password);
+        let cid: string = undefined;
+        try {
+            cid = await adapter.pin(Buffer.from(text))
+        } catch (error) {
+            alertError(error);
+            setLoading(false);
+            return;
+        }
 
         if (!publicKey) {
             alert({
                 severity: 'error', text: 'Wallet is not connected'
             })
-            throw new WalletNotConnectedError();
+            setLoading(false);
+            return;
         }
         if (!user) {
             alert({
                 severity: 'error',
                 text: 'You need to create a user to create posts'
             })
-            throw new Error("No user account active");
+            setLoading(false);
+            return;
         }
 
-        // Upload content
-        setLoading(true)
 
-        const [transaction, postKey] = await createPostTransaction(config.programId, publicKey, user.pubkey, props.channel, Buffer.from(text), 'abc');
+
+        const [transaction, postKey] = await createPostTransaction(config.programId, publicKey, user.pubkey, props.channel, Buffer.from(text), "https://ipfs.io/ipfs/" + cid);
         const signature = await sendTransaction(new Transaction().add(transaction), connection,);
         let success = false
         try {
             await connection.confirmTransaction(signature);
             success = true;
+            setPreviewMarkdown(false);
             // navigate to redirect if exist, else to home
         }
         catch (error) {
@@ -92,12 +100,13 @@ export function NewPost(props: { channel: PublicKey }) {
         if (success) {
             alert({
                 severity: 'success',
-                text: 'Channel created!'
+                text: 'Post created!'
             })
             setText('');
+            props.onCreation(postKey);
         }
 
-    }, [text])
+    }, [text, connected, password, user])
     return (
         <Grid container justifyContent="space-between" spacing={1}>
             <Grid item flex={1}>
@@ -110,9 +119,19 @@ export function NewPost(props: { channel: PublicKey }) {
                     onChange={(event) => {
                         setText(event.target.value)
                     }}
-                /*     value={value}
-                    onChange={handleChange} */
+
                 />
+                {text ? <FormControlLabel
+                    control={
+                        <Checkbox checked={previewMarkdown} onChange={(event) => setPreviewMarkdown(event.target.checked)} name="jason" />
+                    }
+                    label="Preview markdown"
+                />
+                    : <></>}
+                {
+                    previewMarkdown ? <Paper variant="outlined" sx={{ p: 2 }} >
+                        <ReactMarkdown>{text}</ReactMarkdown> </Paper> : <></>
+                }
             </Grid>
 
             <Grid item>
@@ -126,11 +145,11 @@ export function NewPost(props: { channel: PublicKey }) {
                     setVisible: setIpfsDialogVisible,
                 }}
             >
-                {ipfsDialogVisible && <IpfsServiceModal />}
+                {ipfsDialogVisible && <IpfsServiceModal onSave={createPost} />}
             </IpfsWalletContext.Provider>
-            <IpfsProviderPasswordDialog open={passwordDialogVisible} onReset={() => { }} setOpen={setPasswordDialogVisible} setPassword={setPassword} />
+            <IpfsProviderPasswordDialog open={passwordDialogVisible} onReset={() => { }} setOpen={setPasswordDialogVisible} setPassword={(password) => { setPassword(password); createPost() }} />
 
-        </Grid>
+        </Grid >
     );
 }
 

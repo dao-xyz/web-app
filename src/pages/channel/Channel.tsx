@@ -17,6 +17,7 @@ export const Channel: FC = () => {
     const { connection } = useConnection();
     const [channel, setChannel] = React.useState<AccountInfoDeserialized<ChannelAccount> | null>(null);
     const [notFound, setNotFound] = React.useState(false);
+    const [createdPost, setCreatedPost] = React.useState<PublicKey | undefined>(undefined);
 
     React.useEffect(() => {
         if (!key) {
@@ -38,7 +39,7 @@ export const Channel: FC = () => {
 
         }
 
-    }, [key])
+    }, [key, createdPost])
 
 
     return <>{
@@ -47,7 +48,7 @@ export const Channel: FC = () => {
         </Box> :
             <>
 
-                <Container maxWidth="sm"  >
+                <Container maxWidth="md"  >
                     <Grid container flexDirection="column" spacing={2}>
                         <Grid item>
                             <Typography color="text.secondary" variant="h6">{channel?.data?.name}</Typography>
@@ -58,7 +59,7 @@ export const Channel: FC = () => {
                         <Grid item>
                             <Card raised elevation={2}>
                                 <CardContent>
-                                    {channel?.pubkey ? <NewPost channel={channel?.pubkey} /> : <></>}
+                                    {channel?.pubkey ? <NewPost onCreation={setCreatedPost} channel={channel?.pubkey} /> : <></>}
                                 </CardContent>
                             </Card>
                         </Grid>

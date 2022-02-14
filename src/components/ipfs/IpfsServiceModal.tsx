@@ -22,11 +22,10 @@ import CheckIcon from '@mui/icons-material/Check';
 const steps = ['Select service', 'Provide credentials'];
 
 export interface IpfsServiceModalProps {
-    className?: string;
-    container?: string;
+    onSave?: () => any
 }
 
-export const IpfsServiceModal: FC<IpfsServiceModalProps> = ({ className = '', container = 'body' }) => {
+export const IpfsServiceModal: FC<IpfsServiceModalProps> = ({ onSave }) => {
     const dialogContentRef = useRef<HTMLDivElement>(null);
     const { services, set } = useIpfsService();
     const [service, setService] = useState<IpfsServiceMeta | undefined>(undefined);
@@ -94,6 +93,8 @@ export const IpfsServiceModal: FC<IpfsServiceModalProps> = ({ className = '', co
                             /* Depending on the IPFS source we need to provide different types of credentials */
                             <IpfsServiceConfigProvider previous={() => setActiveStep(activeStep - 1)} service={service as any} save={() => {
                                 setVisible(false)
+                                if (onSave)
+                                    onSave()
                             }}></IpfsServiceConfigProvider>
                         }
 

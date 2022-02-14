@@ -9,7 +9,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { UserContext, useUser } from '../../contexts/UserContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getRedirect } from '../../routes/utils';
-import { HOME, USER_SETTINGS } from '../../routes/routes';
+import { HOME } from '../../routes/routes';
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata';
 import { makeStyles } from '@mui/styles';
 import { UserProfileSettings } from '../../components/user/UserProfileImageSetting';
@@ -119,7 +119,7 @@ export const NewUser: FC = () => {
     };
     // Box sx={{ display: "flex", justifyContent: "center" }}
     return (
-        <ConditionalRedirect validatePath={(_, __) => !user} to={"/" + USER_SETTINGS} >
+        <ConditionalRedirect validatePath={(_, __) => !user} to={"/" + HOME} >
             <Container maxWidth="xs" component="main" sx={{ pt: 8, pb: 6 }}>
                 <Typography component="h1" variant="h3" gutterBottom>Create a user</Typography>
                 <Typography component="h2" variant="h5" >Username</Typography>

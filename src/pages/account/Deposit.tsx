@@ -8,16 +8,17 @@ import { getUserByName } from '@s2g/social';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { LAMPORTS_PER_SOL, Transaction } from '@solana/web3.js'
 import { Wallet } from '../../components/network/Wallet/Wallet';
-import { depositSol } from '@s2g/stake-pool';
+import { depositSol, updateStakePool } from '@s2g/stake-pool';
 import { useAlert } from '../../contexts/AlertContext';
 import { useAccount } from '../../contexts/AccountContext';
 import { Token } from '@mui/icons-material';
+import { TokenIcon } from '../../components/icons/TokenIcon';
 
 const userNameRegex = new RegExp('^[a-zA-Z0-9_]*$');
 export const Deposit: FC = () => {
 
     const { publicKey, sendTransaction, connecting } = useWallet();
-    const { balance } = useAccount();
+    const { balance, transactionEvent } = useAccount();
     const { connection, } = useConnection();
     const [loading, setLoading] = useState(false);
     const network = useContext(NetworkContext);
@@ -41,9 +42,36 @@ export const Deposit: FC = () => {
             throw new Error('No wallet connected')
         setLoading(true);
         try {
+            // Update stake pool (maybe necessary)
+            if (true) {
+                const update = await updateStakePool(connection);
+
+                if (update.instructions.length > 0) {
+
+                    let signature = await sendTransaction(new Transaction().add(...update.instructions), connection, {
+                        signers: []
+                    });
+                    await connection.confirmTransaction(signature);
+
+                }
+                let signature = await sendTransaction(new Transaction().add(...update.finalInstructions), connection, {
+                    signers: []
+                });
+                await connection.confirmTransaction(signature);
+            }
+
+            // Perform deposit
+            console.log('depsoit', value)
             const { instructions, signers } = await depositSol(connection, publicKey, value * LAMPORTS_PER_SOL)
-            const signature = await sendTransaction(new Transaction().add(...instructions), connection, { signers: signers });
+            let signature = await sendTransaction(new Transaction().add(...instructions), connection, { signers: signers });
             await connection.confirmTransaction(signature);
+            transactionEvent();
+            alert({
+                severity: 'success',
+                text: 'Deposit successful!'
+            })
+            setValue(0);
+
         } catch (error) {
             alertError(error)
             console.error(error);
@@ -51,7 +79,7 @@ export const Deposit: FC = () => {
             setLoading(false);
         }
 
-    }, [publicKey, connection]);
+    }, [value, publicKey, connection]);
     useEffect(() => {
         if (publicKey) {
             setLoading(true);
@@ -69,18 +97,19 @@ export const Deposit: FC = () => {
         }
     }, [solBalance]);
 
-    console.log(loading)
 
     return (
         <Container maxWidth="xs" component="main" sx={{ pt: 8, pb: 6 }}>
             <Typography component="h1" variant="h3" gutterBottom>Deposit</Typography>
             {typeof solBalance === 'number' ? <Grid container spacing={2} direction="column">
-                <Grid item>
-                    <Avatar alt="SOL" src="https://avatars.githubusercontent.com/u/35608259?s=200&v=4" />
-                    <Typography sx={{ ml: 1, color: "secondary.main" }}  >{solBalance}</Typography>
+                <Grid item container direction="row" alignItems="center">
+                    <Typography>SOL balance</Typography>
+                    <Avatar sx={{ width: 24, height: 24, ml: 1 }} alt="SOL" src="https://avatars.githubusercontent.com/u/35608259?s=200&v=4" />
+                    <Typography sx={{ ml: 1 }}>{solBalance}</Typography>
                 </Grid>
-                <Grid item>
-                    <Token sx={{ color: "secondary.main" }} />
+                <Grid item container direction="row" alignItems="center">
+                    <Typography>S2G balance</Typography>
+                    <TokenIcon sx={{ ml: 1 }} />
                     <Typography sx={{ ml: 1, color: "secondary.main" }}  >{balance}</Typography>
                 </Grid>
                 <Grid item><Typography id="input-slider" gutterBottom>
@@ -128,7 +157,8 @@ export const Deposit: FC = () => {
                         </LoadingButton>
                     </Grid>
                 </Grid>
-            </Grid> : <Box>{!connecting ? <Typography>Connect a wallet to continue</Typography > : <></>} <Wallet /></Box>}
+            </Grid> : <Box>{!connecting ? <Typography>Connect a wallet to continue</Typography > : <></>} <Wallet /></Box>
+            }
             {/*   <Box sx={{ alignItems: "end", width: "100%" }} className="column" >
                     <Box sx={{
                         alignItems: "end"

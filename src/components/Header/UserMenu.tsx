@@ -33,14 +33,18 @@ export default function UserMenu(props: { displayName?: boolean }) {
     const handeNavigateProfile = () => {
         if (user) {
             navigate(userProfilePath(user.data.name));
-            setAnchorElUser(null);
+        }
+    };
+
+    const handeNavigateSettings = () => {
+        if (user) {
+            navigate(USER_SETTINGS);
         }
     };
 
     const deposit = () => {
         if (user) {
             navigate(DEPOSIT);
-            setAnchorElUser(null);
         }
     };
 
@@ -86,10 +90,13 @@ export default function UserMenu(props: { displayName?: boolean }) {
                 <ListItemIcon>
                     <AccountCircle sx={{ color: "text.secondary" }} />
                 </ListItemIcon>
-                <Typography color="text.secondary" >About me</Typography>
+                <Typography color="text.secondary" >{user.data.name}</Typography>
             </ListItem>
-            <MenuItem divider key='profile' onClick={() => { handleCloseUserMenu(); handeNavigateProfile(); }} >
+            <MenuItem key='profile' onClick={() => { handleCloseUserMenu(); handeNavigateProfile(); }} >
                 Profile
+            </MenuItem >
+            <MenuItem divider key='settings' onClick={() => { handleCloseUserMenu(); handeNavigateSettings(); }} >
+                Settings
             </MenuItem >
             <ListItem sx={{ mt: 1 }}>
                 <ListItemIcon>

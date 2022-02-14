@@ -24,7 +24,7 @@ export const NftDotStorageConfigForm: FC<{ change: (config: SimpleConfig) => voi
                 <FormGroup sx={{ width: "100%", mb: 2 }}  >
                     <FormControl fullWidth margin="dense" required>
                         <InputLabel htmlFor="key">API key</InputLabel>
-                        <Input id="key" onChange={handleChange} />
+                        <Input autoComplete='off' id="key" onChange={handleChange} />
                     </FormControl>
                 </FormGroup>
             </Grid>

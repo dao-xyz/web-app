@@ -37,14 +37,13 @@ const getPreferedNetwork = () => {
 }
 const PREFERRED_NETWORK = getPreferedNetwork(); */
 const defaultNetwork = (): WalletAdapterNetwork => {
-    /*  if (!process.env.REACT_APP_NETWORK)
-         return WalletAdapterNetwork.Mainnet
-     if (process.env.REACT_APP_NETWORK == 'devnet')
-         return WalletAdapterNetwork.Devnet
-     if (process.env.REACT_APP_NETWORK == 'testnet')
-         return WalletAdapterNetwork.Testnet
-     throw Error("Undefiend network from configuration: " + process.env); */
-    return WalletAdapterNetwork.Devnet;
+    if (!process.env.REACT_APP_NETWORK)
+        return WalletAdapterNetwork.Mainnet
+    if (process.env.REACT_APP_NETWORK == 'devnet')
+        return WalletAdapterNetwork.Devnet
+    if (process.env.REACT_APP_NETWORK == 'testnet')
+        return WalletAdapterNetwork.Testnet
+    throw Error("Undefiend network from configuration: " + process.env);
 
 }
 export const Network = ({ children }: { children: JSX.Element }) => {

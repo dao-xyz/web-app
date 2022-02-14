@@ -23,7 +23,7 @@ import { SelectNetwork } from "../network/SelectNetwork";
 import { getPathForNetwork } from "../../services/network";
 import { NetworkContext } from "../../contexts/Network";
 import UserMenu from "./UserMenu";
-import { START, USER_NEW } from "../../routes/routes";
+import { ABOUT, CHANNELS, HOME, USER_NEW } from "../../routes/routes";
 import { PersonAdd, Settings } from "@mui/icons-material";
 import { ListItemIcon } from "@mui/material";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
@@ -57,9 +57,18 @@ export default function Header() {
   };
 
 
+  const navigateToHome = () => {
+    navigate(HOME)
+    handleCloseNavMenu();
+  }
 
-  const navigateToStartInfo = () => {
-    navigate(START)
+  const navigateToChannels = () => {
+    navigate(CHANNELS)
+    handleCloseNavMenu();
+  }
+
+  const navigateToAboutInfo = () => {
+    navigate(ABOUT)
     handleCloseNavMenu();
   }
   const navigateToSourceCode = () => {
@@ -120,10 +129,16 @@ export default function Header() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              <MenuItem key="github" onClick={navigateToStartInfo}>
-                <Typography>Getting started</Typography>
+              <MenuItem key="home" onClick={navigateToHome}>
+                <Typography>Home</Typography>
               </MenuItem>
-              <MenuItem key="start" onClick={navigateToSourceCode}>
+              <MenuItem key="channels" onClick={navigateToChannels}>
+                <Typography>Channels</Typography>
+              </MenuItem>
+              <MenuItem key="about" onClick={navigateToAboutInfo}>
+                <Typography>About</Typography>
+              </MenuItem>
+              <MenuItem key="github" onClick={navigateToSourceCode}>
                 <Typography>Source code</Typography>
               </MenuItem>
             </Menu>
@@ -136,7 +151,13 @@ export default function Header() {
           ></Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-
+            <Button
+              key="home"
+              onClick={navigateToHome}
+              sx={{ my: 2, display: "block" }}
+            >
+              Home
+            </Button>
             <Button
               key="github"
               onClick={navigateToSourceCode}
@@ -145,8 +166,8 @@ export default function Header() {
               Source code
             </Button>
             <Button
-              key="start"
-              onClick={navigateToStartInfo}
+              key="about"
+              onClick={navigateToAboutInfo}
               sx={{ my: 2, display: "block" }}
             >
               About

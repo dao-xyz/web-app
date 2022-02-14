@@ -42,7 +42,7 @@ export const PinataConfigForm: FC<{ change: (config: KeySecretConfig) => void }>
                 <FormGroup  >
                     <FormControl fullWidth margin="dense" required>
                         <InputLabel htmlFor="key">API Key</InputLabel>
-                        <Input id="key" onChange={(event) => { updateConfig({ ...config, apiKey: event.target.value.trim() } as KeySecretConfig) }} />
+                        <Input autoComplete='off' id="key" onChange={(event) => { updateConfig({ ...config, apiKey: event.target.value.trim() } as KeySecretConfig) }} />
                     </FormControl>
                 </FormGroup>
             </Grid>
@@ -51,7 +51,7 @@ export const PinataConfigForm: FC<{ change: (config: KeySecretConfig) => void }>
                 <FormGroup >
                     <FormControl fullWidth margin="dense" required>
                         <InputLabel htmlFor="secret">Secret</InputLabel>
-                        <Input id="secret" onChange={(event) => { updateConfig({ ...config, secret: event.target.value.trim() } as KeySecretConfig) }} />
+                        <Input autoComplete='off' id="secret" onChange={(event) => { updateConfig({ ...config, secret: event.target.value.trim() } as KeySecretConfig) }} />
                     </FormControl>
                 </FormGroup>
             </Grid>

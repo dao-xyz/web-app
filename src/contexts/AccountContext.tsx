@@ -1,20 +1,22 @@
 
-import { createContext, FC, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { NftStorageAdapter, PinataAdapter, IPFSAdapter } from '@s2g/ipfs-pinning-adapter';
 
 import { SimpleConfig, KeySecretConfig } from '@s2g/ipfs-pinning-adapter';
-import { useLocalStorage } from '@solana/wallet-adapter-react';
+import { useConnection, useLocalStorage, useWallet } from '@solana/wallet-adapter-react';
 import { hash } from './EncryptionContext';
 import { Encrypter } from '../helpers/encrypter';
 import { Balance } from '@mui/icons-material';
+import { getPoolTokenBalance } from '@s2g/stake-pool'
+import { useNetwork } from './Network';
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 
 
 
 export interface AccountState {
-    balance: number,
-
-
+    balance: number | undefined,
+    transactionEvent: () => void
 }
 
 
@@ -25,10 +27,28 @@ export function useAccount(): AccountState {
 }
 
 export const AccountProvider: FC = ({ children, ...props }) => {
-    const [balance, setBalance] = useState(123);
+    const [balance, setBalance] = useState<number | undefined>(0);
+    const { publicKey } = useWallet();
+    const { connection } = useConnection();
+
     const state = useMemo<AccountState>(() => ({
-        balance
-    }), [balance]);
+        balance,
+        transactionEvent: () => {
+            updateTokenBalance();
+        }
+    }), [balance, publicKey]);
+    const updateTokenBalance = useCallback(() => {
+        if (publicKey)
+            getPoolTokenBalance(connection, publicKey).then((balance) => {
+                setBalance(balance / LAMPORTS_PER_SOL);
+            })
+        else {
+            setBalance(undefined)
+        }
+    }, [publicKey])
+    useEffect(() => {
+        updateTokenBalance();
+    }, [publicKey]) // we should also have some change detection when transaction are done (balance will cahnge)
 
     return <AccountContext.Provider value={state}>
         {children}

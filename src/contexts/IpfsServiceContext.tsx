@@ -52,7 +52,7 @@ const cryptConfig = (config: IpfsServiceConfig, crypt: (string: string) => strin
 }
 
 export const encryptConfig = (config: IpfsServiceConfig, password: string): IpfsServiceConfig => {
-    return cryptConfig(config, new Encrypter(password).encrypt)
+    return cryptConfig(config, (string: string) => new Encrypter(password).encrypt(string))
 }
 
 export const decryptConfig = (config: IpfsServiceConfig, password?: string): Promise<IpfsServiceConfig> => {
@@ -66,7 +66,7 @@ export const decryptConfig = (config: IpfsServiceConfig, password?: string): Pro
                 throw Error("Invalid password")
             }
         }
-        return password ? cryptConfig(config, new Encrypter(password).decrypt) : config
+        return password ? cryptConfig(config, (any: any) => new Encrypter(password).decrypt(any)) : config
     });
 }
 
@@ -85,8 +85,10 @@ const getAdapter = (service: IpfsServiceConfig): IPFSAdapter<any> => {
 }
 
 export interface IpfsContextState {
+    connected: boolean,
     service: IpfsServiceMeta | undefined,
     services: IpfsServiceMeta[],
+    checkPassword(password: string): Promise<boolean>,
     set(service: IpfsService, config: SimpleConfig | KeySecretConfig, password?: string): void;
     upload(
         buffer: Buffer,
@@ -94,7 +96,7 @@ export interface IpfsContextState {
     ): Promise<string>; // cid
     reset(): void,
     getConfig(password?: string): Promise<IpfsServiceConfig | undefined>,
-    getAdapter(password?: string): Promise<IPFSAdapter<any> | undefined>
+    getAdapter(password?: string, overrideServiceConfig?: IpfsServiceConfig): Promise<IPFSAdapter<any> | undefined>
 
 }
 
@@ -108,6 +110,7 @@ export function useIpfsService(): IpfsContextState {
 export const IpfsServiceProvider: FC = ({ children, ...props }) => {
     const [serviceConfig, setServiceConfig] = useLocalStorage<IpfsServiceConfig | undefined>('IPFS_SERVICE', undefined)
     const [service, setService] = useState<IpfsServiceMeta | undefined>(undefined)
+    const [connected, setConnected] = useState(false);
     const [services, _] = useState<IpfsServiceMeta[]>([
         {
             name: "nft.storage",
@@ -122,18 +125,30 @@ export const IpfsServiceProvider: FC = ({ children, ...props }) => {
     ]);
     useEffect(() => {
         if (serviceConfig) {
-            console.log('FIND ', services.find((service) => service.service == serviceConfig.service))
             setService(services.find((service) => service.service == serviceConfig.service));
         }
         else {
             setService(undefined)
         }
+        console.log('USE EFFECT SET CONNECTED')
+        setConnected(!!serviceConfig);
 
     }, [serviceConfig])
     const state = useMemo<IpfsContextState>(() => ({
         service,
         services,
+        connected,
+        checkPassword: async (password: string): Promise<boolean> => {
+            if (!serviceConfig.hashedPassword) {
+                return true
+            }
+            const hashed = await hash(password);
+            return hashed === serviceConfig.hashedPassword
+
+
+        },
         reset: () => {
+            console.log('RESET')
             setServiceConfig(undefined);
         },
         getConfig: async (password?: string) => {
@@ -141,10 +156,11 @@ export const IpfsServiceProvider: FC = ({ children, ...props }) => {
                 return undefined;
             return decryptConfig(serviceConfig, password)
         },
-        getAdapter: async (password?: string) => {
-            if (!serviceConfig)
+        getAdapter: async (password?: string, overrideServiceConfig?: IpfsServiceConfig) => {
+            if (!serviceConfig && !overrideServiceConfig)
                 return undefined;
-
+            if (overrideServiceConfig)
+                return getAdapter(overrideServiceConfig)
             return getAdapter(await decryptConfig(serviceConfig, password))
         },
         // maybe have a check password method here
@@ -156,6 +172,7 @@ export const IpfsServiceProvider: FC = ({ children, ...props }) => {
                     config,
                     service
                 };
+                console.log('save service config', serviceConfig, password)
                 const encryptedConfig = password ? encryptConfig(serviceConfig, password) : serviceConfig;
                 setServiceConfig(encryptedConfig);
             })

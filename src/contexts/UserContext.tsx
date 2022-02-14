@@ -3,7 +3,7 @@ import {
     useConnection,
     useWallet,
 } from "@solana/wallet-adapter-react";
-import { UserAccount, getUserByOwner } from "@s2g/social";
+import { UserAccount, getUsersByOwner } from "@s2g/social";
 import { createUserTransaction, updateUserTransaction, getUserByName, Profile, createProfile } from "@s2g/social";
 import { AccountInfoDeserialized } from "@s2g/program";
 
@@ -14,6 +14,7 @@ import { USER_NEW } from "../routes/routes";
 import { useLocation } from "react-router";
 import { useIpfsService } from "./IpfsServiceContext";
 
+import BN from 'bn.js'
 interface IUserContext {
     createUser: (username: string) => Promise<void>,
     setUser: (user: AccountInfoDeserialized<UserAccount>) => void,
@@ -74,7 +75,6 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
             // check if user exist
 
             if (preferredUser) {
-
                 getUserByName(preferredUser, connection, network.config.programId).then((userByName) => {
                     if (userByName) {
 
@@ -83,12 +83,12 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
                 })
             }
             else {
-                getUserByOwner(publicKey, connection, network.config.programId).then((user) => {
-                    if (!user) {
+                getUsersByOwner(publicKey, connection, network.config.programId).then((users) => {
+                    if (users.length === 0) {
                         setMissingUserNotified(false);
                     }
                     else {
-                        setUser(user);
+                        setUser(users[0]); // assume one user for now
                     }
                 })
 
@@ -99,14 +99,13 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
                     fetchProfile(user.data.profile).then((profile) => {
                         setProfile(profile);
                     })
-
                 }
                 else {
                     setProfile(undefined);
                 }
             }
         }
-    }, [publicKey, user?.data?.name])
+    }, [connection, preferredUser, publicKey, user?.data?.name])
 
     const userMemo = React.useMemo(
         () => ({

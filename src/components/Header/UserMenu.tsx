@@ -6,7 +6,7 @@ import * as React from 'react';
 import { useNavigate } from 'react-router';
 import { NetworkContext } from '../../contexts/Network';
 import { UserContext, useUser } from '../../contexts/UserContext';
-import { DEPOSIT, userProfilePath, USER_PROFILE, USER_SETTINGS } from '../../routes/routes';
+import { DEPOSIT, getUserProfilePath, USER_PROFILE, USER_SETTINGS } from '../../routes/routes';
 import { usePublicKeyToCopy } from '../../services/keys';
 import { WalletIcon } from '@solana/wallet-adapter-react-ui';
 import { useAccount } from '../../contexts/AccountContext';
@@ -32,7 +32,7 @@ export default function UserMenu(props: { displayName?: boolean }) {
     };
     const handeNavigateProfile = () => {
         if (user) {
-            navigate(userProfilePath(user.data.name));
+            navigate(getUserProfilePath(user.data.name));
         }
     };
 

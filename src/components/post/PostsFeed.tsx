@@ -35,6 +35,7 @@ export const PostsFeed = (props: { channels: AccountInfoDeserialized<ChannelAcco
             postPromises.push(getPostsByChannel(channel.pubkey, connection, PROGRAM_ID))
         }
         Promise.all(postPromises).then(results => {
+            console.log('results', results, props.channels)
             setPosts(results.flat(1))
         }).finally(() => {
             console.log('done')
@@ -44,7 +45,7 @@ export const PostsFeed = (props: { channels: AccountInfoDeserialized<ChannelAcco
     return (
         <>
             <PostsFilter />
-            {!loading ? <><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={200} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={75} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={150} /></> : <></>}
+            {loading ? <><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={200} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={75} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={150} /></> : <></>}
             {posts.map((post) => <Box key={post.pubkey.toBase58()} sx={{ mt: 2, mb: 2 }} ><Post post={post} /></Box>)}
         </>
     );

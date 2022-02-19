@@ -15,7 +15,7 @@ import { SettingsUser } from '../pages/user/SettingsUser';
 export const USER_NEW = 'user/new';
 export const USER_SETTINGS = 'settings';
 export const USER_PROFILE = 'user/:' + USERNAME_PATH_PARAM;
-export const userProfilePath = (user: string) => 'user/' + user;
+export const getUserProfilePath = (user: string) => 'user/' + user;
 export const HOME = '';
 export const CHANNELS = 'channel';
 export const WAIT_LIST = 'wait'
@@ -28,6 +28,10 @@ export const CHANNEL = 'c';
 export const getChannelRoute = (key: PublicKey) => {
     return '/' + CHANNEL + '/' + key.toString()
 }
+export const getUserRoute = (key: PublicKey) => {
+    return '/' + CHANNEL + '/' + key.toString()
+}
+
 
 
 
@@ -38,7 +42,6 @@ export function ContentRoutes() {
         <Route path={USER_SETTINGS} element={<SettingsUser />} />
         <Route path={USER_PROFILE} element={<ProfileUser />} />
         <Route path={DEPOSIT} element={<Deposit />} />
-
         <Route path={WAIT_LIST} element={<Join />} />
         <Route path={ABOUT} element={<Landing />} />
         <Route path={HOME} element={<Home />} />

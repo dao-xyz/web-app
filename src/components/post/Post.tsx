@@ -1,12 +1,14 @@
 import { ArrowDownward, ArrowUpward, ChildCare, RocketLaunch, Send } from "@mui/icons-material";
-import { Button, Card, CardContent, Container, Grid, IconButton, Paper, TextField, Typography } from "@mui/material";
+import { Button, Card, CardContent, Container, Grid, IconButton, Link, Paper, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { getUser, ChannelAccount, getChannel, PostAccount, SimplePost, ContentSourceExternal } from '@s2g/social';
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { AccountInfoDeserialized } from "@s2g/program";
+import { Link as RouterLink } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown'
+import { getUserProfilePath } from "../../routes/routes";
 const isValidHttpUrl = (string) => {
     let url = undefined;
     try {
@@ -22,13 +24,22 @@ export const Post: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ post 
 
     const [content, setContent] = useState<string | undefined>(undefined);
     const [username, setUsername] = useState<string | undefined>(undefined);
+    const [date, setDate] = useState<string | undefined>(undefined);
+
     const { connection } = useConnection();
+
+    const upvote = () => {
+
+    }
+    const downvote = () => {
+
+    }
+
     useEffect(() => {
         let url = (post.data.source as ContentSourceExternal).url;
         if (url && isValidHttpUrl(url)) {
             fetch(url, {}).then(async (result) => {
                 if (result.status >= 200 && result.status < 300) {
-                    console.log(result.status)
                     result.text().then((string) => {
                         setContent(string)
                     }).catch(() => {
@@ -46,36 +57,41 @@ export const Post: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ post 
         getUser(post.data.creator, connection).then((user) => {
             setUsername(user.data.name);
         })
+
+        setDate(new Date((post.data.type as SimplePost).created_at.toNumber() * 1000).toLocaleDateString())
     }, [])
     return <Card raised elevation={2} >
         <CardContent sx={{ pb: 2 }}>
             <Grid container spacing={1} direction="row">
                 <Grid item container width="initial" justifyContent="flex-start" alignContent="center" alignItems="center" direction="column" >
                     <Grid item>
-                        <Typography>{(post.data.type as SimplePost).upvotes.toNumber()}</Typography>
+                        <Typography><b>{(post.data.type as SimplePost).upvotes.toNumber()}</b></Typography>
                     </Grid>
                     <Grid item>
-                        <IconButton>
+                        <IconButton onClick={upvote}>
                             <ArrowUpward />
                         </IconButton>
                     </Grid>
                     <Grid item>
-                        <IconButton>
+                        <IconButton onClick={downvote}>
                             <ArrowDownward />
                         </IconButton>
                     </Grid>
                     <Grid item>
-                        <Typography>{(post.data.type as SimplePost).downvotes.toNumber()}</Typography>
+                        <Typography><b>{(post.data.type as SimplePost).downvotes.toNumber()}</b></Typography>
                     </Grid>
                 </Grid>
                 <Grid item container flex="1" direction="column">
-                    <Grid item container direction="row">
-                        <Grid item>{username}</Grid>
-                        <Grid item>{ }</Grid>
+                    <Grid item container spacing={1} direction="row">
+                        <Grid item ><Link component={RouterLink} to={getUserProfilePath(username)} color="text.secondary">{username}</Link></Grid>
+                        <Grid item color="text.secondary">|</Grid>
+                        <Grid item color="text.secondary">{date}</Grid>
                     </Grid>
-                    <Grid item>
-                        {content ? <ReactMarkdown>{content}</ReactMarkdown> : <Box sx={{ width: '100%', height: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary" fontStyle="italic">Post content could not be found</Typography></Box>}
-                    </Grid>
+                    {content ? <Grid item >
+                        <ReactMarkdown>{content}</ReactMarkdown>
+                    </Grid> : <Grid item flex="1" >
+                        <Box sx={{ width: '100%', height: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary" fontStyle="italic">Post content could not be found</Typography></Box>
+                    </Grid>}
                 </Grid>
             </Grid>
         </CardContent>

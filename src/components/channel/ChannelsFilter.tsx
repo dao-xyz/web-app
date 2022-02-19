@@ -62,6 +62,9 @@ export const ChannelsFilter: FC<{ onChange: (channels: AccountInfoDeserialized<C
         if (storageValue)
             loadStoredFilter(storageValue).then((results) => {
                 setValue(results)
+                if (results) {
+                    onChange(results);
+                }
             })
     },
         [])

@@ -1,8 +1,10 @@
 # Stake Together web app
+Clone the repo.
 
-Live (currently) at Github pages
+Run on devnet with
 
-https://s2gprotocol.github.io/s2g-app/
-
+```
+yarn start
+```
 
 Web application written in React to interact with the [S2G protocol](https://github.com/s2gprotocol/s2g-protocol).

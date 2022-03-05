@@ -1,23 +1,30 @@
 {
   "files": {
-    "main.css": "/solvei-app/static/css/main.5db09e49.chunk.css",
-    "main.js": "/solvei-app/static/js/main.03bd9241.chunk.js",
-    "main.js.map": "/solvei-app/static/js/main.03bd9241.chunk.js.map",
-    "runtime-main.js": "/solvei-app/static/js/runtime-main.16b93e6b.js",
-    "runtime-main.js.map": "/solvei-app/static/js/runtime-main.16b93e6b.js.map",
-    "static/js/2.7d3814e9.chunk.js": "/solvei-app/static/js/2.7d3814e9.chunk.js",
-    "static/js/2.7d3814e9.chunk.js.map": "/solvei-app/static/js/2.7d3814e9.chunk.js.map",
-    "static/js/3.efbb14f4.chunk.js": "/solvei-app/static/js/3.efbb14f4.chunk.js",
-    "static/js/3.efbb14f4.chunk.js.map": "/solvei-app/static/js/3.efbb14f4.chunk.js.map",
-    "index.html": "/solvei-app/index.html",
-    "static/css/main.5db09e49.chunk.css.map": "/solvei-app/static/css/main.5db09e49.chunk.css.map",
-    "static/js/2.7d3814e9.chunk.js.LICENSE.txt": "/solvei-app/static/js/2.7d3814e9.chunk.js.LICENSE.txt",
-    "static/media/logo.f80ec3e8.png": "/solvei-app/static/media/logo.f80ec3e8.png"
+    "main.css": "/s2g-app/static/css/main.8cd8aecf.css",
+    "main.js": "/s2g-app/static/js/main.f7b4f44c.js",
+    "static/js/431.2653aacb.chunk.js": "/s2g-app/static/js/431.2653aacb.chunk.js",
+    "static/js/1.8bd7d332.chunk.js": "/s2g-app/static/js/1.8bd7d332.chunk.js",
+    "static/js/681.aaa3d600.chunk.js": "/s2g-app/static/js/681.aaa3d600.chunk.js",
+    "static/js/732.570c6b51.chunk.js": "/s2g-app/static/js/732.570c6b51.chunk.js",
+    "static/js/191.d658f2be.chunk.js": "/s2g-app/static/js/191.d658f2be.chunk.js",
+    "static/js/787.e5e87b3a.chunk.js": "/s2g-app/static/js/787.e5e87b3a.chunk.js",
+    "static/js/880.9f1ec2f2.chunk.js": "/s2g-app/static/js/880.9f1ec2f2.chunk.js",
+    "static/js/57.b743d7ff.chunk.js": "/s2g-app/static/js/57.b743d7ff.chunk.js",
+    "static/media/pinata_setup_2.png": "/s2g-app/static/media/pinata_setup_2.cb9485203a2551babd53.png",
+    "static/media/logo.png": "/s2g-app/static/media/logo.f80ec3e82b76c418b577.png",
+    "static/media/pinata_setup_1.png": "/s2g-app/static/media/pinata_setup_1.bf576beb231cebcc247c.png",
+    "index.html": "/s2g-app/index.html",
+    "main.8cd8aecf.css.map": "/s2g-app/static/css/main.8cd8aecf.css.map",
+    "main.f7b4f44c.js.map": "/s2g-app/static/js/main.f7b4f44c.js.map",
+    "431.2653aacb.chunk.js.map": "/s2g-app/static/js/431.2653aacb.chunk.js.map",
+    "1.8bd7d332.chunk.js.map": "/s2g-app/static/js/1.8bd7d332.chunk.js.map",
+    "681.aaa3d600.chunk.js.map": "/s2g-app/static/js/681.aaa3d600.chunk.js.map",
+    "787.e5e87b3a.chunk.js.map": "/s2g-app/static/js/787.e5e87b3a.chunk.js.map",
+    "880.9f1ec2f2.chunk.js.map": "/s2g-app/static/js/880.9f1ec2f2.chunk.js.map",
+    "57.b743d7ff.chunk.js.map": "/s2g-app/static/js/57.b743d7ff.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.16b93e6b.js",
-    "static/js/2.7d3814e9.chunk.js",
-    "static/css/main.5db09e49.chunk.css",
-    "static/js/main.03bd9241.chunk.js"
+    "static/css/main.8cd8aecf.css",
+    "static/js/main.f7b4f44c.js"
   ]
 }

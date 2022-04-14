@@ -2,7 +2,6 @@ import { CircularProgress, Container, FormControl, FormGroup, FormHelperText, Gr
 
 import { FC, } from "react";
 import { IpfsServiceProviderButton } from '../../components/ipfs/IpfsServiceProviderButton';
-import { UserProfileSettings } from '../../components/user/UserProfileImageSetting';
 
 export const SettingsUser: FC = () => {
     return <Container maxWidth="xs" component="main" sx={{ pt: 5, pb: 10 }}>

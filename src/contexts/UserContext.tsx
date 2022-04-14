@@ -3,9 +3,9 @@ import {
     useConnection,
     useWallet,
 } from "@solana/wallet-adapter-react";
-import { UserAccount, getUsersByOwner } from "@s2g/social";
-import { createUserTransaction, updateUserTransaction, getUserByName, Profile, createProfile } from "@s2g/social";
-import { AccountInfoDeserialized } from "@s2g/program";
+import { UserAccount, getUsersByOwner, createUserTransaction, updateUserTransaction, getUserByName } from "@dao-xyz/sdk-user";
+import { Profile, createProfile } from "@dao-xyz/sdk-social";
+import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 
 import { NetworkContext, useNetwork } from "./Network";
 import RedirectDialog from "../components/dialogs/RedirectDialog/RedirectDialog";
@@ -15,6 +15,7 @@ import { useLocation } from "react-router";
 import { useIpfsService } from "./IpfsServiceContext";
 
 import BN from 'bn.js'
+import { ContentSource, ContentSourceExternal, ContentSourceString } from "@dao-xyz/sdk-common";
 interface IUserContext {
     createUser: (username: string) => Promise<void>,
     setUser: (user: AccountInfoDeserialized<UserAccount>) => void,
@@ -42,11 +43,17 @@ export const fetchNFTManifestImageUrl = async (uri: string) => {
     }
 }
 
-export const fetchProfile = async (uri: string): Promise<Profile | undefined> => {
+export const fetchProfile = async (source: ContentSource): Promise<Profile | undefined> => {
     try {
 
-        const response = await fetch(uri).catch(() => { return undefined });
-        return await response?.json();
+        if (source instanceof ContentSourceExternal) {
+            const response = await fetch(source.url).catch(() => { return undefined });
+            return await response?.json();
+        }
+        else if (source instanceof ContentSourceString) {
+            return JSON.parse(source.string);
+        }
+
     }
     catch {
         return Promise.resolve(undefined)
@@ -75,7 +82,7 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
             // check if user exist
 
             if (preferredUser) {
-                getUserByName(preferredUser, connection, network.config.programId).then((userByName) => {
+                getUserByName(preferredUser, connection).then((userByName) => {
                     if (userByName) {
 
                         setUser(userByName);
@@ -83,7 +90,7 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
                 })
             }
             else {
-                getUsersByOwner(publicKey, connection, network.config.programId).then((users) => {
+                getUsersByOwner(publicKey, connection).then((users) => {
                     if (users.length === 0) {
                         setMissingUserNotified(false);
                     }
@@ -112,10 +119,10 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
 
             createUser: async (username: string) => {
                 if (publicKey) {
-                    const [transaction, _] = await createUserTransaction(network.config.programId, publicKey, username, 'profile');
+                    const [transaction, _] = await createUserTransaction(publicKey, publicKey, username, 'profile');
                     const signature = await sendTransaction(new Transaction().add(transaction), connection);
                     await connection.confirmTransaction(signature);
-                    const newUser = await getUserByName(username, connection, network.config.programId)
+                    const newUser = await getUserByName(username, connection)
                     // Set user to new user
                     if (!newUser) {
                         throw new Error("Could not find newly created user");  // Most likely connection error
@@ -143,7 +150,9 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
                 if (!adapter)
                     throw new Error('Could not get IPFS adapter')
                 const { url } = await createProfile(profile, adapter);
-                const [transaction, _] = await updateUserTransaction(network.config.programId, publicKey, user.data.name, url);
+                const transaction = await updateUserTransaction(user.pubkey, publicKey, new ContentSourceExternal({
+                    url
+                }));
                 const signature = await sendTransaction(new Transaction().add(transaction), connection);
                 await connection.confirmTransaction(signature);
                 setProfile(profile);

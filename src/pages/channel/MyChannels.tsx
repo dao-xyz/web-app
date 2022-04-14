@@ -1,8 +1,8 @@
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import Box from '@mui/material/Box';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useConnection, useLocalStorage, useWallet } from '@solana/wallet-adapter-react';
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { getChannelsByOwner, ChannelAccount } from '@s2g/social'
+import { ChannelAccount, getChannel } from '@dao-xyz/sdk-social'
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -12,23 +12,29 @@ import ImageIcon from '@mui/icons-material/Image';
 import WorkIcon from '@mui/icons-material/Work';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import { IconButton } from "@mui/material";
-import { AccountInfoDeserialized } from "@s2g/program";
+import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { useNetwork } from "../../contexts/Network";
 import { useUser } from "../../contexts/UserContext";
+import { PublicKey } from "@solana/web3.js";
 
 
 export function MyChannels() {
     const { wallet } = useWallet();
     const { user } = useUser();
 
-    const [channels, setChannels] = React.useState<AccountInfoDeserialized<ChannelAccount>[]>([]);
+    const [savedChannels, setSavedChannels] = useLocalStorage<string[]>("saved_channels", []);
+    const [channels, setChannels] = useState<AccountInfoDeserialized<ChannelAccount>[]>([]);
+
     const { connection } = useConnection();
     const { config } = useNetwork();
     //networkContext.changeNetwork(getWalletAdapterNetwork(state.network))
     const updateChannels = useCallback(async () => {
-        const resp = await getChannelsByOwner(user.pubkey, connection, config.programId);
-        setChannels(resp)
-    }, [user])
+        let arr: AccountInfoDeserialized<ChannelAccount>[] = [];
+        for (const channel of savedChannels) {
+            arr.push(await getChannel(new PublicKey(channel), connection));
+        }
+        setChannels(arr)
+    }, [savedChannels])
 
     return (
         <Box>

@@ -3,10 +3,11 @@ import { Button, Card, CardContent, Container, Grid, IconButton, Paper, TextFiel
 import { Box } from "@mui/system";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { getUserByName, ChannelAccount, getChannel } from '@s2g/social';
+import { getUserByName } from "@dao-xyz/sdk-user";
+import { ChannelAccount, getChannel } from '@dao-xyz/sdk-social';
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { AccountInfoDeserialized } from "@s2g/program";
+import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import NewPost from "../../components/post/NewPost";
 import { PostsFilter } from "../../components/post/PostsFilter";
 import { Link as RouterLink, useNavigate } from "react-router-dom";

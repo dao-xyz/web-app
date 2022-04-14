@@ -1,18 +1,16 @@
 import { Button, Checkbox, Container, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Input, InputLabel, Radio, RadioGroup, Toolbar, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
-import { createChannelTransaction, getChannelByName } from '@s2g/social';
+import { createChannelTransaction, getChannelByName } from '@dao-xyz/sdk-social';
 import { Transaction } from '@solana/web3.js';
 import { WalletAdapterNetwork, WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
-import React, { useCallback, useContext } from "react";
+import React, { useCallback } from "react";
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNavigate } from 'react-router';
 import { useUser } from '../../contexts/UserContext';
 import { useAlert } from '../../contexts/AlertContext';
 import { useNetwork } from '../../contexts/Network';
 import { getChannelRoute } from '../../routes/routes';
-import { PROGRAM_ID } from '@s2g/program';
 
 interface NewChannelForm {
 
@@ -49,7 +47,7 @@ export function NewChannel() {
     const { disconnect } = useWallet();
 
     const onClick = useCallback(async () => {
-        const similiarChannel = await getChannelByName(state.name, connection, PROGRAM_ID);
+        const similiarChannel = await getChannelByName(state.name, connection);
         if (similiarChannel) {
             setAlreadyExist(true)
         }
@@ -66,7 +64,7 @@ export function NewChannel() {
         console.log('Create channel with name', state.name);
 
         try {
-            const [transaction, channelKey] = await createChannelTransaction(network.config.programId, publicKey, state.name, user.pubkey, undefined);
+            const [transaction, channelKey] = await createChannelTransaction(undefined, publicKey, publicKey, state.name, user.pubkey, undefined);
             const signature = await sendTransaction(new Transaction().add(transaction), connection,);
             await connection.confirmTransaction(signature);
             // navigate to redirect if exist, else to home

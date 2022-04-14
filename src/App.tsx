@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, HashRouter } from "react-router-dom";
 import {
   createTheme,
   CssBaseline,
@@ -49,7 +49,8 @@ function App() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <Router basename='/' >
+        <HashRouter basename="/">
+
           <CssBaseline>
             <Network>
               <AlertProvider>
@@ -75,7 +76,7 @@ function App() {
               </AlertProvider>
             </Network>
           </CssBaseline>
-        </Router>
+        </HashRouter>
 
       </ThemeProvider>
     </ColorModeContext.Provider >

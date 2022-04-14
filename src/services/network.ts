@@ -1,15 +1,10 @@
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import { PublicKey } from "@solana/web3.js";
-import { PROGRAM_ID } from "@s2g/program";
-
-import { config } from "process";
 import { Params, useParams } from "react-router";
 
 export interface NetworkConfig {
     type: WalletAdapterNetwork,
     name: string,
     rpcUrl: string,
-    programId: PublicKey,
     path: string
 }
 
@@ -17,14 +12,12 @@ const MAIN_NET: NetworkConfig = {
     type: WalletAdapterNetwork.Mainnet,
     name: "Mainnet",
     rpcUrl: "https://api.mainnet-beta.solana.com",
-    programId: PROGRAM_ID, // TODO FIX WRONG ADDRESS
     path: 'main'
 };
 const TEST_NET: NetworkConfig = {
     type: WalletAdapterNetwork.Testnet,
     name: "Testnet",
     rpcUrl: "https://api.testnet.solana.com",
-    programId: PROGRAM_ID,
     path: 'testnet'
 };
 
@@ -32,7 +25,6 @@ const DEV_NET: NetworkConfig = {
     type: WalletAdapterNetwork.Devnet,
     name: "devnet",
     rpcUrl: "https://api.devnet.solana.com",
-    programId: PROGRAM_ID,
     path: 'devnet'
 };
 

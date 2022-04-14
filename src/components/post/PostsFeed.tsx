@@ -17,8 +17,8 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey, Transaction } from "@solana/web3.js";
 import React, { useCallback, useEffect, useState } from 'react';
 import { PostsFilter } from '../post/PostsFilter';
-import { ChannelAccount, getPostsByChannel, PostAccount } from "@s2g/social";
-import { AccountInfoDeserialized, PROGRAM_ID } from "@s2g/program";
+import { ChannelAccount, getPostsByChannel, PostAccount } from "@dao-xyz/sdk-social";
+import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { Post } from "./Post";
 
 
@@ -32,7 +32,7 @@ export const PostsFeed = (props: { channels: AccountInfoDeserialized<ChannelAcco
         console.log('loading');
         const postPromises: Promise<AccountInfoDeserialized<PostAccount>[]>[] = []
         for (const channel of props.channels) {
-            postPromises.push(getPostsByChannel(channel.pubkey, connection, PROGRAM_ID))
+            postPromises.push(getPostsByChannel(channel.pubkey, connection))
         }
         Promise.all(postPromises).then(results => {
             console.log('results', results, props.channels)

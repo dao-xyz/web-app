@@ -72,7 +72,7 @@ export default function Header() {
     handleCloseNavMenu();
   }
   const navigateToSourceCode = () => {
-    window.location.href = "https://github.com/s2gprotocol";
+    window.location.href = "https://github.com/dao-xyz";
   };
 
   return (

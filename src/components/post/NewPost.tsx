@@ -16,13 +16,14 @@ import React, { useCallback } from 'react';
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useUser } from "../../contexts/UserContext";
 import { useNetwork } from "../../contexts/Network";
-import { createPostTransaction } from "@s2g/social";
+import { createPostTransaction, CreateUpvoteDownvoteVoteConfig, LinkPostContent } from "@dao-xyz/sdk-social";
 import { useIpfsService } from "../../contexts/IpfsServiceContext";
 import { IpfsWalletContext, useIpfsProviderModal } from "../ipfs/useIpfsProviderModal";
 import { IpfsServiceModal } from "../ipfs/IpfsServiceModal";
 import { useAlert } from "../../contexts/AlertContext";
 import IpfsProviderPasswordDialog from "../ipfs/IpfsProviderPasswordDialog";
 import ReactMarkdown from 'react-markdown'
+import { AuthorityType, getSignerAuthority } from "@dao-xyz/sdk-social/lib/esm/authority";
 
 export function NewPost(props: { channel: PublicKey, onCreation: (post: PublicKey) => any }) {
     const { connection } = useConnection();
@@ -79,9 +80,11 @@ export function NewPost(props: { channel: PublicKey, onCreation: (post: PublicKe
         }
 
 
-
-        const [transaction, postKey] = await createPostTransaction(config.programId, publicKey, user.pubkey, props.channel, Buffer.from(text), "https://ipfs.io/ipfs/" + cid);
-        const signature = await sendTransaction(new Transaction().add(transaction), connection,);
+        let authorityConfig = await getSignerAuthority(publicKey, props.channel, AuthorityType.CreatePost, connection);
+        const [transaction, postKey] = await createPostTransaction(props.channel, publicKey, publicKey, new LinkPostContent({
+            url: "https://ipfs.io/ipfs/" + cid
+        }), undefined, new CreateUpvoteDownvoteVoteConfig(), authorityConfig);
+        const signature = await sendTransaction(new Transaction().add(transaction), connection);
         let success = false
         try {
             await connection.confirmTransaction(signature);

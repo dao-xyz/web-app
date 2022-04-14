@@ -3,8 +3,9 @@ import {
     useConnection,
     useWallet,
 } from "@solana/wallet-adapter-react";
-import { AccountInfoDeserialized } from "@s2g/program";
-import { createUserTransaction, ChannelAccount, UserAccount, getUserByName, getChannels } from "@s2g/social";
+import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
+import { ChannelAccount, getChannels } from "@dao-xyz/sdk-social";
+import { createUserTransaction, UserAccount, getUserByName } from "@dao-xyz/sdk-user"
 import { NetworkContext } from "./Network";
 import RedirectDialog from "../components/dialogs/RedirectDialog/RedirectDialog";
 import { Transaction } from "@solana/web3.js";
@@ -27,7 +28,7 @@ export const ChannelsProvider = ({ children }: { children: JSX.Element }) => {
     const network = React.useContext(NetworkContext);
 
     useEffect(() => {
-        getChannels(connection, network.config.programId).then((channels) => {
+        getChannels(connection).then((channels) => {
             if (channels !== null)
                 setChannels(channels)
         })

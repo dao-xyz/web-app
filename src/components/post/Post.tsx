@@ -3,12 +3,14 @@ import { Button, Card, CardContent, Container, Grid, IconButton, Link, Paper, Te
 import { Box } from "@mui/system";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { getUser, ChannelAccount, getChannel, PostAccount, SimplePost, ContentSourceExternal } from '@s2g/social';
+import { ChannelAccount, getChannel, PostAccount, UpvoteDownvoteVoteConfig } from '@dao-xyz/sdk-social';
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
-import { AccountInfoDeserialized } from "@s2g/program";
+import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { Link as RouterLink } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown'
 import { getUserProfilePath } from "../../routes/routes";
+import { ContentSourceExternal } from "@dao-xyz/sdk-common";
+import { getUser } from "@dao-xyz/sdk-user";
 const isValidHttpUrl = (string) => {
     let url = undefined;
     try {
@@ -58,14 +60,14 @@ export const Post: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ post 
             setUsername(user.data.name);
         })
 
-        setDate(new Date((post.data.type as SimplePost).created_at.toNumber() * 1000).toLocaleDateString())
+        setDate(new Date(post.data.createAtTimestamp.toNumber() * 1000).toLocaleDateString())
     }, [])
     return <Card raised elevation={2} >
         <CardContent sx={{ pb: 2 }}>
             <Grid container spacing={1} direction="row">
                 <Grid item container width="initial" justifyContent="flex-start" alignContent="center" alignItems="center" direction="column" >
                     <Grid item>
-                        <Typography><b>{(post.data.type as SimplePost).upvotes.toNumber()}</b></Typography>
+                        <Typography><b>{(post.data.voteConfig as UpvoteDownvoteVoteConfig).upvote.toNumber()}</b></Typography>
                     </Grid>
                     <Grid item>
                         <IconButton onClick={upvote}>
@@ -78,7 +80,7 @@ export const Post: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ post 
                         </IconButton>
                     </Grid>
                     <Grid item>
-                        <Typography><b>{(post.data.type as SimplePost).downvotes.toNumber()}</b></Typography>
+                        <Typography><b>{(post.data.voteConfig as UpvoteDownvoteVoteConfig).downvote.toNumber()}</b></Typography>
                     </Grid>
                 </Grid>
                 <Grid item container flex="1" direction="column">

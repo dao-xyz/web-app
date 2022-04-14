@@ -4,7 +4,7 @@ import { NetworkContext } from '../../contexts/Network';
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
-import { getUserByName } from '@s2g/social';
+import { getUserByName } from '@dao-xyz/sdk-user';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { LAMPORTS_PER_SOL, Transaction } from '@solana/web3.js'
 import { Wallet } from '../../components/network/Wallet/Wallet';
@@ -108,7 +108,7 @@ export const Deposit: FC = () => {
                     <Typography sx={{ ml: 1 }}>{solBalance}</Typography>
                 </Grid>
                 <Grid item container direction="row" alignItems="center">
-                    <Typography>S2G balance</Typography>
+                    <Typography>dao-xyz balance</Typography>
                     <TokenIcon sx={{ ml: 1 }} />
                     <Typography sx={{ ml: 1, color: "secondary.main" }}  >{balance}</Typography>
                 </Grid>

@@ -1,8 +1,8 @@
 
 import { createContext, FC, useContext, useEffect, useMemo, useState } from 'react';
-import { NftStorageAdapter, PinataAdapter, IPFSAdapter } from '@s2g/ipfs-pinning-adapter';
+import { NftStorageAdapter, PinataAdapter, IPFSAdapter } from '@dao-xyz/ipfs-pinning-adapter';
 
-import { SimpleConfig, KeySecretConfig } from '@s2g/ipfs-pinning-adapter';
+import { SimpleConfig, KeySecretConfig } from '@dao-xyz/ipfs-pinning-adapter';
 import { useLocalStorage } from '@solana/wallet-adapter-react';
 import { hash } from './EncryptionContext';
 import { Encrypter } from '../helpers/encrypter';

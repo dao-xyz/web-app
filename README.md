@@ -1,8 +1,8 @@
-# Stake Together web app
+# DAO.xyz web app
 
 Live (currently) at Github pages
 
-https://s2gprotocol.github.io/s2g-app/
+https://dao-xyzprotocol.github.io/dao-xyz-app/
 
 
-Web application written in React to interact with the [S2G protocol](https://github.com/s2gprotocol/s2g-protocol).
+Web application written in React to interact with the [dao-xyz protocol](https://github.com/dao-xyzprotocol/dao-xyz-protocol).

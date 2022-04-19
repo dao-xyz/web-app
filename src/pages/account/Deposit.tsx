@@ -8,7 +8,6 @@ import { getUserByName } from '@dao-xyz/sdk-user';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { LAMPORTS_PER_SOL, Transaction } from '@solana/web3.js'
 import { Wallet } from '../../components/network/Wallet/Wallet';
-import { depositSol, updateStakePool } from '@s2g/stake-pool';
 import { useAlert } from '../../contexts/AlertContext';
 import { useAccount } from '../../contexts/AccountContext';
 import { Token } from '@mui/icons-material';
@@ -38,46 +37,47 @@ export const Deposit: FC = () => {
     };
 
     const onDeposit = useCallback(async (_: any) => {
-        if (!publicKey)
-            throw new Error('No wallet connected')
-        setLoading(true);
-        try {
-            // Update stake pool (maybe necessary)
-            if (true) {
-                const update = await updateStakePool(connection);
-
-                if (update.instructions.length > 0) {
-
-                    let signature = await sendTransaction(new Transaction().add(...update.instructions), connection, {
-                        signers: []
-                    });
-                    await connection.confirmTransaction(signature);
-
-                }
-                let signature = await sendTransaction(new Transaction().add(...update.finalInstructions), connection, {
-                    signers: []
-                });
-                await connection.confirmTransaction(signature);
-            }
-
-            // Perform deposit
-            console.log('depsoit', value)
-            const { instructions, signers } = await depositSol(connection, publicKey, value * LAMPORTS_PER_SOL)
-            let signature = await sendTransaction(new Transaction().add(...instructions), connection, { signers: signers });
-            await connection.confirmTransaction(signature);
-            transactionEvent();
-            alert({
-                severity: 'success',
-                text: 'Deposit successful!'
-            })
-            setValue(0);
-
-        } catch (error) {
-            alertError(error)
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
+        /*  if (!publicKey)
+             throw new Error('No wallet connected')
+         setLoading(true);
+         try {
+             // Update stake pool (maybe necessary)
+             if (true) {
+ 
+                 const update = await updateStakePool(connection);
+ 
+                 if (update.instructions.length > 0) {
+ 
+                     let signature = await sendTransaction(new Transaction().add(...update.instructions), connection, {
+                         signers: []
+                     });
+                     await connection.confirmTransaction(signature);
+ 
+                 }
+                 let signature = await sendTransaction(new Transaction().add(...update.finalInstructions), connection, {
+                     signers: []
+                 });
+                 await connection.confirmTransaction(signature);
+             }
+ 
+             // Perform deposit
+             console.log('depsoit', value)
+             const { instructions, signers } = await depositSol(connection, publicKey, value * LAMPORTS_PER_SOL)
+             let signature = await sendTransaction(new Transaction().add(...instructions), connection, { signers: signers });
+             await connection.confirmTransaction(signature);
+             transactionEvent();
+             alert({
+                 severity: 'success',
+                 text: 'Deposit successful!'
+             })
+             setValue(0);
+ 
+         } catch (error) {
+             alertError(error)
+             console.error(error);
+         } finally {
+             setLoading(false);
+         } */
 
     }, [value, publicKey, connection]);
     useEffect(() => {

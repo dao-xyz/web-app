@@ -7,7 +7,6 @@ import { useConnection, useLocalStorage, useWallet } from '@solana/wallet-adapte
 import { hash } from './EncryptionContext';
 import { Encrypter } from '../helpers/encrypter';
 import { Balance } from '@mui/icons-material';
-import { getPoolTokenBalance } from '@s2g/stake-pool'
 import { useNetwork } from './Network';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
@@ -39,7 +38,7 @@ export const AccountProvider: FC = ({ children, ...props }) => {
     }), [balance, publicKey]);
     const updateTokenBalance = useCallback(() => {
         if (publicKey)
-            getPoolTokenBalance(connection, publicKey).then((balance) => {
+            connection.getBalance(publicKey).then((balance) => {
                 setBalance(balance / LAMPORTS_PER_SOL);
             })
         else {

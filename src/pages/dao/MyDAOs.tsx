@@ -38,7 +38,7 @@ export function MyChannels() {
 
     return (
         <Box>
-            <h1>My channels</h1>
+            <h1>My DAOs</h1>
             <IconButton size="large" edge="end" color="inherit">
                 <RefreshIcon onClick={updateChannels} />
             </IconButton>

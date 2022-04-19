@@ -20,7 +20,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { ChannelAccount, getChannel, getChannelsByNamePrefix } from "@dao-xyz/sdk-social";
 import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { useNetwork } from "../../contexts/Network";
-import { CHANNEL_NEW, getChannelRoute } from "../../routes/routes";
+import { DAO_NEW, getChannelRoute } from "../../routes/routes";
 import { useChannels } from "../../contexts/ChannelsContext";
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
@@ -133,7 +133,7 @@ export const ChannelsFilter: FC<{ onChange: (channels: AccountInfoDeserialized<C
                     <TextField {...params} label="Channels" placeholder="Channels" />
                 )}
             />
-            <Link component={RouterLink} to={CHANNEL_NEW} sx={{ float: 'right', }} variant="body2">
+            <Link component={RouterLink} to={DAO_NEW} sx={{ float: 'right', }} variant="body2">
                 Create a new channel
             </Link>
         </>

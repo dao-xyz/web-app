@@ -1,4 +1,4 @@
-import { ContentCopy, Person, AccountCircle, AccountBalance, Token, AddCircle, RemoveCircle, Add } from '@mui/icons-material';
+import { ContentCopy, Person, AccountCircle, AccountBalance, Token, AddCircle, RemoveCircle, Add, PersonAdd } from '@mui/icons-material';
 import { Menu, MenuItem, Typography, Button, IconButton, ListItemIcon, ListItemText, ListItem } from '@mui/material';
 import { Box } from '@mui/system';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -6,7 +6,7 @@ import * as React from 'react';
 import { useNavigate } from 'react-router';
 import { NetworkContext } from '../../contexts/Network';
 import { UserContext, useUser } from '../../contexts/UserContext';
-import { DEPOSIT, getUserProfilePath, USER_PROFILE, USER_SETTINGS } from '../../routes/routes';
+import { DEPOSIT, getUserProfilePath, USER_NEW, USER_PROFILE, USER_SETTINGS } from '../../routes/routes';
 import { usePublicKeyToCopy } from '../../services/keys';
 import { WalletIcon } from '@solana/wallet-adapter-react-ui';
 import { useAccount } from '../../contexts/AccountContext';
@@ -36,6 +36,13 @@ export default function UserMenu(props: { displayName?: boolean }) {
         }
     };
 
+    const handleCreateUser = () => {
+        if (user) {
+            navigate(USER_NEW);
+        }
+    };
+
+
     const handeNavigateSettings = () => {
         if (user) {
             navigate(USER_SETTINGS);
@@ -59,8 +66,11 @@ export default function UserMenu(props: { displayName?: boolean }) {
             <Avatar />
         </IconButton> */}
         {
-            props.displayName ? <Button variant="contained" onClick={handleOpenUserMenu} endIcon={<Person />}>
-                {user?.data?.name}
+            props.displayName ? <Button sx={{ maxWidth: '150px', width: '100%' }} variant="contained" onClick={handleOpenUserMenu} endIcon={<Person />}>
+
+                <Typography noWrap >
+                    {user?.data ? user?.data?.name : publicKey.toString()}
+                </Typography>
             </Button> :
                 (<IconButton onClick={handleOpenUserMenu}>
                     <Person />
@@ -86,15 +96,24 @@ export default function UserMenu(props: { displayName?: boolean }) {
             }}
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
-        >   <ListItem >
+        >
+            {user && <ListItem >
                 <ListItemIcon>
                     <AccountCircle sx={{ color: "text.secondary" }} />
                 </ListItemIcon>
-                <Typography color="text.secondary" >{user.data.name}</Typography>
-            </ListItem>
-            <MenuItem key='profile' onClick={() => { handleCloseUserMenu(); handeNavigateProfile(); }} >
-                Profile
-            </MenuItem >
+                <Typography color="text.secondary" >{user?.data.name}</Typography>
+
+            </ListItem>}
+            {user &&
+                <MenuItem key='profile' onClick={() => { handleCloseUserMenu(); handeNavigateProfile(); }} >
+                    Profile
+                </MenuItem >}
+            {!user && <MenuItem key='profile' onClick={() => { handleCloseUserMenu(); handleCreateUser(); }} >
+                <ListItemIcon>
+                    <PersonAdd />
+                </ListItemIcon>
+                <ListItemText >Create user</ListItemText>
+            </MenuItem >}
             <MenuItem divider key='settings' onClick={() => { handleCloseUserMenu(); handeNavigateSettings(); }} >
                 Settings
             </MenuItem >
@@ -107,16 +126,15 @@ export default function UserMenu(props: { displayName?: boolean }) {
                 <Token sx={{ color: "secondary.main" }} />
                 <Typography sx={{ ml: 1, color: "secondary.main" }}  >{balance}</Typography>
             </ListItem>
-
+            {/* 
             <MenuItem onClick={() => { handleCloseUserMenu(); deposit() }}>
                 <ListItemText>Deposit</ListItemText>
             </MenuItem>
 
             <MenuItem>
-
                 <ListItemText>Withdraw</ListItemText>
             </MenuItem>
-
+             */}
             <MenuItem onClick={() => { copyAddress() }}>
                 <ListItemIcon>
                     <WalletIcon wallet={wallet} style={{ width: '25px' }} />

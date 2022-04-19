@@ -20,6 +20,8 @@ import { ContentRoutes } from "./routes/routes";
 import { EncryptionProvider } from "./contexts/EncryptionContext";
 import { IpfsServiceProvider } from "./contexts/IpfsServiceContext";
 import { AccountProvider } from "./contexts/AccountContext";
+import ResponsiveDrawer from "./pages/channel/ContentOutlet";
+import ContentOutlet from "./pages/channel/ContentOutlet";
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
 });
@@ -60,12 +62,12 @@ function App() {
                  */}
                     <UserProvider>
                       <Box>
-                        <Header />
                         <Box className="column" sx={{ width: "100%" }}>
-                          <Toolbar />
-                          <Box sx={{ padding: 2 }}>
-                            <ContentRoutes />
-                          </Box>
+                          {/*  <Toolbar variant="dense" />*/}
+                          <ContentOutlet />
+                          {/*  <Box sx={{ padding: 2 }}>
+                           
+                          </Box> */}
                         </Box>
                       </Box>
                     </UserProvider>

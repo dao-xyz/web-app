@@ -15,17 +15,19 @@ import {
 } from "@solana/wallet-adapter-wallets";
 
 import { clusterApiUrl } from "@solana/web3.js";
-import { getNetworkConfig, getNetworkConfigFromPathParam, getPathForNetwork } from "../services/network";
+import { getNetworkConfig, getNetworkConfigFromPathParam, getPathForNetwork, getWalletAdapterNetwork, NetworkXYZ } from "../services/network";
 import { useParams } from "react-router-dom";
 import { walletConnectClickOnce } from "../components/network/Wallet/Wallet";
 
+
 export const NetworkContext = React.createContext({
-    changeNetwork: (network: WalletAdapterNetwork, pathname: string) => { },
-    config: getNetworkConfig(WalletAdapterNetwork.Mainnet),
+    changeNetwork: (network: NetworkXYZ, pathname: string) => { },
+    config: getNetworkConfig(NetworkXYZ.Mainnet),
     // getPathWithNetwork: (href: string): string => ''
 });
 
 export const useNetwork = () => React.useContext(NetworkContext);
+
 
 /* const STORAGE_KEY_PREFERRED_NETWORK = "settings.network"
 const getPreferedNetwork = () => {
@@ -36,27 +38,29 @@ const getPreferedNetwork = () => {
 
 }
 const PREFERRED_NETWORK = getPreferedNetwork(); */
-const defaultNetwork = (): WalletAdapterNetwork => {
+const getMasterNetwork = (): NetworkXYZ => {
     if (!process.env.REACT_APP_NETWORK)
-        return WalletAdapterNetwork.Mainnet
+        return NetworkXYZ.Mainnet
     if (process.env.REACT_APP_NETWORK == 'devnet')
-        return WalletAdapterNetwork.Devnet
+        return NetworkXYZ.Devnet
     if (process.env.REACT_APP_NETWORK == 'testnet')
-        return WalletAdapterNetwork.Testnet
+        return NetworkXYZ.Testnet
+    if (process.env.REACT_APP_NETWORK == 'localhost')
+        return NetworkXYZ.Localhost
     throw Error("Undefiend network from configuration: " + process.env);
 
 }
 export const Network = ({ children }: { children: JSX.Element }) => {
     const params = useParams()
     const config = getNetworkConfigFromPathParam(useParams());
-    const [network, setNetwork] = React.useState<WalletAdapterNetwork>(defaultNetwork()); // config?.type ? config?.type :
+    const [network, setNetwork] = React.useState<NetworkXYZ>(getMasterNetwork()); // config?.type ? config?.type :
 
     //const [autoConnect, setAutoConnect] = React.useState(true);
 
     const networkMemo = React.useMemo(
         () => ({
             // The dark mode switch would invoke this method
-            changeNetwork: (network: WalletAdapterNetwork, pathname: string) => {
+            changeNetwork: (network: NetworkXYZ, pathname: string) => {
                 window.location.href = window.location.origin + getPathForNetwork(network, pathname)
                 setNetwork(network)
 
@@ -72,7 +76,15 @@ export const Network = ({ children }: { children: JSX.Element }) => {
         }),
         [network]
     );
-    const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+    const endpoint = useMemo(() => {
+        const networkWallet = getWalletAdapterNetwork(network);
+        if (network) {
+            return clusterApiUrl(networkWallet)
+        }
+        else {
+            return 'http://localhost:8899';
+        }
+    }, [network]);
     const walletConnectedOnce = walletConnectClickOnce()
     // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking --
     // Only the wallets you configure here will be compiled into your application
@@ -80,11 +92,11 @@ export const Network = ({ children }: { children: JSX.Element }) => {
         () => [
             new PhantomWalletAdapter(),
             new SlopeWalletAdapter(),
-            new SolflareWalletAdapter({ network }),
+            new SolflareWalletAdapter({ network: getWalletAdapterNetwork(network) }),
             new TorusWalletAdapter(),
             new LedgerWalletAdapter(),
-            new SolletWalletAdapter({ network }),
-            new SolletExtensionWalletAdapter({ network }),
+            new SolletWalletAdapter({ network: getWalletAdapterNetwork(network) }),
+            new SolletExtensionWalletAdapter({ network: getWalletAdapterNetwork(network) }),
         ],
         [network]
     );

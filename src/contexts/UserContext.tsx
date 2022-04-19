@@ -119,7 +119,7 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
 
             createUser: async (username: string) => {
                 if (publicKey) {
-                    const [transaction, _] = await createUserTransaction(publicKey, publicKey, username, 'profile');
+                    const [transaction, _] = await createUserTransaction(publicKey, publicKey, username, new ContentSourceString({ string: "" }));
                     const signature = await sendTransaction(new Transaction().add(transaction), connection);
                     await connection.confirmTransaction(signature);
                     const newUser = await getUserByName(username, connection)

@@ -23,7 +23,7 @@ import { IpfsServiceModal } from "../ipfs/IpfsServiceModal";
 import { useAlert } from "../../contexts/AlertContext";
 import IpfsProviderPasswordDialog from "../ipfs/IpfsProviderPasswordDialog";
 import ReactMarkdown from 'react-markdown'
-import { AuthorityType, getSignerAuthority } from "@dao-xyz/sdk-social/lib/esm/authority";
+import { AuthorityType, getSignerAuthority } from "@dao-xyz/sdk-social";
 
 export function NewPost(props: { channel: PublicKey, onCreation: (post: PublicKey) => any }) {
     const { connection } = useConnection();
@@ -32,7 +32,6 @@ export function NewPost(props: { channel: PublicKey, onCreation: (post: PublicKe
     const [password, setPassword] = React.useState<string | undefined>(undefined);
     const { config } = useNetwork();
     const { publicKey, sendTransaction } = useWallet();
-    const { user } = useUser();
     const { connected, getAdapter, checkPassword, reset } = useIpfsService();
     const [ipfsDialogVisible, setIpfsDialogVisible] = React.useState(false);
     const [passwordDialogVisible, setPasswordDialogVisible] = React.useState(false);
@@ -70,15 +69,6 @@ export function NewPost(props: { channel: PublicKey, onCreation: (post: PublicKe
             setLoading(false);
             return;
         }
-        if (!user) {
-            alert({
-                severity: 'error',
-                text: 'You need to create a user to create posts'
-            })
-            setLoading(false);
-            return;
-        }
-
 
         let authorityConfig = await getSignerAuthority(publicKey, props.channel, AuthorityType.CreatePost, connection);
         const [transaction, postKey] = await createPostTransaction(props.channel, publicKey, publicKey, new LinkPostContent({
@@ -109,7 +99,7 @@ export function NewPost(props: { channel: PublicKey, onCreation: (post: PublicKe
             props.onCreation(postKey);
         }
 
-    }, [text, connected, password, user])
+    }, [text, connected, password])
     return (
         <Grid container justifyContent="space-between" spacing={1}>
             <Grid item flex={1}>

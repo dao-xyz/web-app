@@ -9,7 +9,7 @@ import { createUserTransaction, UserAccount, getUserByName } from "@dao-xyz/sdk-
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
-import NewPost from "../../components/post/NewPost";
+import NewPost from "./NewPost";
 
 export const PostsFilter: FC = () => {
     return <Card raised elevation={2} >

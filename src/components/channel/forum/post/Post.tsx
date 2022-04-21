@@ -8,7 +8,7 @@ import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { Link as RouterLink } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown'
-import { getUserProfilePath } from "../../routes/routes";
+import { getUserProfilePath } from "../../../../routes/routes";
 import { ContentSourceExternal } from "@dao-xyz/sdk-common";
 import { getUser } from "@dao-xyz/sdk-user";
 const isValidHttpUrl = (string) => {
@@ -59,7 +59,6 @@ export const Post: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ post 
         getUser(post.data.creator, connection).then((user) => {
             setUsername(user.data.name);
         })
-
         setDate(new Date(post.data.createAtTimestamp.toNumber() * 1000).toLocaleDateString())
     }, [])
     return <Card raised elevation={2} >

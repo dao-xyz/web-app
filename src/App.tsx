@@ -16,12 +16,13 @@ import { UserProvider } from "./contexts/UserContext";
 import { ConditionalRedirect } from "./components/navigation/ConditionalRedirect";
 import { getNetworkConfigFromPathParam } from "./services/network";
 import { AlertProvider } from "./contexts/AlertContext";
-import { ContentRoutes } from "./routes/routes";
+import { BaseRoutes } from "./routes/routes";
 import { EncryptionProvider } from "./contexts/EncryptionContext";
 import { IpfsServiceProvider } from "./contexts/IpfsServiceContext";
 import { AccountProvider } from "./contexts/AccountContext";
 import ResponsiveDrawer from "./pages/channel/ContentOutlet";
 import ContentOutlet from "./pages/channel/ContentOutlet";
+import { ChannelsProvider } from "./contexts/ChannelsContext";
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
 });
@@ -61,15 +62,17 @@ function App() {
                     {/*               <EncryptionProvider>
                  */}
                     <UserProvider>
-                      <Box>
-                        <Box className="column" sx={{ width: "100%" }}>
-                          {/*  <Toolbar variant="dense" />*/}
-                          <ContentOutlet />
-                          {/*  <Box sx={{ padding: 2 }}>
+                      <ChannelsProvider>
+                        <Box>
+                          <Box className="column" sx={{ width: "100%" }}>
+                            {/*  <Toolbar variant="dense" />*/}
+                            <ContentOutlet />
+                            {/*  <Box sx={{ padding: 2 }}>
                            
                           </Box> */}
+                          </Box>
                         </Box>
-                      </Box>
+                      </ChannelsProvider>
                     </UserProvider>
                   </IpfsServiceProvider>
                   {/*                  

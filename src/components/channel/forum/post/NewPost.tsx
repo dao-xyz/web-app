@@ -14,18 +14,18 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey, Transaction } from "@solana/web3.js";
 import React, { useCallback } from 'react';
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
-import { useUser } from "../../contexts/UserContext";
-import { useNetwork } from "../../contexts/Network";
+import { useUser } from "../../../../contexts/UserContext";
+import { useNetwork } from "../../../../contexts/Network";
 import { createPostTransaction, CreateUpvoteDownvoteVoteConfig, LinkPostContent } from "@dao-xyz/sdk-social";
-import { useIpfsService } from "../../contexts/IpfsServiceContext";
-import { IpfsWalletContext, useIpfsProviderModal } from "../ipfs/useIpfsProviderModal";
-import { IpfsServiceModal } from "../ipfs/IpfsServiceModal";
-import { useAlert } from "../../contexts/AlertContext";
-import IpfsProviderPasswordDialog from "../ipfs/IpfsProviderPasswordDialog";
+import { useIpfsService } from "../../../../contexts/IpfsServiceContext";
+import { IpfsWalletContext, useIpfsProviderModal } from "../../../ipfs/useIpfsProviderModal";
+import { IpfsServiceModal } from "../../../ipfs/IpfsServiceModal";
+import { useAlert } from "../../../../contexts/AlertContext";
+import IpfsProviderPasswordDialog from "../../../ipfs/IpfsProviderPasswordDialog";
 import ReactMarkdown from 'react-markdown'
 import { AuthorityType, getSignerAuthority } from "@dao-xyz/sdk-social";
 
-export function NewPost(props: { channel: PublicKey, onCreation: (post: PublicKey) => any }) {
+export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCreation: (post: PublicKey) => any }) {
     const { connection } = useConnection();
     const [text, setText] = React.useState('');
     const [loading, setLoading] = React.useState(false);
@@ -39,7 +39,6 @@ export function NewPost(props: { channel: PublicKey, onCreation: (post: PublicKe
 
     const { alertError, alert } = useAlert();
     const createPost = useCallback(async () => {
-        console.log('create post', password, !connected, !await checkPassword(password))
         if (!connected) {
             setIpfsDialogVisible(true);
             return;
@@ -55,7 +54,7 @@ export function NewPost(props: { channel: PublicKey, onCreation: (post: PublicKe
         const adapter = await getAdapter(password);
         let cid: string = undefined;
         try {
-            cid = await adapter.pin(Buffer.from(text))
+            cid = await adapter.pin(Buffer.from(text), true)
         } catch (error) {
             alertError(error);
             setLoading(false);
@@ -114,13 +113,13 @@ export function NewPost(props: { channel: PublicKey, onCreation: (post: PublicKe
                     }}
 
                 />
-                {text ? <FormControlLabel
+                {(text && props.previewable) ?? <FormControlLabel
                     control={
                         <Checkbox checked={previewMarkdown} onChange={(event) => setPreviewMarkdown(event.target.checked)} name="jason" />
                     }
                     label="Preview markdown"
                 />
-                    : <></>}
+                }
                 {
                     previewMarkdown ? <Paper variant="outlined" sx={{ p: 2 }} >
                         <ReactMarkdown>{text}</ReactMarkdown> </Paper> : <></>

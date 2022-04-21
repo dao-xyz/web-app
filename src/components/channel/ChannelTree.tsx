@@ -1,5 +1,5 @@
 import { ChildCare, RocketLaunch, Send } from "@mui/icons-material";
-import { Button, Card, CardContent, Container, Grid, IconButton, List, ListItem, Paper, TextField, Typography } from "@mui/material";
+import { Button, Card, CardContent, CircularProgress, Container, Grid, IconButton, List, ListItem, Paper, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { Keypair, PublicKey } from "@solana/web3.js";
@@ -18,6 +18,8 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ForumIcon from '@mui/icons-material/Forum';
 import ChatIcon from '@mui/icons-material/Chat';
 import { styled } from '@mui/material/styles';
+import { useChannels } from "../../contexts/ChannelsContext";
+import { CHANNEL_TREE_ROOT } from "../../services/channelUtils";
 
 declare module 'react' {
     interface CSSProperties {
@@ -106,23 +108,55 @@ interface ChannelTreeItem {
 type ChannelTree = { [key: string]: ChannelTreeItem[] };
 
 const channelsToTree = (channels: AccountInfoDeserialized<ChannelAccount>[]) => channels.map(channel => { return { id: channel.pubkey.toString(), label: channel.data.name, type: channel.data.channelType } })
-export const ChannelTree: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({ channel }) => {
+export const ChannelTree: FC = () => {
     const { connection } = useConnection();
-    const [notFound, setNotFound] = React.useState(false);
+    const [notFound, setNotFound] = useState(false);
     const [tree, setTree] = useState<ChannelTree>({});
     const navigate = useNavigate();
+    const { loading, select, selection } = useChannels();
+    const [expanded, setExpanded] = React.useState<string[]>([]);
+    const [selected, setSelected] = React.useState<string[]>([]);
+
 
     useEffect(() => {
-        getChannelsWithParent(channel.pubkey, connection).then((channels) => {
-            setTree({
-                [channel.pubkey.toString()]: channelsToTree(channels)
+
+        // Also load the root
+        /* let root = selection.selectionPath[selectionTree.length - 1];
+        if (root) {
+            let newTree = {}
+            selectionTree.forEach((selection) => {
+                newTree[selection.pubkey.toString()] = []
             });
-        })
-    }, [channel])
+            getChannelsWithParent(root.pubkey, connection).then((channels) => {
+                newTree[root.pubkey.toString()] = channelsToTree(channels);
+                setTree(newTree);
+            })
+
+            console.log('NEW TREE', selectionTree, newTree)
+            // Expand selection tree
+            setDefaultExpanded(selectionTree.map(el => el.pubkey.toString()))
+        } */
+        let newTree: ChannelTree = tree;
+        for (const property in selection.selectionTree) {
+            let value = selection.selectionTree[property];
+            newTree[property] = value.map(v => {
+                return {
+                    id: v.pubkey.toString(),
+                    label: v.data.name,
+                    type: v.data.channelType
+                } as ChannelTreeItem
+            });
+        }
+        // Also add root if just root
+
+        setExpanded(selection.selectionPath.map(el => el.pubkey.toString()))
+
+        setTree(newTree);
+    }, [JSON.stringify(selection.selectionPath?.map(p => p.toString()))]);
 
     const renderTree = (children: ChannelTreeItem[] | undefined) => {
         if (!children) {
-            return <TreeItem key="empty" nodeId="empty" label="No channels" />
+            return <Typography color="text.secondary" key="empty">No channels found</Typography>
         }
         return children.map(child => {
             const childrenNodes =
@@ -158,18 +192,25 @@ export const ChannelTree: FC<{ channel: AccountInfoDeserialized<ChannelAccount> 
     const handleChange = (_event: any, nodeIds: string[]): any => {
         nodeIds.forEach((nodeId) => {
             let toExpand = new PublicKey(nodeId);
+            console.log('expand', tree[nodeId]);
             getChannelsWithParent(toExpand, connection).then((channels) => {
                 const newTree = {
                     ...tree,
                     [nodeId]: channelsToTree(channels)
                 };
+                console.log('new tree expansion', channels, newTree)
                 setTree(newTree);
             });
         })
+        setExpanded(nodeIds);
 
     };
-    const handleSelect = (_event: any, nodeId: string): any => {
-        navigate(getChannelRoute(new PublicKey(nodeId)));
+    const handleSelect = (_event: any, nodeIds: string[]): any => {
+        setSelected(nodeIds);
+        if (nodeIds.length == 1) {
+            navigate(getChannelRoute(new PublicKey(nodeIds[0])), { replace: true });
+
+        }
     }
 
     return <TreeView
@@ -179,7 +220,10 @@ export const ChannelTree: FC<{ channel: AccountInfoDeserialized<ChannelAccount> 
         sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
         onNodeToggle={handleChange}
         onNodeSelect={handleSelect}
+        multiSelect
+        expanded={expanded}
+        selected={selected}
     >
-        {renderTree(tree[channel.pubkey.toString()])}
+        {renderTree(tree[selection.selectionPath[selection.selectionPath.length - 1].pubkey.toString()])}
     </TreeView>
 }

@@ -1,16 +1,24 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
-import { ChannelAccount } from "@dao-xyz/sdk-social";
+import { ChannelAccount, getChannel, getChannelsWithParent } from "@dao-xyz/sdk-social";
 
-export const getParentChannelParentChain = async (channel: AccountInfoDeserialized<ChannelAccount>, connection: Connection): Promise<AccountInfoDeserialized<ChannelAccount>[]> => {
+export const getParentChannelChain = async (channel: AccountInfoDeserialized<ChannelAccount>, connection: Connection): Promise<AccountInfoDeserialized<ChannelAccount>[]> => {
     let ret = [];
     let current = channel;
     while (current.data.parent) {
-        let current = getChannel(current.data.parent, connection)
+        current = await getChannel(current.data.parent, connection);
+        ret.push(current)
     }
-    getChannelsWithParent(channel.pubkey, connection).then((channels) => {
-        setTree({
-            [channel.pubkey.toString()]: channelsToTree(channels)
-        });
-    })
+    return ret;
+}
+export type ChannelTree = { [key: string]: AccountInfoDeserialized<ChannelAccount>[] };
+export const CHANNEL_TREE_ROOT = 'root';
+
+export const getParentChannelChainTree = async (parents: AccountInfoDeserialized<ChannelAccount>[], connection: Connection): Promise<ChannelTree> => {
+    let ret: ChannelTree = {};
+    for (const parent of parents) {
+        let children = await getChannelsWithParent(parent?.pubkey, connection);
+        ret[parent ? parent?.pubkey.toString() : CHANNEL_TREE_ROOT] = children;
+    }
+    return ret;
 }

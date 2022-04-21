@@ -29,11 +29,6 @@ export const DAOsExploreSide: FC = () => {
     }, [])
     return <Box sx={{ m: 2 }}>
         <Grid container direction="column" spacing={2} >
-            <Grid item >Favorites</Grid>
-            <Grid item>
-                {favoriteDaos.length > 0 ? <>ABC</> : <Typography color="text.secondary">No favorites yet</Typography>}
-            </Grid>
-            <Grid item>All</Grid>
             <Grid item container spacing={1}>
                 {daos ? daos.map((dao, ix) =>
                     <Grid key={ix} item >

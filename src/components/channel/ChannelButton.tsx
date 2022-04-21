@@ -9,24 +9,25 @@ import { Paper } from '@mui/material';
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { PublicKey } from "@solana/web3.js";
 import solana from "./../../assets/solana.png";
+import { useChannels } from "../../contexts/ChannelsContext";
 
 
 export const ChannelButton: FC<{ channel: AccountInfoDeserialized<ChannelAccount>, size: 'small' | 'large' }> = ({ channel, size = 'small' }) => {
-    const { key } = useParams();
     const navigate = useNavigate();
     const navigateToChannel = (channel: PublicKey) => {
+        console.log('LLL', channel);
         navigate(getChannelRoute(channel));
-
     }
+    const { selection } = useChannels();
     const [selected, setSelected] = useState(false);
     useEffect(() => {
-        setSelected(key == channel.pubkey.toString())
-    }, [key])
+        setSelected(selection.selectionPath?.find((element) => element.pubkey.equals(channel.pubkey)) != undefined)
+    }, [JSON.stringify(selection.selectionPath?.map(p => p.toString()))]);
     return size == 'small' ? <Card sx={{ minWidth: 30, minHeight: 30, cursor: 'pointer' }}>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-            <Button variant={selected ? 'outlined' : 'text'} onClick={() => navigateToChannel(channel.pubkey)}>
+            <Button variant={selected ? 'contained' : 'outlined'} onClick={() => navigateToChannel(channel.pubkey)}>
                 <Grid container alignItems="center" justifyContent="center" direction="column">
-                    <Grid item  >
+                    <Grid item sx={{ pr: 1, pl: 1 }}  >
                         {channel.data.name}
                     </Grid>
                 </Grid>
@@ -41,7 +42,7 @@ export const ChannelButton: FC<{ channel: AccountInfoDeserialized<ChannelAccount
         </Box>
     </Card> : <Card sx={{ minWidth: 150, minHeight: 150, cursor: 'pointer' }}>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-            <Button sx={{ height: '100%', width: '100%' }} variant={selected ? 'outlined' : 'text'} onClick={() => navigateToChannel(channel.pubkey)}>
+            <Button sx={{ height: '100%', width: '100%' }} variant={selected ? 'contained' : 'outlined'} onClick={() => navigateToChannel(channel.pubkey)}>
                 <Grid container sx={{ height: '100%', width: '100%' }} alignItems="center" justifyContent="center" direction="column">
                     <Grid item  >
                         <Typography variant="h6">{channel.data.name}</Typography>

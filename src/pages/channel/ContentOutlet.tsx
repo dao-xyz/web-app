@@ -16,18 +16,28 @@ import { Channel } from '../../components/channel/Channel';
 import { ChannelAccount, getChannel } from '@dao-xyz/sdk-social';
 import { PublicKey } from '@solana/web3.js';
 import { AccountInfoDeserialized } from '@dao-xyz/sdk-common';
-import { useParams } from 'react-router-dom';
+import { matchPath, useParams } from 'react-router-dom';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { ContentRoutes } from '../../routes/routes';
+import { BaseRoutes, DAO } from '../../routes/routes';
 import { DAOsExploreSide } from '../../components/channel/DAOsExploreSide';
 import { DAOExploreSide } from '../../components/channel/DAOExploreSide';
+import { useChannels } from '../../contexts/ChannelsContext';
+import { useMatch } from 'react-router-dom';
 
 const drawerWidth = 240;
 
-
 export default function ContentOutlet() {
     const [mobileOpen, setMobileOpen] = React.useState(false);
-
+    const params = useMatch(DAO + "/:key")?.params;
+    const { connection } = useConnection();
+    const [channel, setChannel] = React.useState<AccountInfoDeserialized<ChannelAccount> | null>(null);
+    const [notFound, setNotFound] = React.useState(false);
+    const { select } = useChannels();
+    React.useEffect(() => {
+        if (params?.key) {
+            select(new PublicKey(params?.key))
+        }
+    }, [params?.key])
 
 
     const handleDrawerToggle = () => {
@@ -36,7 +46,7 @@ export default function ContentOutlet() {
 
     const drawer = (
         <div>
-            <Toolbar />
+            <Toolbar variant="dense" />
             <DAOsExploreSide />
 
             <List>
@@ -55,7 +65,6 @@ export default function ContentOutlet() {
             {/* <ChannelTree /> */}
         </div>
     );
-
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -98,7 +107,7 @@ export default function ContentOutlet() {
                     }}
                     sx={{
                         display: { xs: 'block', sm: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        '& .MuiDrawer-paper': { backgroundColor: theme => theme.palette.action.hover, boxSizing: 'border-box', width: drawerWidth },
                     }}
                 >
                     {drawer}
@@ -107,7 +116,7 @@ export default function ContentOutlet() {
                     variant="permanent"
                     sx={{
                         display: { xs: 'none', sm: 'block' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        '& .MuiDrawer-paper': { backgroundColor: theme => theme.palette.action.hover, boxSizing: 'border-box', width: drawerWidth },
                     }}
                     open
                 >
@@ -116,11 +125,11 @@ export default function ContentOutlet() {
             </Box>
             <Box
                 component="main"
-                sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+                sx={{ flexGrow: 1, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
             >
-                <Toolbar />
-                <ContentRoutes />
+                <Toolbar variant="dense" />
+                <BaseRoutes />
             </Box>
-        </Box>
+        </Box >
     );
 }

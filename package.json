@@ -8,6 +8,7 @@
     "@dao-xyz/sdk-common": "^0.0.3",
     "@dao-xyz/sdk-social": "^0.0.41",
     "@dao-xyz/sdk-user": "^0.0.3",
+    "@dao-xyz/ipfs-pinning-adapter": "^0.1.13",
     "@emotion/react": "^11.7.0",
     "@emotion/styled": "^11.6.0",
     "@metaplex-foundation/mpl-token-metadata": "^1.1.0",

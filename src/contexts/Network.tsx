@@ -51,7 +51,6 @@ const getMasterNetwork = (): NetworkXYZ => {
 
 }
 export const Network = ({ children }: { children: JSX.Element }) => {
-    const params = useParams()
     const config = getNetworkConfigFromPathParam(useParams());
     const [network, setNetwork] = React.useState<NetworkXYZ>(getMasterNetwork()); // config?.type ? config?.type :
 

@@ -5,7 +5,6 @@ import Typography from '@mui/material/Typography';
 import { Avatar, Button, CardActionArea, CardActions, Container, Divider, Grid, Link, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
 import PublicIcon from '@mui/icons-material/Public';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
-import logo from "./../../logo.png";
 import "./Landing.css"
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import PaidIcon from '@mui/icons-material/Paid';
@@ -34,7 +33,7 @@ export default function Landing() {
             </Typography>
           </Grid>
           <Grid item>
-            <img src={logo} className="Landing-logo" alt="logo" />
+            {/* <img src={logo} className="Landing-logo" alt="logo" /> */}
           </Grid>
         </Grid>
         <Typography variant="h5" align="center" color="text.secondary" component="p">

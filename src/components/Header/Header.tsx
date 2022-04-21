@@ -8,7 +8,10 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
-import logo from "./../../logo.png";
+import LogoWhite from "./../../logo.png";
+import LogoGray from "./../../logo-gray.png";
+import LogoVlack from "./../../logo-black.png";
+
 import ThemeToggle from "../ThemeToggle";
 import { Wallet } from "../network/Wallet/Wallet";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
@@ -19,12 +22,13 @@ import UserMenu from "./UserMenu";
 import { ABOUT, EXPLORE, HOME, USER_NEW } from "../../routes/routes";
 import { PersonAdd, Settings } from "@mui/icons-material";
 import ChangeNetworkDialog from "../network/ChangeNetworkDialog";
+import { useTheme } from "@mui/styles";
 
 const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({ drawerWidth, onDrawerToggle }) => {
   const [anchorElMenuNav, setAnchorElMenuNav] = React.useState(null);
   const [anchorElSettingsNav, setAnchorElSettingsNav] = React.useState(null);
   const [openChangeNetworkDialog, setOpenChangeNetworkDialog] = React.useState(false);
-
+  const theme = useTheme();
   const network = React.useContext(NetworkContext);
   const { publicKey } = React.useContext(WalletContext);
   const { user } = useUser();
@@ -107,7 +111,7 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
             variant="h6"
             noWrap
             component="div"
-            sx={{ mr: 2/* , display: { xs: "none", md: "flex" } */ }}
+            sx={{ /* , display: { xs: "none", md: "flex" } */ }}
           >
             <IconButton
               component={RouterLink}
@@ -115,7 +119,7 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
               size='small'
             >
               <Box sx={{ width: '30px', height: '30px', display: 'flex' }}>
-                <img src={logo} alt="logo" />
+                <img src={theme["palette"].mode == 'light' ? LogoGray : LogoWhite} alt="logo" />
               </Box>
             </IconButton>
           </Typography>
@@ -169,13 +173,13 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
           <Box sx={{ display: { md: "flex" }/*  flexGrow: 1, display: { xs: "none", md: "flex" }  */ }}>
 
           </Box>
-          <Button
+          {/*   <Button
             key="home"
             onClick={navigateToHome}
             sx={{ display: "block" }}
           >
             Home
-          </Button>
+          </Button> */}
           <Button
             key="github"
             onClick={navigateToChannels}

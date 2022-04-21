@@ -7,8 +7,8 @@ import { ChannelAccount, getChannel } from '@dao-xyz/sdk-social';
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
-import NewPost from "../../components/post/NewPost";
-import { PostsFeed } from "../../components/post/PostsFeed";
+import NewPost from "./post/NewPost";
+import { PostsFeed } from "./post/PostsFeed";
 
 export const Forum: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({ channel }) => {
     const { key } = useParams();

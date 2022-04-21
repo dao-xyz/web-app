@@ -7,17 +7,20 @@ import { ChannelAccount, ChannelType, getChannel, getChannelsWithParent } from '
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
-import NewPost from "../../components/post/NewPost";
-import { PostsFeed } from "../../components/post/PostsFeed";
+import NewPost from "./forum/post/NewPost";
+import { PostsFeed } from "./forum/post/PostsFeed";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { DAO_NEW, getNewChannelRoute } from "../../routes/routes";
+import { DAO_NEW, getChannelRoute, getNewChannelRoute } from "../../routes/routes";
 import { isDao } from "../../helpers/channelUtils";
+import { useChannels } from "../../contexts/ChannelsContext";
 
 
 export const Collection: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({ channel }) => {
-    const { connection } = useConnection();
-    const [notFound, setNotFound] = React.useState(false);
-
+    const { selection, loading, select } = useChannels();
+    const navigate = useNavigate();
+    const onClickChannel = (channel: AccountInfoDeserialized<ChannelAccount>) => {
+        navigate(getChannelRoute(channel.pubkey));
+    }
     return <Container maxWidth="md"  >
         <Grid container flexDirection="column" spacing={2}>
             <Grid container item flexDirection="row" justifyContent="space-between">
@@ -29,16 +32,17 @@ export const Collection: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }
                     <Button component={RouterLink} to={getNewChannelRoute(channel.pubkey)}  >Create channel</Button>
                 </Grid>
             </Grid>
-            {/*  {
-                channels?.length > 0 ? <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                    {channels.map((channel, ix) =>
-                        <ListItem key={ix}>
-                            {channel.data.name}
-                        </ListItem>
+            <Grid item >{
+                selection.selectionTree && selection.selectionTree[channel.pubkey.toString()]?.length > 0 ? <Grid container sx={{ width: '100%', maxWidth: 360, bgcolor: theme => theme.palette.action.hover }}>
+                    {selection.selectionTree[channel.pubkey.toString()].map((channel, ix) =>
+                        <Grid item key={ix} sx={{ width: '100%', height: '100%', justifyContent: 'left' }}>
+                            <Button variant="text" sx={{ width: '100%', height: '100%' }} onClick={() => onClickChannel(channel)} >
+                                {channel.data.name}
+                            </Button>
+                        </Grid>
                     )}
-                </List> : (<Box sx={{ width: '100%', height: '100%', textAlign: 'center' }}>No channels exist</Box >)
-            }
- */}
+                </Grid> : (<Box sx={{ width: '100%', height: '100%', textAlign: 'center' }}>No channels exist</Box >)
+            }</Grid>
 
         </Grid>
     </Container >

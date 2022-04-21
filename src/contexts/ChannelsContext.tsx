@@ -1,49 +1,61 @@
-import React, { createContext, useContext, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import {
     useConnection,
     useWallet,
 } from "@solana/wallet-adapter-react";
 import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
-import { ChannelAccount, getChannels } from "@dao-xyz/sdk-social";
+import { ChannelAccount, getChannel, getChannels } from "@dao-xyz/sdk-social";
 import { createUserTransaction, UserAccount, getUserByName } from "@dao-xyz/sdk-user"
 import { NetworkContext } from "./Network";
 import RedirectDialog from "../components/dialogs/RedirectDialog/RedirectDialog";
-import { Transaction } from "@solana/web3.js";
+import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import { USER_NEW } from "../routes/routes";
-import { useLocation } from "react-router";
+import { useLocation, useParams } from "react-router";
+import { ChannelTree, getParentChannelChain, getParentChannelChainTree } from "../services/channelUtils";
 
-interface IUserContext {
-    channels: AccountInfoDeserialized<ChannelAccount>[]
+interface ChannelSelection {
+    selectionPath: AccountInfoDeserialized<ChannelAccount>[],
+    selectionTree: ChannelTree
 }
-export const ChannelsContext = React.createContext<IUserContext>({
-    channels: []
-
-});
-
+interface IChannelContext {
+    loading: boolean,
+    selection: ChannelSelection,
+    select: (channel: PublicKey) => Promise<void>,
+}
+export const ChannelsContext = React.createContext<IChannelContext>({} as any);
 export const useChannels = () => useContext(ChannelsContext)
+
 export const ChannelsProvider = ({ children }: { children: JSX.Element }) => {
-
     const { connection } = useConnection();
-    const [channels, setChannels] = React.useState<AccountInfoDeserialized<ChannelAccount>[]>([]);
+    const [selection, setSelection] = React.useState<ChannelSelection>({
+        selectionPath: undefined,
+        selectionTree: undefined
+    });
     const network = React.useContext(NetworkContext);
-
-    useEffect(() => {
-        getChannels(connection).then((channels) => {
-            if (channels !== null)
-                setChannels(channels)
-        })
-
-    }, [connection, network.config.type])
-
-    const userMemo = React.useMemo(
+    const [loading, setLoading] = useState(false);
+    const selectionMemo = React.useMemo(
         () => ({
-            channels: channels
+            selection,
+            loading,
+            select: async (channel: PublicKey) => {
+                console.log('XX');
+
+                setLoading(true);
+                let channelAccount = await getChannel(channel, connection);
+                let parents = [channelAccount, ...await getParentChannelChain(channelAccount, connection)];
+                let parentTree = await getParentChannelChainTree(parents, connection);
+                setSelection({
+                    selectionPath: parents,
+                    selectionTree: parentTree
+                });
+                setLoading(false);
+            }
         }),
-        [network.config.type, channels]
+        [network.config.type, selection, loading]
     );
 
     return (
-        <ChannelsContext.Provider value={userMemo}>
+        <ChannelsContext.Provider value={selectionMemo}>
             {children}
         </ChannelsContext.Provider>
     );

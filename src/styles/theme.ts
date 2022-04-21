@@ -27,31 +27,27 @@ import { amber, blue, orange, deepOrange, grey, lightBlue, yellow } from "@mui/m
 export const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
     mode,
-    ...(mode === "light"
-      ? {
-        // palette values for light mode
-        primary: blue,
-        secondary: orange,
-        divider: blue[200],
-        text: {
-          primary: grey[900],
-          secondary: grey[800],
-        },
-      }
-      : {
-        // palette values for dark mode
-        primary: lightBlue,
-        secondary: orange,
-        divider: lightBlue[200],
-        background: {
-          //default: deepOrange[900],
-          //paper: deepOrange[900],
-        },
-        text: {
-          primary: grey[100],
-          secondary: grey[500],
-        },
-      }),
+    /*  ...(mode === "light"
+       ? {
+         // palette values for light mode
+         primary: blue,
+         secondary: orange,
+         divider: blue[200],
+         text: {
+           primary: grey[900],
+           secondary: grey[800],
+         },
+       }
+       : {
+         // palette values for dark mode
+         primary: lightBlue,
+         secondary: orange,
+         divider: lightBlue[200],
+         text: {
+           primary: grey[100],
+           secondary: grey[500],
+         },
+       }), */
   },
   typography: {
     fontFamily: [

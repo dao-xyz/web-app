@@ -21,50 +21,53 @@ export  interface ThemeInterface {
 } */
 
 import { createTheme, PaletteMode } from "@mui/material";
-import { amber, blue, orange, deepOrange, grey, lightBlue, yellow } from "@mui/material/colors";
-
+import {
+  amber,
+  blue,
+  orange,
+  deepOrange,
+  grey,
+  lightBlue,
+  yellow,
+} from "@mui/material/colors";
 
 export const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
     mode,
-    ...(mode === "light"
-      ? {
-        // palette values for light mode
-        primary: blue,
-        secondary: orange,
-        divider: blue[200],
-        text: {
-          primary: grey[900],
-          secondary: grey[800],
-        },
-      }
-      : {
-        // palette values for dark mode
-        primary: lightBlue,
-        secondary: orange,
-        divider: lightBlue[200],
-        background: {
-          //default: deepOrange[900],
-          //paper: deepOrange[900],
-        },
-        text: {
-          primary: grey[100],
-          secondary: grey[500],
-        },
-      }),
+    /*  ...(mode === "light"
+       ? {
+         // palette values for light mode
+         primary: blue,
+         secondary: orange,
+         divider: blue[200],
+         text: {
+           primary: grey[900],
+           secondary: grey[800],
+         },
+       }
+       : {
+         // palette values for dark mode
+         primary: lightBlue,
+         secondary: orange,
+         divider: lightBlue[200],
+         text: {
+           primary: grey[100],
+           secondary: grey[500],
+         },
+       }), */
   },
   typography: {
     fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
+      "-apple-system",
+      "BlinkMacSystemFont",
       '"Segoe UI"',
-      'Roboto',
+      "Roboto",
       '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
+      "Arial",
+      "sans-serif",
       '"Apple Color Emoji"',
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
-    ].join(','),
+    ].join(","),
   },
 });

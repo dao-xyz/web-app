@@ -1,10 +1,10 @@
-# Stake Together web app
-Clone the repo.
+# DAO.xyz web app
 
 Run on devnet with
+
+Web application written in React to interact with the [dao-xyz protocol](https://github.com/dao-xyzprotocol/dao-xyz-protocol).
+
 
 ```
 yarn start
 ```
-
-Web application written in React to interact with the [S2G protocol](https://github.com/s2gprotocol/s2g-protocol).

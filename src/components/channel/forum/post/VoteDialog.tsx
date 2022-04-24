@@ -6,7 +6,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useIpfsService } from '../../contexts/IpfsServiceContext';
+import { useIpfsService } from '../../../../contexts/IpfsServiceContext';
 export default function VoteDialog(props: { up: boolean, open: boolean, setOpen: (boolean: boolean) => void }) {
     const { reset, checkPassword } = useIpfsService();
     const [password, setPassword] = useState('');

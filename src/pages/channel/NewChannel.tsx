@@ -1,18 +1,18 @@
-import { Button, Checkbox, Container, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Input, InputLabel, Radio, RadioGroup, Toolbar, Typography } from '@mui/material';
+import { Button, Checkbox, Container, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Input, InputLabel, MenuItem, Radio, RadioGroup, Toolbar, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
-import { createChannelTransaction, getChannelByName } from '@s2g/social';
-import { Transaction } from '@solana/web3.js';
+import { AuthorityType, ChannelAccount, ChannelType, createChannelTransaction, getChannel, getChannelByName, getSignerAuthority } from '@dao-xyz/sdk-social';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import { WalletAdapterNetwork, WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
-import React, { useCallback, useContext } from "react";
+import React, { FC, useCallback } from "react";
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useUser } from '../../contexts/UserContext';
 import { useAlert } from '../../contexts/AlertContext';
 import { useNetwork } from '../../contexts/Network';
 import { getChannelRoute } from '../../routes/routes';
-import { PROGRAM_ID } from '@s2g/program';
+import { AccountInfoDeserialized, ContentSourceString } from '@dao-xyz/sdk-common';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 interface NewChannelForm {
 
@@ -22,34 +22,56 @@ interface NewChannelForm {
     /*     encrypted: boolean,*/
     password: string,
     passwordConfirm: string
+    type: ChannelType
 }
 
+const isDao = (parent: PublicKey) => !parent
 
-
-
-export function NewChannel() {
-    const { wallet } = useWallet();
+export const NewChannel: FC = () => {
+    const { key } = useParams();
     const { publicKey, sendTransaction } = useWallet();
     const { connection } = useConnection();
-    const { user } = useUser();
     const { alert } = useAlert();
     const [loading, setLoading] = React.useState(false);
+    const [notFound, setNotFound] = React.useState(false);
+    const [parent, setParent] = React.useState<AccountInfoDeserialized<ChannelAccount> | undefined>(undefined);
     const [alreadyExist, setAlreadyExist] = React.useState(false);
 
     const navigate = useNavigate();
-    const network = useNetwork();
 
     const [state, setState] = React.useState({
         name: "",
         password: "",
-        passwordConfirm: ""
+        passwordConfirm: "",
+        type: ChannelType.Collection,
     } as NewChannelForm);
 
+    React.useEffect(() => {
+        if (!key) {
+            setNotFound(true)
+            return;
+        }
+        try {
+            const channelKey = new PublicKey(key as string);
+            getChannel(channelKey, connection).then((channel) => {
+                setParent(channel);
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+        catch (error) {
+            console.log(key, error)
+            // bad id
+            setNotFound(true)
 
-    const { disconnect } = useWallet();
+        }
+
+    }, [key])
 
     const onClick = useCallback(async () => {
-        const similiarChannel = await getChannelByName(state.name, connection, PROGRAM_ID);
+
+        const similiarChannel = await getChannelByName(state.name, connection);
+
         if (similiarChannel) {
             setAlreadyExist(true)
         }
@@ -59,14 +81,10 @@ export function NewChannel() {
 
         if (!publicKey)
             throw new WalletNotConnectedError();
-        if (!user)
-            throw new Error("No user account active");
-
+        console.log(parent ? await getSignerAuthority(publicKey, parent.pubkey, AuthorityType.CreateSubChannel, connection) : undefined);
         setLoading(true)
-        console.log('Create channel with name', state.name);
-
         try {
-            const [transaction, channelKey] = await createChannelTransaction(network.config.programId, publicKey, state.name, user.pubkey, undefined);
+            const [transaction, channelKey] = await createChannelTransaction(parent?.pubkey, publicKey, publicKey, state.name, new ContentSourceString({ string: "" }), state.type, parent ? await getSignerAuthority(publicKey, parent.pubkey, AuthorityType.CreateSubChannel, connection) : undefined);
             const signature = await sendTransaction(new Transaction().add(transaction), connection,);
             await connection.confirmTransaction(signature);
             // navigate to redirect if exist, else to home
@@ -83,15 +101,10 @@ export function NewChannel() {
             });
         }
         setLoading(false)
-
-
-
-
-    }, [user, publicKey, sendTransaction, connection, state]);
+    }, [publicKey, sendTransaction, connection, state]);
 
     const handleChange = (name: string) => async (event: any) => {
         switch (name) {
-
             case 'password':
                 state.password = event.target.value
                 setState({ ...state });
@@ -109,13 +122,29 @@ export function NewChannel() {
     return (
         <Container maxWidth="xs" component="main">
 
-            <h1>Create a new channel</h1>
+            <h1>Create a new {isDao(parent?.pubkey) ? 'DAO' : 'channel'}</h1>
+
             <FormGroup >
                 <FormControl margin="dense" required>
-                    <InputLabel htmlFor="channel-name">Channel name</InputLabel>
+                    <InputLabel htmlFor="channel-name">Name</InputLabel>
                     <Input id="channel-name" aria-describedby="channel-name-help" onChange={handleChange("name")} />
                     <FormHelperText id="channel-name-help">Name can not be changed</FormHelperText>
                 </FormControl>
+                {isDao(parent?.pubkey) ? <></> : <FormControl sx={{ m: 1 }}>
+                    <InputLabel id="demo-simple-select-helper-label">Channel type</InputLabel>
+                    <Select
+                        labelId="select-channe"
+                        id="select-channel-type"
+                        value={state.type}
+                        label="Channel type"
+                        onChange={handleChange("type")}
+                    >
+                        <MenuItem value={ChannelType.Collection}>Category</MenuItem>
+                        <MenuItem value={ChannelType.Chat}>Chat</MenuItem>
+                        <MenuItem value={ChannelType.Forum}>Forum</MenuItem>
+                    </Select>
+                </FormControl>}
+
                 {/*   <FormControl margin="dense">
                     <InputLabel htmlFor="channel-description">Description</InputLabel>
                     <Input id="channel-description" aria-describedby="channel-description-help" onChange={handleChange("description")} />
@@ -145,18 +174,15 @@ export function NewChannel() {
                 <Box sx={{
                     alignItems: "end"
                 }} className="column">
-                    {<Typography sx={{ flex: 1, textAlign: 'left' }}>
-                        Account creation will create a program owned account that stores information about the channel and the content it contains.
-                    </Typography>}
+
                     {<Box sx={{ display: "flex", justifyContent: "right", mt: 2 }}>
-                        <LoadingButton loading={loading} onClick={onClick} disabled={!publicKey || !user} > {/* (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0) */}
+                        <LoadingButton loading={loading} onClick={onClick} disabled={!publicKey} > {/* (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0) */}
                             Create
                         </LoadingButton>
 
                         {/* <Send disabled={changingNetwork || (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0)} name={state.name} network={state.network}></Send> */}
                     </Box>}
                     {!publicKey && <FormHelperText error id="connect-wallet-help">You need to connect a wallet</FormHelperText>}
-                    {publicKey && !user && <FormHelperText error id="create-user-help" >You need a user to create a channel</FormHelperText>}
                     {alreadyExist && <FormHelperText error id="create-user-help" >You need a user to create a channel</FormHelperText>}
 
                 </Box>

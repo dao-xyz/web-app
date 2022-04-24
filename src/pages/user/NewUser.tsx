@@ -4,7 +4,7 @@ import { NetworkContext } from '../../contexts/Network';
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
-import { getUserByName } from '@s2g/social';
+import { getUserByName } from '@dao-xyz/sdk-user';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { UserContext, useUser } from '../../contexts/UserContext';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -81,7 +81,7 @@ export const NewUser: FC = () => {
 
 
     const userExist = async (name: string): Promise<boolean> => {
-        const user = await getUserByName(name, connection, network.config.programId);
+        const user = await getUserByName(name, connection);
         return !!user;
     }
 

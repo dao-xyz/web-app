@@ -2,7 +2,7 @@
 import { Avatar, Alert, Button, DialogActions, FormControl, FormGroup, FormHelperText, Grid, Input, InputLabel, Link, Typography, typographyClasses } from '@mui/material';
 import { useLocalStorage } from '@solana/wallet-adapter-react';
 import React, { FC, ReactNode, useCallback, useLayoutEffect, useState } from 'react';
-import { SimpleConfig, KeySecretConfig } from '@s2g/ipfs-pinning-adapter';
+import { SimpleConfig, KeySecretConfig } from '@dao-xyz/ipfs-pinning-adapter';
 import { IpfsService, IpfsServiceMeta, useIpfsService } from '../../../contexts/IpfsServiceContext';
 import { NftDotStorageConfigForm } from './NftDotStorageConfigForm';
 import { IpfsServiceIcon } from '../IpfsServiceIcon';

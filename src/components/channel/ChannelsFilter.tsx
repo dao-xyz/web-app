@@ -17,16 +17,18 @@ import React, { FC, useContext, useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { ChannelAccount, getChannel, getChannelsByNamePrefix } from "@s2g/social";
-import { AccountInfoDeserialized, PROGRAM_ID } from "@s2g/program";
+import { ChannelAccount, getChannel, getChannelsByNamePrefix } from "@dao-xyz/sdk-social";
+import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { useNetwork } from "../../contexts/Network";
-import { CHANNEL_NEW, getChannelRoute } from "../../routes/routes";
+import { DAO_NEW, getChannelRoute } from "../../routes/routes";
 import { useChannels } from "../../contexts/ChannelsContext";
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useConnection, useLocalStorage } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+
+const defaultChannel = "4NxwUQVVcJTh58ywcQ5aVoBbZUHZNuGZxmepEPTWxyZh"
 
 const difference = (a: AccountInfoDeserialized<ChannelAccount>[], b: AccountInfoDeserialized<ChannelAccount>[]) => {
     if (a.length != b.length)
@@ -53,27 +55,38 @@ export const ChannelsFilter: FC<{ onChange: (channels: AccountInfoDeserialized<C
     const [value, setValue] = useState<AccountInfoDeserialized<ChannelAccount>[]>([]);
     const loadStoredFilter = async (pubkeys: string[]): Promise<AccountInfoDeserialized<ChannelAccount>[]> => {
         return Promise.all(pubkeys.map(key => {
-            console.log(key)
             return getChannel(new PublicKey(key), connection)
         }))
     }
 
+    const loadDefault = () => {
+        getChannelsByNamePrefix("Welcome", connection).then(result => {
+            setSearchResults(result)
+            updateValue(result)
+        });
+    }
     useEffect(() => {
         if (storageValue)
             loadStoredFilter(storageValue).then((results) => {
                 setValue(results)
-                if (results) {
+                if (results?.length > 0) {
+
                     onChange(results);
                 }
+                else {
+
+                    loadDefault();
+                }
             })
+        else {
+            loadDefault();
+        }
     },
         [])
 
     const updateValue = (newValue: AccountInfoDeserialized<ChannelAccount>[]) => {
-        console.log(newValue, value, difference(newValue, value))
         if (difference(newValue, value)) {
             setStorageValue(newValue.map(x => x.pubkey.toBase58()));
-            console.log('set value', newValue)
             setValue(newValue);
             onChange(newValue);
         }
@@ -82,8 +95,8 @@ export const ChannelsFilter: FC<{ onChange: (channels: AccountInfoDeserialized<C
 
     const searchChange = (event: any) => {
         if (typeof event.target.value === 'string')
-            getChannelsByNamePrefix(event.target.value, connection, PROGRAM_ID).then(result => {
-                setSearchResults(result)
+            getChannelsByNamePrefix(event.target.value, connection).then(result => {
+                setSearchResults(result.filter(x => !x.data.name.toLowerCase().startsWith("f")))
             });
     }
 
@@ -118,7 +131,7 @@ export const ChannelsFilter: FC<{ onChange: (channels: AccountInfoDeserialized<C
                     <TextField {...params} label="Channels" placeholder="Channels" />
                 )}
             />
-            <Link component={RouterLink} to={CHANNEL_NEW} sx={{ float: 'right', }} variant="body2">
+            <Link component={RouterLink} to={DAO_NEW} sx={{ float: 'right', }} variant="body2">
                 Create a new channel
             </Link>
         </>

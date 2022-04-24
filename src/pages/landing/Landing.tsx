@@ -5,14 +5,14 @@ import Typography from '@mui/material/Typography';
 import { Avatar, Button, CardActionArea, CardActions, Container, Divider, Grid, Link, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
 import PublicIcon from '@mui/icons-material/Public';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
-import logo from "./../../logo.png";
 import "./Landing.css"
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import PaidIcon from '@mui/icons-material/Paid';
 import { Link as RouterLink } from "react-router-dom";
 import { NetworkContext } from "../../contexts/Network";
 import { HOME } from "../../routes/routes";
-
+import SellIcon from '@mui/icons-material/Sell';
+import ShareIcon from '@mui/icons-material/Share';
 // Landing page for choosing network
 export default function Landing() {
   const icon = PublicIcon;
@@ -29,17 +29,15 @@ export default function Landing() {
               gutterBottom
               fontWeight={600}
             >
-              Stake together
+              DAO.xyz
             </Typography>
           </Grid>
           <Grid item>
-            <img src={logo} className="Landing-logo" alt="logo" />
+            {/* <img src={logo} className="Landing-logo" alt="logo" /> */}
           </Grid>
         </Grid>
         <Typography variant="h5" align="center" color="text.secondary" component="p">
-          A social network built on <Link href="https://solana.com/">Solana</Link > where <span style={{ color: '#fbb03b' }}>likes</span> are <span style={{ color: '#fbb03b' }}>stakes</span>.
-          Make profits by liking quality content early.
-          Lose by doing the opposite.
+          A social governance protocol for governing any DAO or community
         </Typography>
       </Container>
       { }
@@ -53,21 +51,16 @@ export default function Landing() {
                 <Grid container spacing={1}
                 >
                   <Grid item>
-                    <SportsEsportsIcon fontSize='large' />
+                    <ShareIcon fontSize='large' />
                   </Grid>
                   <Grid item>
                     <Typography variant="h5" gutterBottom>
-                      A social game
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography color="text.secondary" >
-                      Coming soon
+                      Unifying
                     </Typography>
                   </Grid>
                   <Grid item>
                     <Typography variant="body1">
-                      If you like some content, you convert SOL into a "Like" token with an exchange rate that favors early stakes. The exchange rate "penalty" is controlled by content creators.
+                      Governing DAOs is not just about creating and voting on proposals. StakeTogether brings a one-stop platform for building communities and DAOs.
                     </Typography>
                   </Grid>
                 </Grid>
@@ -86,12 +79,12 @@ export default function Landing() {
                   </Grid>
                   <Grid item >
                     <Typography variant="h5" gutterBottom>
-                      Decentralized
+                      Built to scale
                     </Typography>
                   </Grid>
                   <Grid item>
                     <Typography variant="body1">
-                      Content is stored in accounts on-chain which lets you access it from anywhere, anytime.
+                      By providing support for multi-token voting and vote delegation based on context. DAO governance can both become versatile and efficient.
                     </Typography>
                   </Grid>
                 </Grid>
@@ -114,7 +107,7 @@ export default function Landing() {
                       </Grid>
                       <Grid item>
                         <Typography variant="h5" gutterBottom>
-                          Rewards
+                          Buy and sell
                         </Typography>
                       </Grid>
                     </Grid>
@@ -126,7 +119,7 @@ export default function Landing() {
                   </Grid>
                   <Grid item>
                     <Typography variant="body1">
-                      Stakes yield rewards by delegating funds to Solana validators.
+                      With smart posts, you can sell or buy assets like governance tokens or NFTs. Community voting can also help in ensuring quality.
                     </Typography>
                   </Grid>
                 </Grid>
@@ -142,53 +135,24 @@ export default function Landing() {
         <Grid container spacing={2} justifyContent="center">
           <Grid item  >
             <Typography
-              variant="h4"
+              variant="h3"
               align="center"
               gutterBottom
             >
-              Not launched yet but...
+              We have not launched yet...
             </Typography>
           </Grid>
 
         </Grid>
         <Typography variant="h5" align="center" color="text.primary" component="p">
-          Right now you can stake you SOL with our stake pool to earn rewards. In turn you will recieve S2G tokens which you will in the future can use to interact with content on the platform.
+          But join our discord in the mean time
         </Typography>
       </Container>
-      { }
-      {/* <Container maxWidth="lg" component="main">
-        <Grid container spacing={2} justifyContent="center"  >
-          <Grid item
-            xs={12}
-            md={4}  >
-            <Card sx={{ minWidth: 275 }}>
-              <CardContent >
-                <Grid container spacing={1}
-                >
-                  <Grid item>
-                    <MilitaryTechIcon fontSize='large' />
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="h5" gutterBottom>
-                      Top staked waiters currently
-                    </Typography>
-                  </Grid>
-
-
-                </Grid>
-
-              </CardContent>
-            </Card>
-          </Grid>
-
-        </Grid>
-      </Container> */}
-      { }
-      <Container sx={{ mt: 10, mb: 10 }}>
+      <Container >
         <Grid container spacing={2} justifyContent="center">
           <Grid item  >
-            <Button size="large" variant="contained" component={RouterLink} to={HOME} >
-              Join the staked waitlist
+            <Button size="large" variant="contained" component={Link} href="https://discord.gg/BvRJSV73">
+              Join Discord
             </Button>
           </Grid>
         </Grid>

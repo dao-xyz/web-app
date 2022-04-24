@@ -11,36 +11,30 @@ export default function ThemeToggle(props: { menuItem?: boolean }) {
   const colorMode = React.useContext(ColorModeContext);
   return (
     <Box>
-
-      {
-        !props.menuItem ?
-          <IconButton
-            sx={{ ml: 1, mr: 1 }}
-            onClick={colorMode.toggleColorMode}
-            color="inherit"
-          >
+      {!props.menuItem ? (
+        <IconButton
+          sx={{ ml: 1, mr: 1 }}
+          onClick={colorMode.toggleColorMode}
+          color="inherit"
+        >
+          {theme.palette.mode === "dark" ? (
+            <Brightness7Icon />
+          ) : (
+            <Brightness4Icon />
+          )}
+        </IconButton>
+      ) : (
+        <MenuItem onClick={colorMode.toggleColorMode} color="inherit">
+          <ListItemIcon>
             {theme.palette.mode === "dark" ? (
               <Brightness7Icon />
             ) : (
               <Brightness4Icon />
             )}
-          </IconButton>
-          :
-
-          <MenuItem
-            onClick={colorMode.toggleColorMode}
-            color="inherit">
-            <ListItemIcon>
-              {theme.palette.mode === "dark" ? (
-                <Brightness7Icon />
-              ) : (
-                <Brightness4Icon />
-              )}
-            </ListItemIcon>
-            Theme
-          </MenuItem>
-      }
-
+          </ListItemIcon>
+          Theme
+        </MenuItem>
+      )}
     </Box>
   );
 }

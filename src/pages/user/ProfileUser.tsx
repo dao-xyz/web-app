@@ -5,8 +5,9 @@ import { UserProfileSettings } from '../../components/user/UserProfileImageSetti
 import { Navigate, Params, useLocation, useParams } from 'react-router';
 import EditIcon from '@mui/icons-material/Edit';
 import { fetchNFTManifestImageUrl, fetchProfile, useUser } from '../../contexts/UserContext';
-import { Profile, getUserByName, UserAccount } from '@s2g/social';
-import { AccountInfoDeserialized } from '@s2g/program';
+import { Profile } from '@dao-xyz/sdk-social';
+import { getUserByName, UserAccount } from '@dao-xyz/sdk-user';
+import { AccountInfoDeserialized } from '@dao-xyz/sdk-common';
 
 import { useConnection } from '@solana/wallet-adapter-react';
 import { useNetwork } from '../../contexts/Network';
@@ -20,7 +21,7 @@ export const USERNAME_PATH_PARAM = "user"
 
 
 export const ProfileUser: FC = () => {
-    const params: { user: string | undefined } = useParams();
+    const params = useParams<{ user: string | undefined }>();
     const [canEdit, setCanEdit] = useState(false);
     // const { user } = useUser();
     const [thisUser, setThisUser] = useState<AccountInfoDeserialized<UserAccount> | undefined>(undefined);
@@ -50,7 +51,7 @@ export const ProfileUser: FC = () => {
         }
         if (params.user) {
 
-            getUserByName(params.user, connection, config.programId).then((user) => {
+            getUserByName(params.user, connection).then((user) => {
                 setThisUser(user);
 
                 if (user?.data?.profile) {

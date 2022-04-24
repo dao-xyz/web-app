@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, HashRouter } from "react-router-dom";
 import {
   createTheme,
   CssBaseline,
@@ -16,10 +16,14 @@ import { UserProvider } from "./contexts/UserContext";
 import { ConditionalRedirect } from "./components/navigation/ConditionalRedirect";
 import { getNetworkConfigFromPathParam } from "./services/network";
 import { AlertProvider } from "./contexts/AlertContext";
-import { ContentRoutes } from "./routes/routes";
+import { BaseRoutes } from "./routes/routes";
 import { EncryptionProvider } from "./contexts/EncryptionContext";
 import { IpfsServiceProvider } from "./contexts/IpfsServiceContext";
 import { AccountProvider } from "./contexts/AccountContext";
+import ResponsiveDrawer from "./pages/channel/ContentOutlet";
+import ContentOutlet from "./pages/channel/ContentOutlet";
+import { ChannelsProvider } from "./contexts/ChannelsContext";
+import { SmartWalletProvider } from "./contexts/SmartWalletContext";
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
 });
@@ -49,7 +53,8 @@ function App() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <Router basename='/' >
+        <HashRouter basename="/">
+
           <CssBaseline>
             <Network>
               <AlertProvider>
@@ -58,15 +63,19 @@ function App() {
                     {/*               <EncryptionProvider>
                  */}
                     <UserProvider>
-                      <Box>
-                        <Header />
-                        <Box className="column" sx={{ width: "100%" }}>
-                          <Toolbar />
-                          <Box sx={{ padding: 2 }}>
-                            <ContentRoutes />
+                      <SmartWalletProvider>
+                        <ChannelsProvider>
+                          <Box>
+                            <Box className="column" sx={{ width: "100%" }}>
+                              {/*  <Toolbar variant="dense" />*/}
+                              <ContentOutlet />
+                              {/*  <Box sx={{ padding: 2 }}>
+                           
+                          </Box> */}
+                            </Box>
                           </Box>
-                        </Box>
-                      </Box>
+                        </ChannelsProvider>
+                      </SmartWalletProvider>
                     </UserProvider>
                   </IpfsServiceProvider>
                   {/*                  
@@ -75,7 +84,7 @@ function App() {
               </AlertProvider>
             </Network>
           </CssBaseline>
-        </Router>
+        </HashRouter>
 
       </ThemeProvider>
     </ColorModeContext.Provider >

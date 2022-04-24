@@ -21,8 +21,15 @@ export  interface ThemeInterface {
 } */
 
 import { createTheme, PaletteMode } from "@mui/material";
-import { amber, blue, orange, deepOrange, grey, lightBlue, yellow } from "@mui/material/colors";
-
+import {
+  amber,
+  blue,
+  orange,
+  deepOrange,
+  grey,
+  lightBlue,
+  yellow,
+} from "@mui/material/colors";
 
 export const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
@@ -51,16 +58,16 @@ export const getDesignTokens = (mode: PaletteMode) => ({
   },
   typography: {
     fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
+      "-apple-system",
+      "BlinkMacSystemFont",
       '"Segoe UI"',
-      'Roboto',
+      "Roboto",
       '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
+      "Arial",
+      "sans-serif",
       '"Apple Color Emoji"',
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
-    ].join(','),
+    ].join(","),
   },
 });

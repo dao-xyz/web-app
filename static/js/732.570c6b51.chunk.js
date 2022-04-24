@@ -1,1 +1,0 @@
-(self.webpackChunks2g_app=self.webpackChunks2g_app||[]).push([[732],{12732:function(){}}]);

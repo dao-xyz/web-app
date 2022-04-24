@@ -1,30 +1,30 @@
 {
   "files": {
-    "main.css": "/dao-xyz-app/static/css/main.8cd8aecf.css",
-    "main.js": "/dao-xyz-app/static/js/main.6757d008.js",
-    "static/js/431.b28fae56.chunk.js": "/dao-xyz-app/static/js/431.b28fae56.chunk.js",
-    "static/js/126.3162b3c1.chunk.js": "/dao-xyz-app/static/js/126.3162b3c1.chunk.js",
-    "static/js/489.c9698c0b.chunk.js": "/dao-xyz-app/static/js/489.c9698c0b.chunk.js",
-    "static/js/608.8f564e62.chunk.js": "/dao-xyz-app/static/js/608.8f564e62.chunk.js",
-    "static/js/156.069842e8.chunk.js": "/dao-xyz-app/static/js/156.069842e8.chunk.js",
-    "static/js/787.e41611d2.chunk.js": "/dao-xyz-app/static/js/787.e41611d2.chunk.js",
-    "static/js/492.61e1d86e.chunk.js": "/dao-xyz-app/static/js/492.61e1d86e.chunk.js",
-    "static/media/pinata_setup_2.png": "/dao-xyz-app/static/media/pinata_setup_2.6878dfa6068e4d30c510.png",
-    "static/media/logo.png": "/dao-xyz-app/static/media/logo.25c9d6eed10a6ad820d2.png",
-    "static/media/logo-gray.png": "/dao-xyz-app/static/media/logo-gray.c96285621992a0535028.png",
-    "static/media/pinata_setup_1.png": "/dao-xyz-app/static/media/pinata_setup_1.bf576beb231cebcc247c.png",
-    "index.html": "/dao-xyz-app/index.html",
-    "main.8cd8aecf.css.map": "/dao-xyz-app/static/css/main.8cd8aecf.css.map",
-    "main.6757d008.js.map": "/dao-xyz-app/static/js/main.6757d008.js.map",
-    "431.b28fae56.chunk.js.map": "/dao-xyz-app/static/js/431.b28fae56.chunk.js.map",
-    "126.3162b3c1.chunk.js.map": "/dao-xyz-app/static/js/126.3162b3c1.chunk.js.map",
-    "489.c9698c0b.chunk.js.map": "/dao-xyz-app/static/js/489.c9698c0b.chunk.js.map",
-    "608.8f564e62.chunk.js.map": "/dao-xyz-app/static/js/608.8f564e62.chunk.js.map",
-    "787.e41611d2.chunk.js.map": "/dao-xyz-app/static/js/787.e41611d2.chunk.js.map",
-    "492.61e1d86e.chunk.js.map": "/dao-xyz-app/static/js/492.61e1d86e.chunk.js.map"
+    "main.css": "/web-app/static/css/main.8cd8aecf.css",
+    "main.js": "/web-app/static/js/main.e3b3b9b3.js",
+    "static/js/431.80a044b0.chunk.js": "/web-app/static/js/431.80a044b0.chunk.js",
+    "static/js/126.3866885f.chunk.js": "/web-app/static/js/126.3866885f.chunk.js",
+    "static/js/489.c9698c0b.chunk.js": "/web-app/static/js/489.c9698c0b.chunk.js",
+    "static/js/608.8f564e62.chunk.js": "/web-app/static/js/608.8f564e62.chunk.js",
+    "static/js/156.069842e8.chunk.js": "/web-app/static/js/156.069842e8.chunk.js",
+    "static/js/787.e41611d2.chunk.js": "/web-app/static/js/787.e41611d2.chunk.js",
+    "static/js/492.5865918c.chunk.js": "/web-app/static/js/492.5865918c.chunk.js",
+    "static/media/pinata_setup_2.png": "/web-app/static/media/pinata_setup_2.6878dfa6068e4d30c510.png",
+    "static/media/logo.png": "/web-app/static/media/logo.25c9d6eed10a6ad820d2.png",
+    "static/media/logo-gray.png": "/web-app/static/media/logo-gray.c96285621992a0535028.png",
+    "static/media/pinata_setup_1.png": "/web-app/static/media/pinata_setup_1.bf576beb231cebcc247c.png",
+    "index.html": "/web-app/index.html",
+    "main.8cd8aecf.css.map": "/web-app/static/css/main.8cd8aecf.css.map",
+    "main.e3b3b9b3.js.map": "/web-app/static/js/main.e3b3b9b3.js.map",
+    "431.80a044b0.chunk.js.map": "/web-app/static/js/431.80a044b0.chunk.js.map",
+    "126.3866885f.chunk.js.map": "/web-app/static/js/126.3866885f.chunk.js.map",
+    "489.c9698c0b.chunk.js.map": "/web-app/static/js/489.c9698c0b.chunk.js.map",
+    "608.8f564e62.chunk.js.map": "/web-app/static/js/608.8f564e62.chunk.js.map",
+    "787.e41611d2.chunk.js.map": "/web-app/static/js/787.e41611d2.chunk.js.map",
+    "492.5865918c.chunk.js.map": "/web-app/static/js/492.5865918c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.8cd8aecf.css",
-    "static/js/main.6757d008.js"
+    "static/js/main.e3b3b9b3.js"
   ]
 }

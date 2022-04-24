@@ -38,12 +38,21 @@ export const ChannelsProvider = ({ children }: { children: JSX.Element }) => {
             selection,
             loading,
             select: async (channel: PublicKey) => {
-                console.log('XX');
-
                 setLoading(true);
                 let channelAccount = await getChannel(channel, connection);
                 let parents = [channelAccount, ...await getParentChannelChain(channelAccount, connection)];
                 let parentTree = await getParentChannelChainTree(parents, connection);
+                let previousParentTree = selection.selectionTree;
+
+                // If same DAO, then keep memory
+                if (selection.selectionPath && parents[parents.length - 1].pubkey.equals(selection.selectionPath[selection.selectionPath.length - 1].pubkey)) {
+                    for (const key in previousParentTree) {
+                        if (!parentTree[key]) {
+                            parentTree[key] = previousParentTree[key]; // Remember last previous things
+                        }
+                    }
+                }
+
                 setSelection({
                     selectionPath: parents,
                     selectionTree: parentTree

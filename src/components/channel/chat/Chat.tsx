@@ -19,6 +19,19 @@ export const Chat: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({
     const [showNewMessageAlert, setShowNewMessageAlert] = React.useState(false);
     const { selection, loading } = useChannels();
     const [createdPost, setCreatedPost] = React.useState<PublicKey | undefined>(undefined);
+    const [scrollTop, setScrollTop] = useState(0);
+
+    useEffect(() => {
+        const onScroll = e => {
+            setScrollTop(e.target.documentElement.scrollTop);
+            setShowNewMessageAlert(false);
+        };
+        window.addEventListener("scroll", onScroll);
+        return () => window.removeEventListener("scroll", onScroll);
+    }, [scrollTop]);
+
+
+
     const onFeedChange = () => {
         let isAtBottom = contentRef?.current?.scrollHeight - contentRef?.current?.scrollTop === contentRef?.current?.clientHeight;
         if (!isAtBottom) {
@@ -31,8 +44,7 @@ export const Chat: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({
         }
 
     }
-    console.log("???");
-    console.log(contentRef?.current?.scrollTop, contentRef?.current?.scrollHeight - contentRef?.current?.scrollTop === contentRef?.current?.clientHeight);
+
     return <>{
         notFound ? <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Typography variant="h6">DAO not found</Typography>
@@ -40,16 +52,16 @@ export const Chat: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({
             <>
                 <Container maxWidth="md" disableGutters sx={{ height: 'calc(100vh - 120px)' }} >
                     <Grid container flexDirection="column" sx={{ height: '100%' }} spacing={2}>
-                        <Grid ref={contentRef} item sx={{ flex: 1, overflow: 'scroll', mt: 2, mr: -2, pr: 2 }} >
+                        <Grid ref={contentRef} item sx={{ flex: 1, overflow: 'scroll', width: '100%', mt: 2, mr: -2, pr: 2 }} >
                             <ChatFeed onFeedChange={onFeedChange} channels={channel ? [channel] : []} />
                         </Grid>
                         {showNewMessageAlert && initialFeed && !loading && <Alert variant="filled" severity="info">
-                            This is an info alert — check it out!
+                            New messages available
                         </Alert>}
                         <Grid item>
                             <Card raised elevation={2}>
                                 <CardContent>
-                                    {channel?.pubkey ? <NewPost previewable={false} onCreation={setCreatedPost} channel={channel?.pubkey} /> : <></>}
+                                    {channel?.pubkey ? <NewPost previewable={true} onCreation={setCreatedPost} channel={channel?.pubkey} /> : <></>}
                                 </CardContent>
                             </Card>
                         </Grid>

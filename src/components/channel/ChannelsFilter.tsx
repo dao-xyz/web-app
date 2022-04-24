@@ -55,7 +55,6 @@ export const ChannelsFilter: FC<{ onChange: (channels: AccountInfoDeserialized<C
     const [value, setValue] = useState<AccountInfoDeserialized<ChannelAccount>[]>([]);
     const loadStoredFilter = async (pubkeys: string[]): Promise<AccountInfoDeserialized<ChannelAccount>[]> => {
         return Promise.all(pubkeys.map(key => {
-            console.log(key)
             return getChannel(new PublicKey(key), connection)
         }))
     }
@@ -86,7 +85,6 @@ export const ChannelsFilter: FC<{ onChange: (channels: AccountInfoDeserialized<C
         [])
 
     const updateValue = (newValue: AccountInfoDeserialized<ChannelAccount>[]) => {
-        console.log(newValue, value, difference(newValue, value))
         if (difference(newValue, value)) {
             setStorageValue(newValue.map(x => x.pubkey.toBase58()));
             setValue(newValue);

@@ -6,14 +6,18 @@ import * as React from 'react';
 import { useNavigate } from 'react-router';
 import { NetworkContext } from '../../contexts/Network';
 import { UserContext, useUser } from '../../contexts/UserContext';
-import { DEPOSIT, getUserProfilePath, USER_NEW, USER_PROFILE, USER_SETTINGS } from '../../routes/routes';
+import { DEPOSIT, getUserProfilePath, SETTINGS_BURNER, USER_NEW, USER_PROFILE, USER_SETTINGS } from '../../routes/routes';
 import { usePublicKeyToCopy } from '../../services/keys';
 import { WalletIcon } from '@solana/wallet-adapter-react-ui';
 import { useAccount } from '../../contexts/AccountContext';
+import { useSmartWallet } from '../../contexts/SmartWalletContext';
+import QuickreplyIcon from '@mui/icons-material/Quickreply';
 export default function UserMenu(props: { displayName?: boolean }) {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const { user } = useUser();
     const { publicKey, disconnect, wallet } = useWallet();
+    const { capabilities, createSigner, delegatedSigners } = useSmartWallet();
+
     const { balance } = useAccount();
     const config = React.useContext(NetworkContext);
     const {
@@ -37,10 +41,14 @@ export default function UserMenu(props: { displayName?: boolean }) {
     };
 
     const handleCreateUser = () => {
-        if (user) {
+        if (!user) {
             navigate(USER_NEW);
         }
     };
+
+    const handleEnableQuickSign = () => {
+        navigate(SETTINGS_BURNER);
+    }
 
 
     const handeNavigateSettings = () => {
@@ -61,7 +69,7 @@ export default function UserMenu(props: { displayName?: boolean }) {
           setAnchorElUser(null);
   
       }; */
-    return (<Box sx={{ flexGrow: 0, ml: 2 }}>
+    return (<Box sx={{ flexGrow: 0 }}>
         {/*  <IconButton  sx={{ p: 0 }}>
             <Avatar />
         </IconButton> */}
@@ -113,6 +121,13 @@ export default function UserMenu(props: { displayName?: boolean }) {
                     <PersonAdd />
                 </ListItemIcon>
                 <ListItemText >Create user</ListItemText>
+            </MenuItem >}
+
+            {!(delegatedSigners?.length) && <MenuItem key='smart-wallet' onClick={() => { handleCloseUserMenu(); handleEnableQuickSign(); }} >
+                <ListItemIcon>
+                    <QuickreplyIcon />
+                </ListItemIcon>
+                <ListItemText >Enable quick-sign</ListItemText>
             </MenuItem >}
             <MenuItem divider key='settings' onClick={() => { handleCloseUserMenu(); handeNavigateSettings(); }} >
                 Settings

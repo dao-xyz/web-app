@@ -23,6 +23,7 @@ import { AccountProvider } from "./contexts/AccountContext";
 import ResponsiveDrawer from "./pages/channel/ContentOutlet";
 import ContentOutlet from "./pages/channel/ContentOutlet";
 import { ChannelsProvider } from "./contexts/ChannelsContext";
+import { SmartWalletProvider } from "./contexts/SmartWalletContext";
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
 });
@@ -62,17 +63,19 @@ function App() {
                     {/*               <EncryptionProvider>
                  */}
                     <UserProvider>
-                      <ChannelsProvider>
-                        <Box>
-                          <Box className="column" sx={{ width: "100%" }}>
-                            {/*  <Toolbar variant="dense" />*/}
-                            <ContentOutlet />
-                            {/*  <Box sx={{ padding: 2 }}>
+                      <SmartWalletProvider>
+                        <ChannelsProvider>
+                          <Box>
+                            <Box className="column" sx={{ width: "100%" }}>
+                              {/*  <Toolbar variant="dense" />*/}
+                              <ContentOutlet />
+                              {/*  <Box sx={{ padding: 2 }}>
                            
                           </Box> */}
+                            </Box>
                           </Box>
-                        </Box>
-                      </ChannelsProvider>
+                        </ChannelsProvider>
+                      </SmartWalletProvider>
                     </UserProvider>
                   </IpfsServiceProvider>
                   {/*                  

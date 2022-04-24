@@ -10,7 +10,6 @@ import { Box } from "@mui/system";
 export const ChannelLabelBreadcrumb: FC = () => {
 
     const { selection } = useChannels();
-    console.log(selection.selectionPath)
     return <Box sx={{ m: 1 }}>
         <Breadcrumbs separator="›" aria-label="channel-path">    {
             selection.selectionPath ? [...selection.selectionPath].reverse().map((channel, ix) =>

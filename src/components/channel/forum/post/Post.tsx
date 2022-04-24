@@ -30,12 +30,8 @@ export const Post: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ post 
 
     const { connection } = useConnection();
 
-    const upvote = () => {
-
-    }
-    const downvote = () => {
-
-    }
+    const upvote = () => { }
+    const downvote = () => { }
 
     useEffect(() => {
         let url = (post.data.source as ContentSourceExternal).url;

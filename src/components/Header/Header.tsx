@@ -19,7 +19,7 @@ import { WalletContext } from "@solana/wallet-adapter-react";
 import { useUser } from "../../contexts/UserContext";
 import { NetworkContext } from "../../contexts/Network";
 import UserMenu from "./UserMenu";
-import { ABOUT, EXPLORE, HOME, USER_NEW } from "../../routes/routes";
+import { ABOUT, EXPLORE, HOME, SETTINGS, USER_NEW } from "../../routes/routes";
 import { PersonAdd, Settings } from "@mui/icons-material";
 import ChangeNetworkDialog from "../network/ChangeNetworkDialog";
 import { useTheme } from "@mui/styles";
@@ -67,6 +67,12 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
     navigate(ABOUT)
     handleCloseNavMenu();
   }
+
+  const navigateToSettings = () => {
+    navigate(SETTINGS)
+    handleCloseNavMenu();
+  }
+
   const navigateToSourceCode = () => {
     window.location.href = "https://github.com/dao-xyz";
   };
@@ -201,13 +207,6 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
           </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" }, justifyContent: "right", alignItems: "center" }}>
-            {
-              publicKey ?
-                (user ? <UserMenu displayName={false}></UserMenu> : <IconButton
-                  component={RouterLink} to={USER_NEW}
-                >
-                  <PersonAdd />
-                </IconButton>) : (<Wallet />)}
 
             <IconButton
               size="large"
@@ -218,6 +217,10 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
             >
               <Settings />
             </IconButton>
+            {
+              publicKey ?
+                (<UserMenu displayName={false}></UserMenu>) : (<Wallet />)}
+
             <Menu
               id="settings-appbar"
               anchorEl={anchorElSettingsNav}

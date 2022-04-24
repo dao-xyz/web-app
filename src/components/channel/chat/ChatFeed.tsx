@@ -26,8 +26,6 @@ const mergePosts = (a: AccountInfoDeserialized<PostAccount>[], b: AccountInfoDes
         return b
     if (b.length == 0)
         return a
-
-
     let j = 0;
     let ret = [];
     let added = new Set<string>();
@@ -44,6 +42,11 @@ const mergePosts = (a: AccountInfoDeserialized<PostAccount>[], b: AccountInfoDes
             j++;
         }
         save(a[i]);
+    }
+
+    while (j < b.length) {
+        save(b[j]);
+        j++;
     }
     return ret;
 }
@@ -73,32 +76,29 @@ export const ChatFeed = (props: { channels: AccountInfoDeserialized<ChannelAccou
         }
 
         Promise.all(postPromises).then(results => {
-            console.log(results);
             let flatResults = results.flat(1);
             let updatedResults = mergePosts(posts, flatResults.sort((a, b) => a.data.createAtTimestamp.cmp(b.data.createAtTimestamp)));
-            if (!postsEquals(posts, flatResults)) {
-                console.log('DIFFER!', posts, flatResults)
+
+            if (!postsEquals(posts, updatedResults)) {
                 setPosts(updatedResults);
                 if (props.onFeedChange) {
                     props.onFeedChange();
                 }
             }
 
-
         }).finally(() => {
             /*  setLoading(false) */
         })
-
-
-
     }
-
+    useEffect(() => {
+        setPosts([]);
+    }, [props.channels[0].pubkey.toString()])
     useEffect(() => {
         const interval = setInterval(() => {
             updateContent();
         }, 3000);
         return () => clearInterval(interval);
-    }, [props.channels[0].pubkey.toString()])
+    }, [props.channels[0].pubkey.toString(), posts.length, posts ? posts[posts.length - 1]?.pubkey.toString() : undefined])
     return (
         <>
             {loading ? <><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={200} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={75} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={150} /></> : <></>}

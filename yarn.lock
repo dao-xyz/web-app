@@ -1196,6 +1196,19 @@
     crypto-browserify "^3.12.0"
     reflect-metadata "^0.1.13"
 
+"@dao-xyz/sdk-signforme@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/sdk-signforme/-/sdk-signforme-0.0.2.tgz#67b82cb16bb81436c816260c201300edb5f06391"
+  integrity sha512-GOFXPLqjVH3mL6oSwS8O0PeSwjvdnUMV3Or22WcXk88bZfi3izAjgmlGFl4XqIMZar5O7nwpUqMoWHuTLHJYpg==
+  dependencies:
+    "@dao-xyz/borsh" "^2.0.2"
+    "@dao-xyz/sdk-common" "^0.0.4"
+    "@solana/web3.js" "^1.33.0"
+    "@types/bs58" "^4.0.1"
+    bs58 "^4.0.1"
+    crypto-browserify "^3.12.0"
+    reflect-metadata "^0.1.13"
+
 "@dao-xyz/sdk-social@^0.0.41":
   version "0.0.41"
   resolved "https://registry.yarnpkg.com/@dao-xyz/sdk-social/-/sdk-social-0.0.41.tgz#ad993777a4127552448c1ec27952b1f0b1e3b358"

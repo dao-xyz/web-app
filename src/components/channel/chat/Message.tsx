@@ -54,7 +54,13 @@ export const Message: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ po
                             {date}</Typography></Grid>
                     </Grid>
                     {content ? <Grid item sx={{ mb: '-24px', mt: '-12px' }}>
-                        <ReactMarkdown >{content}</ReactMarkdown>
+                        <ReactMarkdown components={{
+                            img({ ...props }) {
+                                return (<img  {...props} width={'100%'} />)
+                            }
+
+                        }}
+                        >{content}</ReactMarkdown>
                     </Grid> : <Grid item flex="1" >
                         <Box sx={{ width: '100%', height: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary" fontStyle="italic">Post content could not be found</Typography></Box>
                     </Grid>}

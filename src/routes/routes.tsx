@@ -11,6 +11,7 @@ import { NewUser } from '../pages/user/NewUser';
 import { ProfileUser, USERNAME_PATH_PARAM } from '../pages/user/ProfileUser';
 import { SettingsUser } from '../pages/user/SettingsUser';
 import { Channel } from '../components/channel/Channel';
+import { SmartWalletSetup } from '../pages/smartwallet/SmartWalletSetup';
 export const USER_NEW = 'user/new';
 export const USER_SETTINGS = 'settings';
 export const USER_PROFILE = 'user/:' + USERNAME_PATH_PARAM;
@@ -20,7 +21,8 @@ export const EXPLORE = 'explore';
 export const WAIT_LIST = 'wait'
 export const DEPOSIT = 'deposit'
 export const WITHDRAW = 'withdraw'
-export const SETTINGS = 'settings'
+export const SETTINGS = '/settings'
+export const SETTINGS_BURNER = '/settings/burner';
 export const ABOUT = 'about';
 export const DAOS_MY = 'user/channels';
 export const DAO = 'c';
@@ -48,6 +50,7 @@ export function BaseRoutes() {
         <Route path={USER_SETTINGS} element={<SettingsUser />} />
         <Route path={USER_PROFILE} element={<ProfileUser />} />
         <Route path={SETTINGS} element={<SettingsUser />} />
+        <Route path={SETTINGS_BURNER} element={<SmartWalletSetup />} />
         <Route path={DEPOSIT} element={<Deposit />} />
         <Route path={WAIT_LIST} element={<Join />} />
         <Route path={ABOUT} element={<Landing />} />

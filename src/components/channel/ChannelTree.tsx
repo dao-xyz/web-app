@@ -147,10 +147,17 @@ export const ChannelTree: FC = () => {
                 } as ChannelTreeItem
             });
         }
-        // Also add root if just root
 
-        setExpanded(selection.selectionPath.map(el => el.pubkey.toString()))
+        let dao = selection.selectionPath[selection.selectionPath.length - 1].pubkey.toString();
+        let newExpanded = selection.selectionPath.map(el => el.pubkey.toString());
+        // Keep old expansions if same dao
+        if (expanded.find(x => x == dao) != undefined) {
 
+            newExpanded.push(...expanded)
+            newExpanded = [...new Set(newExpanded)]
+        }
+
+        setExpanded(newExpanded)
         setTree(newTree);
     }, [JSON.stringify(selection.selectionPath?.map(p => p.toString()))]);
 
@@ -192,13 +199,11 @@ export const ChannelTree: FC = () => {
     const handleChange = (_event: any, nodeIds: string[]): any => {
         nodeIds.forEach((nodeId) => {
             let toExpand = new PublicKey(nodeId);
-            console.log('expand', tree[nodeId]);
             getChannelsWithParent(toExpand, connection).then((channels) => {
                 const newTree = {
                     ...tree,
                     [nodeId]: channelsToTree(channels)
                 };
-                console.log('new tree expansion', channels, newTree)
                 setTree(newTree);
             });
         })

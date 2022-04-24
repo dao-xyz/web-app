@@ -14,7 +14,18 @@ import { DAO_NEW, getChannelRoute, getNewChannelRoute } from "../../routes/route
 import { isDao } from "../../helpers/channelUtils";
 import { useChannels } from "../../contexts/ChannelsContext";
 
-
+/* export const groupByChannelType = (channels: AccountInfoDeserialized<ChannelAccount>[]): Map<ChannelType, AccountInfoDeserialized<ChannelAccount>[]> => {
+    let ret: Map<ChannelType, AccountInfoDeserialized<ChannelAccount>[]> = new Map();
+    for (const channel of channels) {
+        let arr = ret.get(channel.data.channelType);
+        if (!arr) {
+            arr = [];
+            ret.set(channel.data.channelType, arr)
+        }
+        arr.push(channel);
+    }
+    return ret;
+} */
 export const Collection: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({ channel }) => {
     const { selection, loading, select } = useChannels();
     const navigate = useNavigate();
@@ -25,22 +36,28 @@ export const Collection: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }
         <Grid container flexDirection="column" spacing={2}>
             <Grid container item flexDirection="row" justifyContent="space-between">
                 <Grid item>
-                    <Typography color="text.secondary" variant="h6">{isDao(channel.data) ? 'DAO' : 'Collection'}</Typography>
-                    <Typography variant="h5">{channel.data.name}</Typography>
+                    <Typography color="text.secondary" variant="h6">Explore</Typography>
                 </Grid>
                 <Grid item>
                     <Button component={RouterLink} to={getNewChannelRoute(channel.pubkey)}  >Create channel</Button>
                 </Grid>
             </Grid>
             <Grid item >{
-                selection.selectionTree && selection.selectionTree[channel.pubkey.toString()]?.length > 0 ? <Grid container sx={{ width: '100%', maxWidth: 360, bgcolor: theme => theme.palette.action.hover }}>
-                    {selection.selectionTree[channel.pubkey.toString()].map((channel, ix) =>
-                        <Grid item key={ix} sx={{ width: '100%', height: '100%', justifyContent: 'left' }}>
-                            <Button variant="text" sx={{ width: '100%', height: '100%' }} onClick={() => onClickChannel(channel)} >
+                selection.selectionTree && selection.selectionTree[channel.pubkey.toString()]?.length > 0 ? <Grid container sx={{ width: '100%', maxWidth: 360 }}>
+                    {/* Array.from(groupByChannelType(selection.selectionTree[channel.pubkey.toString()]).entries()).map(([type, channels]) =>
+                    <><Typography key={type} variant="h5">
+                        {type == ChannelType.Chat && "Chats"}
+                        {type == ChannelType.Collection && "Catgories"}
+                        {type == ChannelType.Forum && "Forums"}
+                    </Typography> */}
+                    {
+                        selection.selectionTree[channel.pubkey.toString()].map((channel, ix) => <Grid item key={ix} sx={{ width: '100%', height: '40px', mt: 1, mb: 1, bgcolor: theme => theme.palette.action.hover }}>
+                            <Button variant="text" sx={{ width: '100%', height: '100%', justifyContent: 'left' }} onClick={() => onClickChannel(channel)} >
                                 {channel.data.name}
                             </Button>
-                        </Grid>
-                    )}
+                        </Grid>)
+                    }
+
                 </Grid> : (<Box sx={{ width: '100%', height: '100%', textAlign: 'center' }}>No channels exist</Box >)
             }</Grid>
 

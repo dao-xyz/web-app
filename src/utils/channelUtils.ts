@@ -5,7 +5,8 @@ import {
   getChannel,
   getChannelsWithParent,
 } from "@dao-xyz/sdk-social";
-
+import { ContentSourceExternal, ContentSourceString } from "@dao-xyz/sdk-common";
+import { isValidHttpUrl } from "./urlUtils";
 export const getParentChannelChain = async (
   channel: AccountInfoDeserialized<ChannelAccount>,
   connection: Connection
@@ -34,3 +35,27 @@ export const getParentChannelChainTree = async (
   }
   return ret;
 };
+
+
+export const getChannelContentString = async (
+  channel: ChannelAccount
+): Promise<string | undefined> => {
+  if (channel.info) {
+    return Promise.resolve(undefined);
+  }
+  if (channel.info instanceof ContentSourceString) {
+    return Promise.resolve(channel.info.string);
+  }
+  let url = (channel.info as ContentSourceExternal).url;
+  if (url && isValidHttpUrl(url)) {
+    const result = await fetch(url, {}).catch(() => undefined);
+    if (result) {
+      if (result.status >= 200 && result.status < 300) {
+        let text = await result.text().catch(() => undefined);
+        return text;
+      }
+    }
+    return undefined;
+  }
+};
+

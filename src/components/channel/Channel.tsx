@@ -8,44 +8,43 @@ import { Chat } from "./chat/Chat";
 import { Forum } from "./forum/Forum";
 import { Collection } from "./Collection";
 import { ChannelLabelBreadcrumb } from "./ChannelLabelBreadcrumb";
-import { Box } from "@mui/material";
-
+import { Box, Button, CircularProgress, Drawer, Grid, IconButton } from "@mui/material";
+import CastleIcon from '@mui/icons-material/Castle';
+import { ChannelSettings } from "./ChannelSettings";
+import { useChannels } from "../../contexts/ChannelsContext";
 export const Channel: FC = () => {
 
-    const { key } = useParams();
     const { connection } = useConnection();
-    const [channel, setChannel] = React.useState<AccountInfoDeserialized<ChannelAccount> | null>(null);
-    const [notFound, setNotFound] = React.useState(false);
-    React.useEffect(() => {
-        if (!key) {
-            setNotFound(true)
-            return;
-        }
-        try {
-            const channelKey = new PublicKey(key as string);
-            getChannel(channelKey, connection).then((channel) => {
-                setChannel(channel);
-            }).catch((error) => {
-                console.log(error)
-            })
-        }
-        catch (error) {
-            console.log(key, error)
-            // bad id
-            setNotFound(true)
-
-        }
-
-    }, [key])
-
+    const [openSettings, setOpenSettings] = React.useState(false);
+    const {
+        loading,
+        select,
+        selection,
+    } = useChannels();
+    console.log()
     return <Box sx={{ p: 3 }}>
-        <ChannelLabelBreadcrumb />
+        <Grid container direction="row" justifyContent='space-between'>
+            <Grid item>  <ChannelLabelBreadcrumb /></Grid>
+            <Grid item> <IconButton onClick={() => setOpenSettings(!openSettings)} ><CastleIcon /></IconButton> </Grid>
+        </Grid>
         {
+            loading ? <CircularProgress /> : <>
+                <Drawer
+                    anchor='top'
+                    open={openSettings}
+                    onClose={() => setOpenSettings(false)}
+                >
+                    {selection.selectionPath && <ChannelSettings channel={selection.selectionPath[0]} authorities={selection.authorities} authoritiesByType={selection.authoritiesByType}></ChannelSettings>}
+                </Drawer>
+                {
 
-            channel?.data ?
-                { [ChannelType.Chat]: (<Chat channel={channel}></Chat>), [ChannelType.Forum]: (<Forum channel={channel}></Forum>), [ChannelType.Collection]: (<Collection channel={channel}></Collection>) }
-                [channel.data.channelType] :
-                <>Channel could not be loaded</>
+                    selection.channel?.data ?
+                        { [ChannelType.Chat]: (<Chat channel={selection.channel}></Chat>), [ChannelType.Forum]: (<Forum channel={selection.channel}></Forum>), [ChannelType.Collection]: (<Collection channel={selection.channel}></Collection>) }
+                        [selection.channel.data.channelType] :
+                        <>Channel could not be loaded</>
+                }
+            </>
         }
+
     </Box>
 }

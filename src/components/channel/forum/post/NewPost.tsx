@@ -20,6 +20,8 @@ import { IpfsServiceModal } from "../../../ipfs/IpfsServiceModal";
 import { useAlert } from "../../../../contexts/AlertContext";
 import IpfsProviderPasswordDialog from "../../../ipfs/IpfsProviderPasswordDialog";
 import ReactMarkdown from 'react-markdown'
+import { SignerMaybeSignForMe, SignForMe } from "@dao-xyz/sdk-signforme";
+
 import { AuthorityType, getSignerAuthority } from "@dao-xyz/sdk-social";
 import { useSmartWallet } from "../../../../contexts/SmartWalletContext";
 import { SETTINGS_BURNER } from "../../../../routes/routes";
@@ -59,7 +61,7 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
             return;
         }
 
-        if (!publicKey) {
+        if (!publicKey && !burnerWallet) {
             alert({
                 severity: 'error', text: 'Wallet is not connected'
             })
@@ -70,14 +72,25 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
 
         try {
             let burnerAsSigner = !!burnerWallet;
-            let signer = burnerAsSigner ? burnerWallet.publicKey : publicKey;
-            let authorityConfig = await getSignerAuthority(signer, props.channel, AuthorityType.CreatePost, connection);
-            const [tx, postKey] = await createPostTransaction(props.channel, publicKey, signer, new LinkPostContent({
+            let payer = publicKey;
+            let owner = new SignerMaybeSignForMe(publicKey);
+            if (burnerAsSigner) {
+                owner = new SignerMaybeSignForMe(burnerWallet.delegateeSigner, {
+                    signForMe: burnerWallet.signForMe,
+                    signer: burnerWallet.keypair.publicKey
+                });
+                payer = burnerWallet.keypair.publicKey;
+                console.log('BURNER AS SIGNED', owner, payer)
+            }
+
+
+
+            let authorityConfig = await getSignerAuthority(owner, props.channel, AuthorityType.CreatePost, connection);
+            const [tx, postKey] = await createPostTransaction(props.channel, owner, payer, new LinkPostContent({
                 url: "https://ipfs.io/ipfs/" + cid
             }), undefined, new CreateUpvoteDownvoteVoteConfig(), authorityConfig);
             let transaction = new Transaction().add(tx);
-
-            const signature = burnerAsSigner ? await sendAndConfirmTransaction(connection, transaction, [this.burner]) : await sendTransaction(transaction, connection);
+            const signature = burnerAsSigner ? await sendAndConfirmTransaction(connection, transaction, [burnerWallet.keypair]) : await sendTransaction(transaction, connection);
             await connection.confirmTransaction(signature);
             setPreviewMarkdown(false);
             alert({
@@ -165,8 +178,6 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
                 {!!burnerWallet && <Grid item sx={{ mr: 1 }}>
                     <Link variant="caption" component={RouterLink} to={SETTINGS_BURNER} target="_blank">Burner wallet balance: {burnerWalletBalance}</Link>
                 </Grid>}
-
-
             </Grid>
         </Grid >
     );

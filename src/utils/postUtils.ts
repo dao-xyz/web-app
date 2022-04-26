@@ -7,19 +7,11 @@ import {
   PostAccount,
   StringPostContent,
 } from "@dao-xyz/sdk-social";
+import { isValidHttpUrl } from "./urlUtils";
 
-const isValidHttpUrl = (string) => {
-  let url = undefined;
-  try {
-    url = new URL(string);
-  } catch (_) {
-    return false;
-  }
 
-  return url.protocol === "http:" || url.protocol === "https:";
-};
 
-export const getContentString = async (
+export const getPostContentString = async (
   post: PostAccount
 ): Promise<string | undefined> => {
   if (post.content instanceof StringPostContent) {

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 import { NetworkContext } from '../../contexts/Network';
 import { UserContext, useUser } from '../../contexts/UserContext';
 import { DEPOSIT, getUserProfilePath, SETTINGS_BURNER, USER_NEW, USER_PROFILE, USER_SETTINGS } from '../../routes/routes';
-import { usePublicKeyToCopy } from '../../services/keys';
+import { usePublicKeyWalletToCopy } from '../../utils/keys';
 import { WalletIcon } from '@solana/wallet-adapter-react-ui';
 import { useAccount } from '../../contexts/AccountContext';
 import { useSmartWallet } from '../../contexts/SmartWalletContext';
@@ -24,7 +24,7 @@ export default function UserMenu(props: { displayName?: boolean }) {
         base58,
         copyAddress,
         content
-    } = usePublicKeyToCopy(publicKey, wallet, null, (_: boolean) => { });
+    } = usePublicKeyWalletToCopy(publicKey, wallet, null, (_: boolean) => { });
 
     const navigate = useNavigate();
 
@@ -123,7 +123,7 @@ export default function UserMenu(props: { displayName?: boolean }) {
                 <ListItemText >Create user</ListItemText>
             </MenuItem >}
 
-            {!(delegatedSigners?.length) && <MenuItem key='smart-wallet' onClick={() => { handleCloseUserMenu(); handleEnableQuickSign(); }} >
+            {!(delegatedSigners?.length > 0) && <MenuItem key='smart-wallet' onClick={() => { handleCloseUserMenu(); handleEnableQuickSign(); }} >
                 <ListItemIcon>
                     <QuickreplyIcon />
                 </ListItemIcon>

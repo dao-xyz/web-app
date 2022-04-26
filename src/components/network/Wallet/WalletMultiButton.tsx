@@ -2,7 +2,7 @@ import { Button, ButtonProps } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal, WalletIcon } from '@solana/wallet-adapter-react-ui';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState, MouseEvent, ReactElement, CSSProperties } from 'react';
-import { usePublicKeyToCopy } from '../../../services/keys';
+import { usePublicKeyWalletToCopy } from '../../../utils/keys';
 import { WalletConnectButton } from './WalletConnectButton';
 import { WalletModalButton } from './WalletModalButton';
 
@@ -34,7 +34,7 @@ export const WalletMultiButtonMui: FC<ButtonProps & { onWalletModalClick: () => 
         base58,
         copyAddress,
         content
-    } = usePublicKeyToCopy(publicKey, wallet, children, setCopied);
+    } = usePublicKeyWalletToCopy(publicKey, wallet, children, setCopied);
 
     const openDropdown = useCallback(() => setActive(true), [setActive]);
 

@@ -14,11 +14,12 @@ export const SmartWalletSetup: FC = () => {
     const { publicKey, connecting } = useWallet();
     const { connection } = useConnection();
     const { alertError, alert } = useAlert();
-    const { burnerWallet, loading: burnerWalletBalance, createBurnerWallet, fillBurnerWallet, delegatedSigners } = useSmartWallet();
+    const { burnerWallet, burnerWalletBalance, createBurnerWallet, fillBurnerWallet, delegatedSigners } = useSmartWallet();
     const [value, setValue] = React.useState(0);
     const [loading, setLoading] = React.useState(false);
     const [solBalance, setSolBalance] = useState<number | undefined>(undefined);
 
+    console.log(burnerWalletBalance);
     const reloadSolBalance = useCallback(async () => {
         if (publicKey) {
             setLoading(true);
@@ -80,7 +81,7 @@ export const SmartWalletSetup: FC = () => {
         // Create burner wallet with deposit
         setLoading(true);
         try {
-            await fillBurnerWallet(burnerWallet.publicKey, value * LAMPORTS_PER_SOL);
+            await fillBurnerWallet(burnerWallet.keypair.publicKey, value * LAMPORTS_PER_SOL);
             await reloadSolBalance();
             setValue(0);
             alert({
@@ -109,7 +110,7 @@ export const SmartWalletSetup: FC = () => {
                         <Avatar sx={{ width: 24, height: 24, ml: 1 }} alt="SOL" src="https://avatars.githubusercontent.com/u/35608259?s=200&v=4" />
                         <Typography sx={{ ml: 1 }}>{solBalance}</Typography>
                     </Grid>
-                </Grid>) : <Box>{!connecting && <Typography>Connect a wallet to continue</Typography >} <Wallet /></Box>
+                </Grid>) : <Grid item>{!connecting && <Typography>Connect a wallet to continue</Typography >} <Wallet /></Grid>
                 }
                 {typeof burnerWalletBalance === 'number' && (<Grid container item spacing={2} direction="column">
                     <Grid container item direction="row" alignItems="center">

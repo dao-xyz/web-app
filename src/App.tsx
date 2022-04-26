@@ -14,7 +14,7 @@ import Header from "./components/Header/Header";
 import { Network } from "./contexts/Network";
 import { UserProvider } from "./contexts/UserContext";
 import { ConditionalRedirect } from "./components/navigation/ConditionalRedirect";
-import { getNetworkConfigFromPathParam } from "./services/network";
+import { getNetworkConfigFromPathParam } from "./utils/network";
 import { AlertProvider } from "./contexts/AlertContext";
 import { BaseRoutes } from "./routes/routes";
 import { EncryptionProvider } from "./contexts/EncryptionContext";

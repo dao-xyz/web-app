@@ -33,7 +33,7 @@ import {
   ChannelTree,
   getParentChannelChain,
   getParentChannelChainTree,
-} from "../services/channelUtils";
+} from "../utils/channelUtils";
 import {
   SignForMeAccount,
   createSignForMe,
@@ -45,7 +45,7 @@ import * as bs58 from "bs58";
 
 interface ISmartWalletContext {
   loading: boolean;
-  burnerWallet: Keypair;
+  burnerWallet: BurnerWallet;
   burnerWalletBalance: number;
   capabilities: AccountInfoDeserialized<SignForMeAccount>[];
   delegatedSigners: AccountInfoDeserialized<SignForMeAccount>[];
@@ -59,12 +59,24 @@ interface ISmartWalletContext {
     lamports: number
   ) => Promise<void>;
 }
+interface BurnerWalletSaveable {
+  keypair: string,
+  signForMe: string,
+  delegateeSigner: string
+}
+interface BurnerWallet {
+  keypair: Keypair,
+  signForMe: PublicKey,
+  delegateeSigner: PublicKey
+}
+
 export const SmartWalletContext = React.createContext<ISmartWalletContext>(
   {} as any
 );
 export const useSmartWallet = () => useContext(SmartWalletContext);
 
 const BURNER_WALLET_STORAGE_KEY = "burner_wallet";
+
 export const SmartWalletProvider = ({
   children,
 }: {
@@ -73,9 +85,9 @@ export const SmartWalletProvider = ({
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
   const [burnerWalletStored, setBurnerWalletStored] = useLocalStorage<
-    string | undefined
+    BurnerWalletSaveable | undefined
   >(BURNER_WALLET_STORAGE_KEY, undefined);
-  const [burnerWallet, setBurnerWallet] = React.useState<Keypair>();
+  const [burnerWallet, setBurnerWallet] = React.useState<BurnerWallet>();
   const [burnerWalletBalance, setBurnerWalletBalance] =
     React.useState<number>(0);
 
@@ -92,9 +104,10 @@ export const SmartWalletProvider = ({
       setLoading(true);
       await connection.getLatestBlockhash("singleGossip");
       const balance = await connection.getBalance(
-        burnerWallet.publicKey,
+        burnerWallet.keypair.publicKey,
         "singleGossip"
       );
+      console.log('BURNER BALANCE', balance / LAMPORTS_PER_SOL)
       setBurnerWalletBalance(balance / LAMPORTS_PER_SOL);
       setLoading(false);
     } else {
@@ -120,11 +133,15 @@ export const SmartWalletProvider = ({
   }, [publicKey, connection]);
 
   useEffect(() => {
-    if (!burnerWalletStored?.length) {
+    if (!burnerWalletStored) {
       return;
     }
 
-    setBurnerWallet(Keypair.fromSecretKey(bs58.decode(burnerWalletStored)));
+    setBurnerWallet({
+      delegateeSigner: new PublicKey(burnerWalletStored.delegateeSigner),
+      signForMe: new PublicKey(burnerWalletStored.signForMe),
+      keypair: Keypair.fromSecretKey(bs58.decode(burnerWalletStored.keypair))
+    });
   }, [burnerWalletStored]);
 
   useEffect(() => {
@@ -141,14 +158,14 @@ export const SmartWalletProvider = ({
       createBurnerWallet: async (scope: PublicKey, initialLamports: number) => {
         if (!!burnerWalletStored)
           throw new Error(
-            "Wallet already exist: " + burnerWallet?.publicKey?.toString()
+            "Wallet already exist: " + burnerWallet?.keypair.publicKey?.toString()
           );
         if (!scope) throw new Error("Missing scope");
         if (!publicKey) throw new Error("No wallet is connected");
 
         let key = Keypair.generate();
         let transaction = new Transaction();
-        let [transactionSignForMe, _signForMe] = await createSignForMe(
+        let [transactionSignForMe, signForMe] = await createSignForMe(
           publicKey,
           key.publicKey,
           scope,
@@ -167,7 +184,11 @@ export const SmartWalletProvider = ({
         await sendTransaction(transaction, connection, {
           preflightCommitment: "max",
         });
-        setBurnerWalletStored(bs58.encode(key.secretKey));
+        setBurnerWalletStored({
+          delegateeSigner: publicKey.toBase58(),
+          signForMe: signForMe.toBase58(),
+          keypair: bs58.encode(key.secretKey)
+        });
         await reload();
         await reloadBurnerBalance();
       },
@@ -190,7 +211,7 @@ export const SmartWalletProvider = ({
           new Transaction().add(
             SystemProgram.transfer({
               fromPubkey: publicKey,
-              toPubkey: burnerWallet.publicKey,
+              toPubkey: burnerWallet.keypair.publicKey,
               lamports: lamports,
             })
           ),

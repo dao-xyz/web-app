@@ -10,8 +10,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown'
 import { ContentSourceExternal } from "@dao-xyz/sdk-common";
 import { getUser } from "@dao-xyz/sdk-user";
-import { getContentString } from "../../../services/postUtils";
 import { getUserProfilePath } from "../../../routes/routes";
+import { MarkdownContent } from "../../data/MarkdownContent";
+import { getPostContentString } from "../../../utils/postUtils";
 
 
 export const Message: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ post }) => {
@@ -30,7 +31,7 @@ export const Message: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ po
     }
 
     useEffect(() => {
-        getContentString(post.data).then((result) => { setContent(result) });
+        getPostContentString(post.data).then((result) => { setContent(result) });
         /*  getUser(post.data.creator, connection).then((user) => {
              setUsername(user.data.name);
          }) */
@@ -54,13 +55,7 @@ export const Message: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ po
                             {date}</Typography></Grid>
                     </Grid>
                     {content ? <Grid item sx={{ mb: '-24px', mt: '-12px' }}>
-                        <ReactMarkdown components={{
-                            img({ ...props }) {
-                                return (<img  {...props} width={'100%'} />)
-                            }
-
-                        }}
-                        >{content}</ReactMarkdown>
+                        <MarkdownContent content={content} />
                     </Grid> : <Grid item flex="1" >
                         <Box sx={{ width: '100%', height: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary" fontStyle="italic">Post content could not be found</Typography></Box>
                     </Grid>}

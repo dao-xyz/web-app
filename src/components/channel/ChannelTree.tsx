@@ -19,7 +19,7 @@ import ForumIcon from '@mui/icons-material/Forum';
 import ChatIcon from '@mui/icons-material/Chat';
 import { styled } from '@mui/material/styles';
 import { useChannels } from "../../contexts/ChannelsContext";
-import { CHANNEL_TREE_ROOT } from "../../services/channelUtils";
+import { CHANNEL_TREE_ROOT } from "../../utils/channelUtils";
 
 declare module 'react' {
     interface CSSProperties {

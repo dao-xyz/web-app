@@ -13,6 +13,7 @@ import { useNetwork } from '../../contexts/Network';
 import { getChannelRoute } from '../../routes/routes';
 import { AccountInfoDeserialized, ContentSourceString } from '@dao-xyz/sdk-common';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { SignerMaybeSignForMe } from '@dao-xyz/sdk-signforme';
 
 interface NewChannelForm {
 
@@ -81,10 +82,10 @@ export const NewChannel: FC = () => {
 
         if (!publicKey)
             throw new WalletNotConnectedError();
-        console.log(parent ? await getSignerAuthority(publicKey, parent.pubkey, AuthorityType.CreateSubChannel, connection) : undefined);
+        console.log(parent ? await getSignerAuthority(new SignerMaybeSignForMe(publicKey), parent.pubkey, AuthorityType.CreateSubChannel, connection) : undefined);
         setLoading(true)
         try {
-            const [transaction, channelKey] = await createChannelTransaction(parent?.pubkey, publicKey, publicKey, state.name, new ContentSourceString({ string: "" }), state.type, parent ? await getSignerAuthority(publicKey, parent.pubkey, AuthorityType.CreateSubChannel, connection) : undefined);
+            const [transaction, channelKey] = await createChannelTransaction(parent?.pubkey, publicKey, publicKey, state.name, new ContentSourceString({ string: "" }), state.type, parent ? await getSignerAuthority(new SignerMaybeSignForMe(publicKey), parent.pubkey, AuthorityType.CreateSubChannel, connection) : undefined);
             const signature = await sendTransaction(new Transaction().add(transaction), connection,);
             await connection.confirmTransaction(signature);
             // navigate to redirect if exist, else to home

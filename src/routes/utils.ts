@@ -4,7 +4,7 @@ import {
   getPathForNetwork,
   NetworkConfig,
   NetworkXYZ,
-} from "../services/network";
+} from "../utils/network";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 
 export const REDIRECT_URL_PARAM_KEY = "redir";

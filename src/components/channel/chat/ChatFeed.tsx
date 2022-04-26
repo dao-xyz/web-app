@@ -70,11 +70,11 @@ export const ChatFeed = (props: { channels: AccountInfoDeserialized<ChannelAccou
 
     const updateContent = () => {
         /* setLoading(true) */
+        setLoading(true);
         const postPromises: Promise<AccountInfoDeserialized<PostAccount>[]>[] = []
         for (const channel of props.channels) {
             postPromises.push(getPostsByChannel(channel.pubkey, connection))
         }
-
         Promise.all(postPromises).then(results => {
             let flatResults = results.flat(1);
             let updatedResults = mergePosts(posts, flatResults.sort((a, b) => a.data.createAtTimestamp.cmp(b.data.createAtTimestamp)));
@@ -86,8 +86,11 @@ export const ChatFeed = (props: { channels: AccountInfoDeserialized<ChannelAccou
                 }
             }
 
+
         }).finally(() => {
             /*  setLoading(false) */
+            setLoading(false);
+
         })
     }
     useEffect(() => {
@@ -95,7 +98,9 @@ export const ChatFeed = (props: { channels: AccountInfoDeserialized<ChannelAccou
     }, [props.channels[0].pubkey.toString()])
     useEffect(() => {
         const interval = setInterval(() => {
-            updateContent();
+            if (!loading) {
+                updateContent();
+            }
         }, 3000);
         return () => clearInterval(interval);
     }, [props.channels[0].pubkey.toString(), posts.length, posts ? posts[posts.length - 1]?.pubkey.toString() : undefined])

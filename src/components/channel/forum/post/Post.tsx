@@ -11,16 +11,8 @@ import ReactMarkdown from 'react-markdown'
 import { getUserProfilePath } from "../../../../routes/routes";
 import { ContentSourceExternal } from "@dao-xyz/sdk-common";
 import { getUser } from "@dao-xyz/sdk-user";
-const isValidHttpUrl = (string) => {
-    let url = undefined;
-    try {
-        url = new URL(string);
-    } catch (_) {
-        return false;
-    }
+import { isValidHttpUrl } from "../../../../utils/urlUtils";
 
-    return url.protocol === "http:" || url.protocol === "https:";
-}
 
 export const Post: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ post }) => {
 
@@ -34,7 +26,7 @@ export const Post: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ post 
     const downvote = () => { }
 
     useEffect(() => {
-        let url = (post.data.source as ContentSourceExternal).url;
+        /* let url = (post.data.source as ContentSourceExternal).url;
         if (url && isValidHttpUrl(url)) {
             fetch(url, {}).then(async (result) => {
                 if (result.status >= 200 && result.status < 300) {
@@ -51,7 +43,7 @@ export const Post: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ post 
             }).catch(() => {
                 setContent(undefined);
             })
-        }
+        } */
         getUser(post.data.creator, connection).then((user) => {
             setUsername(user.data.name);
         })

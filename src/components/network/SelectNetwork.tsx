@@ -7,7 +7,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { NetworkContext } from '../../contexts/Network';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { useLocation, useParams, useNavigate } from 'react-router';
-import { ALL_CONFIGS, getNetworkConfigFromPathParam, getPathForNetwork, NetworkXYZ } from '../../services/network';
+import { ALL_CONFIGS, getNetworkConfigFromPathParam, getPathForNetwork, NetworkXYZ } from '../../utils/network';
 
 export const SelectNetwork = (props: { toggle?: boolean }) => {
     let { pathname } = useLocation();

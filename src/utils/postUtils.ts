@@ -9,8 +9,6 @@ import {
 } from "@dao-xyz/sdk-social";
 import { isValidHttpUrl } from "./urlUtils";
 
-
-
 export const getPostContentString = async (
   post: PostAccount
 ): Promise<string | undefined> => {

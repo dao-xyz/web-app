@@ -25,7 +25,6 @@ export default function IpfsProviderPasswordDialog(props: { open, setOpen: (bool
     setPasswordValid(false);
     checkPassword(password).then((result) => {
       setPasswordValid(result)
-      console.log('VALID?', result)
     });
 
   }

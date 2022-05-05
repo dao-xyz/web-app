@@ -21,30 +21,35 @@ export const Channel: FC = () => {
         select,
         selection,
     } = useChannels();
-    console.log()
     return <Box sx={{ p: 3 }}>
         <Grid container direction="row" justifyContent='space-between'>
             <Grid item>  <ChannelLabelBreadcrumb /></Grid>
             <Grid item> <IconButton onClick={() => setOpenSettings(!openSettings)} ><CastleIcon /></IconButton> </Grid>
         </Grid>
         {
-            loading ? <CircularProgress /> : <>
-                <Drawer
-                    anchor='top'
-                    open={openSettings}
-                    onClose={() => setOpenSettings(false)}
-                >
-                    {selection.selectionPath && <ChannelSettings channel={selection.selectionPath[0]} authorities={selection.authorities} authoritiesByType={selection.authoritiesByType}></ChannelSettings>}
-                </Drawer>
-                {
+            loading ? <Box sx={{ display: 'flex', justifyContent: 'center', verticalAlign: 'center' }}>
+                <CircularProgress />
+            </Box> : <></>
+        }
+        <Drawer
+            anchor='top'
+            open={openSettings}
+            onClose={() => setOpenSettings(false)}
+        >
+            {selection.selectionPath && <ChannelSettings channel={selection.selectionPath[0]} authorities={selection.authorities} authoritiesByType={selection.authoritiesByType}></ChannelSettings>}
+        </Drawer>
 
-                    selection.channel?.data ?
-                        { [ChannelType.Chat]: (<Chat channel={selection.channel}></Chat>), [ChannelType.Forum]: (<Forum channel={selection.channel}></Forum>), [ChannelType.Collection]: (<Collection channel={selection.channel}></Collection>) }
-                        [selection.channel.data.channelType] :
-                        <>Channel could not be loaded</>
-                }
-            </>
+        {
+
+            selection.channel?.data &&
+            { [ChannelType.Chat]: (<Chat channel={selection.channel}></Chat>), [ChannelType.Forum]: (<Forum channel={selection.channel}></Forum>), [ChannelType.Collection]: (<Collection channel={selection.channel}></Collection>) }
+            [selection.channel.data.channelType]
+
+        }
+        {
+            !selection.channel?.data && !loading && <>Channel could not be loaded</>
         }
 
-    </Box>
+
+    </Box >
 }

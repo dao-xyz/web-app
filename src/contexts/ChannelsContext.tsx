@@ -1,29 +1,33 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
-import { ChannelAccount, getChannel, ChannelAuthorityAccount, getChannels, getChannelAuthorities, AuthorityType } from "@dao-xyz/sdk-social";
 import {
-  createUserTransaction,
-  UserAccount,
-  getUserByName,
-} from "@dao-xyz/sdk-user";
+  ChannelAccount,
+  getChannel,
+  ChannelAuthorityAccount,
+  getChannels,
+  getChannelAuthorities,
+  AuthorityType,
+} from "@dao-xyz/sdk-social";
+
 import { NetworkContext } from "./Network";
-import RedirectDialog from "../components/dialogs/RedirectDialog/RedirectDialog";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
-import { USER_NEW } from "../routes/routes";
-import { useLocation, useParams } from "react-router";
 import {
   ChannelTree,
   getParentChannelChain,
   getParentChannelChainTree,
 } from "../utils/channelUtils";
+import { AccountCache } from "../utils/accountCache";
 
 interface ChannelSelection {
   selectionPath: AccountInfoDeserialized<ChannelAccount>[];
   selectionTree: ChannelTree;
   channel: AccountInfoDeserialized<ChannelAccount>;
-  authorities: AccountInfoDeserialized<ChannelAuthorityAccount>[]
-  authoritiesByType: Map<AuthorityType, AccountInfoDeserialized<ChannelAuthorityAccount>[]>
+  authorities: AccountInfoDeserialized<ChannelAuthorityAccount>[];
+  authoritiesByType: Map<
+    AuthorityType,
+    AccountInfoDeserialized<ChannelAuthorityAccount>[]
+  >;
 }
 interface IChannelContext {
   loading: boolean;
@@ -31,7 +35,9 @@ interface IChannelContext {
   select: (channel: PublicKey) => Promise<void>;
 }
 
-const groupAuthoritiesByType = (authorities: AccountInfoDeserialized<ChannelAuthorityAccount>[]): Map<AuthorityType, AccountInfoDeserialized<ChannelAuthorityAccount>[]> => {
+const groupAuthoritiesByType = (
+  authorities: AccountInfoDeserialized<ChannelAuthorityAccount>[]
+): Map<AuthorityType, AccountInfoDeserialized<ChannelAuthorityAccount>[]> => {
   let ret = new Map();
   for (const authority of authorities) {
     for (const type of authority.data.authorityTypes) {
@@ -44,8 +50,7 @@ const groupAuthoritiesByType = (authorities: AccountInfoDeserialized<ChannelAuth
     }
   }
   return ret;
-
-}
+};
 export const ChannelsContext = React.createContext<IChannelContext>({} as any);
 export const useChannels = () => useContext(ChannelsContext);
 
@@ -56,8 +61,9 @@ export const ChannelsProvider = ({ children }: { children: JSX.Element }) => {
     selectionTree: undefined,
     authorities: undefined,
     authoritiesByType: undefined,
-    channel: undefined
+    channel: undefined,
   });
+  // const [accountCache, setAccountCache] = useState(new AccountCache<ChannelAccount>(50));
   const network = React.useContext(NetworkContext);
   const [loading, setLoading] = useState(false);
   const selectionMemo = React.useMemo(
@@ -66,13 +72,31 @@ export const ChannelsProvider = ({ children }: { children: JSX.Element }) => {
       loading,
       select: async (channel: PublicKey) => {
         setLoading(true);
-        let channelAccount = await getChannel(channel, connection);
+        let previousSelection = selection;
+        setSelection({
+          selectionPath: undefined,
+          selectionTree: undefined,
+          authorities: undefined,
+          authoritiesByType: undefined,
+          channel: undefined,
+        });
+        let channelAccount = undefined;
+        /*   if (accountCache) {
+            channelAccount = await getChannel(channel, connection);
+          } */
+        if (!channelAccount) {
+          channelAccount = await getChannel(channel, connection);
+        }
+
         let parents = [
           channelAccount,
-          ...(await getParentChannelChain(channelAccount, connection)),
+          ...(await getParentChannelChain(
+            channelAccount,
+            connection /* accountCache */
+          )),
         ];
         let parentTree = await getParentChannelChainTree(parents, connection);
-        let previousParentTree = selection.selectionTree;
+        let previousParentTree = previousSelection.selectionTree;
 
         // If same DAO, then keep memory
         if (
@@ -87,13 +111,16 @@ export const ChannelsProvider = ({ children }: { children: JSX.Element }) => {
             }
           }
         }
-        let authoritiesForChannel = await getChannelAuthorities(channelAccount.pubkey, connection);
+        let authoritiesForChannel = await getChannelAuthorities(
+          channelAccount.pubkey,
+          connection
+        );
         setSelection({
           channel: channelAccount,
           selectionPath: parents,
           selectionTree: parentTree,
           authorities: authoritiesForChannel,
-          authoritiesByType: groupAuthoritiesByType(authoritiesForChannel)
+          authoritiesByType: groupAuthoritiesByType(authoritiesForChannel),
         });
         setLoading(false);
       },

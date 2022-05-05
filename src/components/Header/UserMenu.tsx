@@ -12,11 +12,15 @@ import { WalletIcon } from '@solana/wallet-adapter-react-ui';
 import { useAccount } from '../../contexts/AccountContext';
 import { useSmartWallet } from '../../contexts/SmartWalletContext';
 import QuickreplyIcon from '@mui/icons-material/Quickreply';
+import RedeemIcon from '@mui/icons-material/Redeem';
+import { AirdropDialog } from '../airdrop/AirdropDialog';
 export default function UserMenu(props: { displayName?: boolean }) {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const { user } = useUser();
     const { publicKey, disconnect, wallet } = useWallet();
     const { capabilities, createSigner, delegatedSigners } = useSmartWallet();
+    const [loading, setLoading] = React.useState(false);
+    const [airdropping, setAirdropping] = React.useState(false);
 
     const { balance } = useAccount();
     const config = React.useContext(NetworkContext);
@@ -45,6 +49,10 @@ export default function UserMenu(props: { displayName?: boolean }) {
             navigate(USER_NEW);
         }
     };
+
+    const handleAirdrop = () => {
+        setAirdropping(true);
+    }
 
     const handleEnableQuickSign = () => {
         navigate(SETTINGS_BURNER);
@@ -123,12 +131,20 @@ export default function UserMenu(props: { displayName?: boolean }) {
                 <ListItemText >Create user</ListItemText>
             </MenuItem >}
 
-            {!(delegatedSigners?.length > 0) && <MenuItem key='smart-wallet' onClick={() => { handleCloseUserMenu(); handleEnableQuickSign(); }} >
+            <MenuItem key='smart-wallet' onClick={() => { handleCloseUserMenu(); handleEnableQuickSign(); }} >
                 <ListItemIcon>
                     <QuickreplyIcon />
                 </ListItemIcon>
-                <ListItemText >Enable quick-sign</ListItemText>
-            </MenuItem >}
+                <ListItemText >{!(delegatedSigners?.length > 0) ? 'Enable quick-sign' : 'Top up burner'}</ListItemText>
+            </MenuItem >
+
+            <MenuItem key='airdrop-me' onClick={() => { handleCloseUserMenu(); handleAirdrop(); }} >
+                <ListItemIcon>
+                    <RedeemIcon />
+                </ListItemIcon>
+                <ListItemText >Airdrop me</ListItemText>
+
+            </MenuItem >
             <MenuItem divider key='settings' onClick={() => { handleCloseUserMenu(); handeNavigateSettings(); }} >
                 Settings
             </MenuItem >
@@ -167,5 +183,10 @@ export default function UserMenu(props: { displayName?: boolean }) {
                 <Typography textAlign="center">Manage users</Typography>
             </MenuItem> */}
         </Menu>
+
+        <AirdropDialog
+            open={airdropping}
+            onClose={() => { setAirdropping(false) }}
+        />
     </Box >)
 }

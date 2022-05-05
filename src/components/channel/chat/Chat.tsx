@@ -52,7 +52,7 @@ export const Chat: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({
             <>
                 <Container maxWidth="md" disableGutters sx={{ height: 'calc(100vh - 120px)' }} >
                     <Grid container flexDirection="column" sx={{ height: '100%' }} spacing={2}>
-                        <Grid ref={contentRef} item sx={{ flex: 1, overflow: 'scroll', width: '100%', mt: 2, mr: -2, pr: 2 }} >
+                        <Grid ref={contentRef} item sx={{ flex: 1, overflowY: 'scroll', width: '100%', mt: 2, mr: -2, pr: 2 }} >
                             <ChatFeed onFeedChange={onFeedChange} channels={channel ? [channel] : []} />
                         </Grid>
                         {showNewMessageAlert && initialFeed && !loading && <Alert variant="filled" severity="info">

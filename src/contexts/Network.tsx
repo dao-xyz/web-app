@@ -26,7 +26,7 @@ import { useParams } from "react-router-dom";
 import { walletConnectClickOnce } from "../components/network/Wallet/Wallet";
 
 export const NetworkContext = React.createContext({
-  changeNetwork: (network: NetworkXYZ, pathname: string) => { },
+  changeNetwork: (network: NetworkXYZ, pathname: string) => {},
   config: getNetworkConfig(NetworkXYZ.Mainnet),
   // getPathWithNetwork: (href: string): string => ''
 });

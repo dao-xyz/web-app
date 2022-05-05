@@ -78,15 +78,12 @@ export const ChatFeed = (props: { channels: AccountInfoDeserialized<ChannelAccou
         Promise.all(postPromises).then(results => {
             let flatResults = results.flat(1);
             let updatedResults = mergePosts(posts, flatResults.sort((a, b) => a.data.createAtTimestamp.cmp(b.data.createAtTimestamp)));
-
             if (!postsEquals(posts, updatedResults)) {
                 setPosts(updatedResults);
                 if (props.onFeedChange) {
                     props.onFeedChange();
                 }
             }
-
-
         }).finally(() => {
             /*  setLoading(false) */
             setLoading(false);
@@ -96,6 +93,7 @@ export const ChatFeed = (props: { channels: AccountInfoDeserialized<ChannelAccou
     useEffect(() => {
         setPosts([]);
     }, [props.channels[0].pubkey.toString()])
+
     useEffect(() => {
         const interval = setInterval(() => {
             if (!loading) {
@@ -107,7 +105,7 @@ export const ChatFeed = (props: { channels: AccountInfoDeserialized<ChannelAccou
     return (
         <>
             {loading ? <><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={200} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={75} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={150} /></> : <></>}
-            {posts.length > 0 ? posts.map((post) => <Box key={post.pubkey.toBase58()} sx={{ mt: 2, mb: 2 }} ><Message post={post} /></Box>) : <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary">No messages found</Typography></Box>}
+            {!loading && (posts.length > 0 ? posts.map((post) => <Box key={post.pubkey.toBase58()} sx={{ mt: 2, mb: 2 }} ><Message post={post} /></Box>) : <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary">No messages found</Typography></Box>)}
         </>
     );
 }

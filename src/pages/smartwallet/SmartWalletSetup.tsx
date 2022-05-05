@@ -18,8 +18,6 @@ export const SmartWalletSetup: FC = () => {
     const [value, setValue] = React.useState(0);
     const [loading, setLoading] = React.useState(false);
     const [solBalance, setSolBalance] = useState<number | undefined>(undefined);
-
-    console.log(burnerWalletBalance);
     const reloadSolBalance = useCallback(async () => {
         if (publicKey) {
             setLoading(true);
@@ -182,7 +180,7 @@ export const SmartWalletSetup: FC = () => {
                                     value={typeof value === 'number' ? value : 0}
                                     onChange={handleSliderChange}
                                     aria-labelledby="input-slider"
-                                    max={Math.min(0.1, solBalance)}
+                                    max={Math.min(1, solBalance)}
                                     min={0}
                                     step={0.00001}
                                 />

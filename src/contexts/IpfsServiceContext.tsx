@@ -158,7 +158,6 @@ export const IpfsServiceProvider: FC = ({ children, ...props }) => {
     } else {
       setService(undefined);
     }
-    console.log("USE EFFECT SET CONNECTED");
     setConnected(!!serviceConfig);
   }, [serviceConfig]);
   const state = useMemo<IpfsContextState>(
@@ -174,7 +173,6 @@ export const IpfsServiceProvider: FC = ({ children, ...props }) => {
         return hashed === serviceConfig.hashedPassword;
       },
       reset: () => {
-        console.log("RESET");
         setServiceConfig(undefined);
       },
       getConfig: async (password?: string) => {
@@ -204,7 +202,6 @@ export const IpfsServiceProvider: FC = ({ children, ...props }) => {
             config,
             service,
           };
-          console.log("save service config", serviceConfig, password);
           const encryptedConfig = password
             ? encryptConfig(serviceConfig, password)
             : serviceConfig;

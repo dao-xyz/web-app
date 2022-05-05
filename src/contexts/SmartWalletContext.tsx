@@ -27,17 +27,10 @@ import {
   SystemProgram,
   LAMPORTS_PER_SOL,
 } from "@solana/web3.js";
-import { USER_NEW } from "../routes/routes";
-import { useLocation, useParams } from "react-router";
-import {
-  ChannelTree,
-  getParentChannelChain,
-  getParentChannelChainTree,
-} from "../utils/channelUtils";
+
 import {
   SignForMeAccount,
   createSignForMe,
-  deleteSignForMeAsOwner,
   getSigningCapabilities,
   getDelegatedSigners,
 } from "@dao-xyz/sdk-signforme";
@@ -60,14 +53,14 @@ interface ISmartWalletContext {
   ) => Promise<void>;
 }
 interface BurnerWalletSaveable {
-  keypair: string,
-  signForMe: string,
-  delegateeSigner: string
+  keypair: string;
+  signForMe: string;
+  delegateeSigner: string;
 }
 interface BurnerWallet {
-  keypair: Keypair,
-  signForMe: PublicKey,
-  delegateeSigner: PublicKey
+  keypair: Keypair;
+  signForMe: PublicKey;
+  delegateeSigner: PublicKey;
 }
 
 export const SmartWalletContext = React.createContext<ISmartWalletContext>(
@@ -107,7 +100,6 @@ export const SmartWalletProvider = ({
         burnerWallet.keypair.publicKey,
         "singleGossip"
       );
-      console.log('BURNER BALANCE', balance / LAMPORTS_PER_SOL)
       setBurnerWalletBalance(balance / LAMPORTS_PER_SOL);
       setLoading(false);
     } else {
@@ -140,7 +132,7 @@ export const SmartWalletProvider = ({
     setBurnerWallet({
       delegateeSigner: new PublicKey(burnerWalletStored.delegateeSigner),
       signForMe: new PublicKey(burnerWalletStored.signForMe),
-      keypair: Keypair.fromSecretKey(bs58.decode(burnerWalletStored.keypair))
+      keypair: Keypair.fromSecretKey(bs58.decode(burnerWalletStored.keypair)),
     });
   }, [burnerWalletStored]);
 
@@ -158,7 +150,8 @@ export const SmartWalletProvider = ({
       createBurnerWallet: async (scope: PublicKey, initialLamports: number) => {
         if (!!burnerWalletStored)
           throw new Error(
-            "Wallet already exist: " + burnerWallet?.keypair.publicKey?.toString()
+            "Wallet already exist: " +
+              burnerWallet?.keypair.publicKey?.toString()
           );
         if (!scope) throw new Error("Missing scope");
         if (!publicKey) throw new Error("No wallet is connected");
@@ -187,7 +180,7 @@ export const SmartWalletProvider = ({
         setBurnerWalletStored({
           delegateeSigner: publicKey.toBase58(),
           signForMe: signForMe.toBase58(),
-          keypair: bs58.encode(key.secretKey)
+          keypair: bs58.encode(key.secretKey),
         });
         await reload();
         await reloadBurnerBalance();

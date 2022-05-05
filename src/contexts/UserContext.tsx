@@ -193,7 +193,6 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
   );
 
   // If connected but no user account exist then create it!
-  console.log(USER_NEW, location.pathname);
   return (
     <UserContext.Provider value={userMemo}>
       <RedirectDialog

@@ -9,7 +9,6 @@ export class Encrypter {
   }
 
   encrypt(clearText: string) {
-    console.log("ENCRYPT", this.encryptionKey);
     return CryptoJS.AES.encrypt(clearText, this.encryptionKey).toString();
   }
 

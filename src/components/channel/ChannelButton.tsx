@@ -15,7 +15,6 @@ import { useChannels } from "../../contexts/ChannelsContext";
 export const ChannelButton: FC<{ channel: AccountInfoDeserialized<ChannelAccount>, size: 'small' | 'large' }> = ({ channel, size = 'small' }) => {
     const navigate = useNavigate();
     const navigateToChannel = (channel: PublicKey) => {
-        console.log('LLL', channel);
         navigate(getChannelRoute(channel));
     }
     const { selection } = useChannels();

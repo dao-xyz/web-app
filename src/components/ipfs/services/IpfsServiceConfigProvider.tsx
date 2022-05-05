@@ -25,7 +25,6 @@ export const IpfsServiceConfigProvider: FC<{ service: IpfsServiceMeta, previous:
         setServiceConfig(config);
     }
     const verify = useCallback(async () => {
-        console.log('verify', password)
 
         const adapter = await getAdapter(password, { hashedPassword: undefined, service: service.service, config: serviceConfig });
         setVerifiying(true);

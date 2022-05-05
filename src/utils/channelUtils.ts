@@ -5,16 +5,25 @@ import {
   getChannel,
   getChannelsWithParent,
 } from "@dao-xyz/sdk-social";
-import { ContentSourceExternal, ContentSourceString } from "@dao-xyz/sdk-common";
+import {
+  ContentSourceExternal,
+  ContentSourceString,
+} from "@dao-xyz/sdk-common";
 import { isValidHttpUrl } from "./urlUtils";
+import { AccountCache } from "./accountCache";
 export const getParentChannelChain = async (
   channel: AccountInfoDeserialized<ChannelAccount>,
-  connection: Connection
+  connection: Connection,
+  accountCache?: AccountCache<ChannelAccount>
 ): Promise<AccountInfoDeserialized<ChannelAccount>[]> => {
   let ret = [];
   let current = channel;
-  while (current.data.parent) {
-    current = await getChannel(current.data.parent, connection);
+  while (current?.data.parent) {
+    if (accountCache && !!accountCache.get(current?.data.parent)) {
+      current = accountCache.get(current.data.parent);
+    } else {
+      current = await getChannel(current.data.parent, connection);
+    }
     ret.push(current);
   }
   return ret;
@@ -35,7 +44,6 @@ export const getParentChannelChainTree = async (
   }
   return ret;
 };
-
 
 export const getChannelContentString = async (
   channel: ChannelAccount
@@ -58,4 +66,3 @@ export const getChannelContentString = async (
     return undefined;
   }
 };
-

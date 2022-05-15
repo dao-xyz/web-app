@@ -86,7 +86,7 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
   const [missingUserNotified, setMissingUserNotified] = React.useState<boolean>(
     localStorage.getItem(STORAGE_KEY_MISSING_USER_EVENT) === "true"
   );
-  const network = useNetwork();
+  const { config } = useNetwork();
   const preferredUser = localStorage.getItem(STORAGE_KEY_PREFRERRED_USER);
 
   useEffect(() => {
@@ -198,7 +198,7 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
       <RedirectDialog
         title={
           "No user account associated with this wallet on this network: " +
-          network.config.name
+          config.name
         }
         content="In order to create posts, channels and interact with the content on this site you need a user account. Create one now?"
         redirectPath={USER_NEW}

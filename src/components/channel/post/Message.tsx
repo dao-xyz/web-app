@@ -1,5 +1,5 @@
 import { ArrowDownward, ArrowUpward, ChildCare, RocketLaunch, Send } from "@mui/icons-material";
-import { Button, Card, CardContent, Container, Grid, IconButton, Link, Paper, TextField, Typography } from "@mui/material";
+import { Avatar, Button, Card, CardContent, Container, Grid, IconButton, Link, Paper, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
@@ -13,9 +13,10 @@ import { getUser } from "@dao-xyz/sdk-user";
 import { getUserProfilePath } from "../../../routes/routes";
 import { MarkdownContent } from "../../data/MarkdownContent";
 import { getPostContentString } from "../../../utils/postUtils";
-
-
-export const Message: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ post }) => {
+import shiba from "../../../../src/shiba_inu_taiki.jpeg";
+import AddReactionIcon from '@mui/icons-material/AddReaction';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+export const Message: FC<{ post: AccountInfoDeserialized<PostAccount>, commentsCount: number }> = ({ post, commentsCount }) => {
 
     const [content, setContent] = useState<string | undefined>(undefined);
     const [username, setUsername] = useState<string | undefined>(undefined);
@@ -41,18 +42,36 @@ export const Message: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ po
         <CardContent sx={{}}>
             <Grid container spacing={1} direction="row">
                 <Grid item container flex="1" direction="column">
-                    <Grid item container spacing={1} direction="row">
-                        <Grid item ><Link component={RouterLink} to={getUserProfilePath(username)}>
-                            {
-                                username ?
-                                    <Typography variant="body2"  >
-                                        {username}</Typography>
-                                    : <Typography variant="body2" noWrap sx={{ maxWidth: '150px' }}>
-                                        {post.data.creator.toString()}</Typography>
-                            }
-                        </Link></Grid>
-                        <Grid item ><Typography color="test.secondary" variant="body2">
-                            {date}</Typography></Grid>
+                    <Grid item container alignItems="top" spacing={1} direction="row">
+                        <Grid item>
+                            <Avatar
+                                alt="Remy Sharp"
+                                src={shiba}
+                                sx={{ width: 40, height: 40 }}
+                            />
+                        </Grid>
+                        <Grid item container direction="column" width="fit-content">
+                            <Grid item ><Link component={RouterLink} to={getUserProfilePath(username)}>
+                                {
+                                    username ?
+                                        <Typography variant="body2"  >
+                                            {username}</Typography>
+                                        : <Typography variant="body2" noWrap sx={{ maxWidth: '150px' }}>
+                                            {post.data.creator.toString()}</Typography>
+                                }
+                            </Link></Grid>
+                            <Grid item ><Typography color="test.secondary" variant="body2">
+                                {date}</Typography></Grid>
+
+                        </Grid>
+                        <Grid item>
+                            <IconButton size="small"><AddReactionIcon /></IconButton>
+
+                        </Grid>
+                        <Grid item sx={{ position: 'relative' }}>
+                            <IconButton size="small"><ChatBubbleOutlineIcon /></IconButton>
+                            <Typography variant="body2" sx={{ position: 'absolute', left: '21px', top: '13px' }}>{commentsCount}</Typography>
+                        </Grid>
                     </Grid>
                     {content ? <Grid item sx={{ mb: '-24px', mt: '-12px' }}>
                         <MarkdownContent content={content} />
@@ -62,5 +81,5 @@ export const Message: FC<{ post: AccountInfoDeserialized<PostAccount> }> = ({ po
                 </Grid>
             </Grid>
         </CardContent>
-    </Card>
+    </Card >
 }

@@ -1,11 +1,9 @@
-import { ChildCare, RocketLaunch, Send } from "@mui/icons-material";
-import { Button, Card, CardContent, CircularProgress, Container, Grid, IconButton, List, ListItem, Paper, TextField, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useConnection } from "@solana/wallet-adapter-react";
-import { Keypair, PublicKey } from "@solana/web3.js";
-import { ChannelAccount, ChannelType, getChannel, getChannelsWithParent } from '@dao-xyz/sdk-social';
-import React, { FC, useCallback, useContext, useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { PublicKey } from "@solana/web3.js";
+import { ChannelAccount, ChannelType, getChannelsWithParent } from '@dao-xyz/sdk-social';
+import React, { FC, useEffect, useState } from "react";
 import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { getChannelRoute } from "../../routes/routes";
@@ -19,7 +17,7 @@ import ForumIcon from '@mui/icons-material/Forum';
 import ChatIcon from '@mui/icons-material/Chat';
 import { styled } from '@mui/material/styles';
 import { useChannels } from "../../contexts/ChannelsContext";
-import { CHANNEL_TREE_ROOT } from "../../utils/channelUtils";
+import { useNetwork } from "../../contexts/Network";
 
 declare module 'react' {
     interface CSSProperties {
@@ -81,7 +79,7 @@ function StyledTreeItem(props: StyledTreeItemProps) {
         <StyledTreeItemRoot
             label={
                 <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, pr: 0 }}>
-                    <Box component={LabelIcon} color="inherit" sx={{ mr: 1 }} />
+                    {/*  <Box component={LabelIcon} color="inherit" sx={{ mr: 1 }} /> */}
                     <Typography variant="body2" sx={{ fontWeight: 'inherit', flexGrow: 1 }}>
                         {labelText}
                     </Typography>
@@ -114,9 +112,9 @@ export const ChannelTree: FC = () => {
     const [tree, setTree] = useState<ChannelTree>({});
     const navigate = useNavigate();
     const { loading, select, selection } = useChannels();
-    const [expanded, setExpanded] = React.useState<string[]>([]);
     const [selected, setSelected] = React.useState<string[]>([]);
-
+    const { isMock } = useNetwork();
+    const [expanded, setExpanded] = React.useState<string[]>(isMock ? Object.keys(selection.selectionTree) : []);
 
     useEffect(() => {
 
@@ -197,20 +195,26 @@ export const ChannelTree: FC = () => {
     };
 
     const handleChange = (_event: any, nodeIds: string[]): any => {
-        nodeIds.forEach((nodeId) => {
-            let toExpand = new PublicKey(nodeId);
-            getChannelsWithParent(toExpand, connection).then((channels) => {
-                const newTree = {
-                    ...tree,
-                    [nodeId]: channelsToTree(channels)
-                };
-                setTree(newTree);
-            });
-        })
+        if (!isMock) {
+            nodeIds.forEach((nodeId) => {
+                let toExpand = new PublicKey(nodeId);
+                getChannelsWithParent(toExpand, connection).then((channels) => {
+                    const newTree = {
+                        ...tree,
+                        [nodeId]: channelsToTree(channels)
+                    };
+                    setTree(newTree);
+                });
+            })
+        }
+
         setExpanded(nodeIds);
 
     };
     const handleSelect = (_event: any, nodeIds: string[]): any => {
+        /*  if (isMock) {
+             return;
+         } */
         setSelected(nodeIds);
         if (nodeIds.length == 1) {
             navigate(getChannelRoute(new PublicKey(nodeIds[0])), { replace: true });

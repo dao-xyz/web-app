@@ -7,9 +7,9 @@ import { ChannelAccount, getChannel } from '@dao-xyz/sdk-social';
 import React, { FC, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
-import { ChatFeed } from "./ChatFeed";
-import NewPost from "../forum/post/NewPost";
+import { PostFeed } from "./ChatFeed";
 import { useChannels } from "../../../contexts/ChannelsContext";
+import NewPost from "./NewPost";
 
 export const Chat: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({ channel }) => {
     const contentRef = useRef<HTMLDivElement>(null);
@@ -45,28 +45,32 @@ export const Chat: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({
 
     }
 
-    return <>{
+    return <Box sx={{ height: '100%' }}>{
         notFound ? <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Typography variant="h6">DAO not found</Typography>
         </Box> :
-            <>
-                <Container maxWidth="md" disableGutters sx={{ height: 'calc(100vh - 120px)' }} >
-                    <Grid container flexDirection="column" sx={{ height: '100%' }} spacing={2}>
-                        <Grid ref={contentRef} item sx={{ flex: 1, overflowY: 'scroll', width: '100%', mt: 2, mr: -2, pr: 2 }} >
-                            <ChatFeed onFeedChange={onFeedChange} channels={channel ? [channel] : []} />
-                        </Grid>
-                        {showNewMessageAlert && initialFeed && !loading && <Alert variant="filled" severity="info">
-                            New messages available
-                        </Alert>}
-                        <Grid item>
-                            <Card raised elevation={2}>
-                                <CardContent>
-                                    {channel?.pubkey ? <NewPost previewable={true} onCreation={setCreatedPost} channel={channel?.pubkey} /> : <></>}
-                                </CardContent>
-                            </Card>
-                        </Grid>
+            /*  <Box sx={{ height: 'calc(100vh - 120px)' }}> */
+            /*    <Box sx={{ overflowY: 'scroll', height: '100%' }}> */
+            <Container maxWidth="md" sx={{ height: '100%' }} disableGutters >
+                <Grid container flexDirection="column" sx={{ height: '100%' }} spacing={2}>
+                    <Grid ref={contentRef} item sx={{ flex: 1, width: '100%', mt: 2, mr: -2, pr: 2 }} >
+                        <PostFeed onFeedChange={onFeedChange} channels={channel ? [channel] : []} />
                     </Grid>
-                </Container>
-            </>
-    }</>
+                    {showNewMessageAlert && initialFeed && !loading && <Alert variant="filled" severity="info">
+                        New messages available
+                    </Alert>}
+                    <Grid item>
+                        <Card raised elevation={2}>
+                            <CardContent sx={{ pb: "4px !important" }}>
+                                {channel?.pubkey ? <NewPost previewable={true} onCreation={setCreatedPost} channel={channel?.pubkey} /> : <></>}
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                </Grid>
+            </Container>
+        /*   </Box> */
+
+
+        /*  </Box > */
+    }</Box>
 }

@@ -26,8 +26,9 @@ import { useParams } from "react-router-dom";
 import { walletConnectClickOnce } from "../components/network/Wallet/Wallet";
 
 export const NetworkContext = React.createContext({
-  changeNetwork: (network: NetworkXYZ, pathname: string) => {},
+  changeNetwork: (network: NetworkXYZ, pathname: string) => { },
   config: getNetworkConfig(NetworkXYZ.Mainnet),
+  isMock: false,
   // getPathWithNetwork: (href: string): string => ''
 });
 
@@ -47,6 +48,7 @@ const getMasterNetwork = (): NetworkXYZ => {
   if (process.env.REACT_APP_NETWORK == "devnet") return NetworkXYZ.Devnet;
   if (process.env.REACT_APP_NETWORK == "testnet") return NetworkXYZ.Testnet;
   if (process.env.REACT_APP_NETWORK == "localhost") return NetworkXYZ.Localhost;
+  if (process.env.REACT_APP_NETWORK == "mock") return NetworkXYZ.Mock;
   throw Error("Undefiend network from configuration: " + process.env);
 };
 export const Network = ({ children }: { children: JSX.Element }) => {
@@ -63,6 +65,7 @@ export const Network = ({ children }: { children: JSX.Element }) => {
           window.location.origin + getPathForNetwork(network, pathname);
         setNetwork(network);
       },
+      isMock: network == NetworkXYZ.Mock,
       config: getNetworkConfig(network),
       /*   getPathWithNetwork: (href: string) => {
                   const path = "/" + getNetworkConfig(network).path;

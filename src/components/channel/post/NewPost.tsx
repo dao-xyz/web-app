@@ -1,4 +1,6 @@
 import {
+    Box,
+    Button,
     Checkbox,
     CircularProgress,
     FormControlLabel,
@@ -14,18 +16,29 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey, sendAndConfirmTransaction, Transaction } from "@solana/web3.js";
 import React, { useCallback } from 'react';
 import { createPostTransaction, CreateUpvoteDownvoteVoteConfig, LinkPostContent } from "@dao-xyz/sdk-social";
-import { useIpfsService } from "../../../../contexts/IpfsServiceContext";
-import { IpfsWalletContext, useIpfsProviderModal } from "../../../ipfs/useIpfsProviderModal";
-import { IpfsServiceModal } from "../../../ipfs/IpfsServiceModal";
-import { useAlert } from "../../../../contexts/AlertContext";
-import IpfsProviderPasswordDialog from "../../../ipfs/IpfsProviderPasswordDialog";
 import ReactMarkdown from 'react-markdown'
 import { SignerMaybeSignForMe, SignForMe } from "@dao-xyz/sdk-signforme";
-
 import { AuthorityType, getSignerAuthority } from "@dao-xyz/sdk-social";
-import { useSmartWallet } from "../../../../contexts/SmartWalletContext";
-import { SETTINGS_BURNER } from "../../../../routes/routes";
 import { Link as RouterLink } from 'react-router-dom';
+import { useSmartWallet } from "../../../contexts/SmartWalletContext";
+import { useIpfsService } from "../../../contexts/IpfsServiceContext";
+import { useAlert } from "../../../contexts/AlertContext";
+import { IpfsWalletContext } from "../../ipfs/useIpfsProviderModal";
+import IpfsProviderPasswordDialog from "../../ipfs/IpfsProviderPasswordDialog";
+import { IpfsServiceModal } from "../../ipfs/IpfsServiceModal";
+import { SETTINGS_BURNER } from "../../../routes/routes";
+import GifIcon from '@mui/icons-material/Gif';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
+import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
+import AttachmentIcon from '@mui/icons-material/Attachment';
+import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
+import FormatBoldIcon from '@mui/icons-material/FormatBold';
+import FormatItalicIcon from '@mui/icons-material/FormatItalic';
+import FormatIndentIncreaseIcon from '@mui/icons-material/FormatIndentIncrease';
+import FormatIndentDecreaseIcon from '@mui/icons-material/FormatIndentDecrease';
+import TitleIcon from '@mui/icons-material/Title';
+import AddIcon from '@mui/icons-material/Add';
+import AbcIcon from '@mui/icons-material/Abc';
 export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCreation: (post: PublicKey) => any }) {
     const { connection } = useConnection();
     const [text, setText] = React.useState('');
@@ -80,7 +93,6 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
                     signer: burnerWallet.keypair.publicKey
                 });
                 payer = burnerWallet.keypair.publicKey;
-                console.log('BURNER AS SIGNED', owner, payer)
             }
 
 
@@ -116,7 +128,7 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
 
     }, [text, connected, password])
     return (
-        <Grid container direction="column">
+        <Grid container direction="column" >
             <Grid container item justifyContent="space-between" spacing={1}>
                 <Grid item flex={1}>
                     <TextField size="small"
@@ -174,11 +186,34 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
                 <IpfsProviderPasswordDialog open={passwordDialogVisible} onReset={() => { }} setOpen={setPasswordDialogVisible} setPassword={(password) => { setPassword(password); createPost() }} />
 
             </Grid >
-            <Grid item container color="text.secondary" sx={{ height: '5px', justifyContent: "right" }}>
+            <Grid item container justifyContent="right">
+                <IconButton sx={{ marginRight: 'auto' }} ><AddIcon /></IconButton>
+
+                <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                    <IconButton ><FormatBoldIcon /></IconButton>
+                    <IconButton ><FormatItalicIcon /></IconButton>
+                    <IconButton ><FormatIndentIncreaseIcon /></IconButton>
+                    <IconButton ><FormatIndentDecreaseIcon /></IconButton>
+                    <IconButton ><TitleIcon /></IconButton>
+                </Box>
+
+                <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" }, justifyContent: "right", alignItems: "center" }}>
+                    <IconButton ><AbcIcon /></IconButton>
+
+                </Box>
+                <IconButton ><VideoCallIcon /></IconButton>
+                <IconButton ><HeadsetMicIcon /></IconButton>
+                <IconButton ><AttachmentIcon /></IconButton>
+                <IconButton ><EmojiEmotionsIcon /></IconButton>
+
+            </Grid>
+
+
+            {/*             <Grid item container color="text.secondary" sx={{ height: '5px', justifyContent: "right" }}>
                 {!!burnerWallet && <Grid item sx={{ mr: 1 }}>
                     <Link variant="caption" component={RouterLink} to={SETTINGS_BURNER} target="_blank">Burner wallet balance: {burnerWalletBalance}</Link>
                 </Grid>}
-            </Grid>
+            </Grid> */}
         </Grid >
     );
 }

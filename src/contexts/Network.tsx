@@ -44,10 +44,11 @@ const getPreferedNetwork = () => {
 }
 const PREFERRED_NETWORK = getPreferedNetwork(); */
 const getMasterNetwork = (): NetworkXYZ => {
-  if (!process.env.REACT_APP_NETWORK) return NetworkXYZ.Mainnet;
+  if (!process.env.REACT_APP_NETWORK) return NetworkXYZ.Mock;
   if (process.env.REACT_APP_NETWORK == "devnet") return NetworkXYZ.Devnet;
   if (process.env.REACT_APP_NETWORK == "testnet") return NetworkXYZ.Testnet;
   if (process.env.REACT_APP_NETWORK == "localhost") return NetworkXYZ.Localhost;
+  if (process.env.REACT_APP_NETWORK == "mainnet") return NetworkXYZ.Mainnet;
   if (process.env.REACT_APP_NETWORK == "mock") return NetworkXYZ.Mock;
   throw Error("Undefiend network from configuration: " + process.env);
 };

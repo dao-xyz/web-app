@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
+import { AccountInfoDeserialized, ContentSourceString } from "@dao-xyz/sdk-common";
 import {
   ChannelAccount,
   getChannel,
@@ -8,16 +8,17 @@ import {
   getChannels,
   getChannelAuthorities,
   AuthorityType,
+  ChannelType,
 } from "@dao-xyz/sdk-social";
 
-import { NetworkContext } from "./Network";
-import { Connection, PublicKey, Transaction } from "@solana/web3.js";
+import { useNetwork } from "./Network";
+import { Keypair, PublicKey } from "@solana/web3.js";
 import {
   ChannelTree,
   getParentChannelChain,
   getParentChannelChainTree,
 } from "../utils/channelUtils";
-import { AccountCache } from "../utils/accountCache";
+import BN from 'bn.js';
 
 interface ChannelSelection {
   selectionPath: AccountInfoDeserialized<ChannelAccount>[];
@@ -33,6 +34,7 @@ interface IChannelContext {
   loading: boolean;
   selection: ChannelSelection;
   select: (channel: PublicKey) => Promise<void>;
+  dao: AccountInfoDeserialized<ChannelAccount> | undefined
 }
 
 const groupAuthoritiesByType = (
@@ -53,25 +55,202 @@ const groupAuthoritiesByType = (
 };
 export const ChannelsContext = React.createContext<IChannelContext>({} as any);
 export const useChannels = () => useContext(ChannelsContext);
+const mockChannelSelection = (): ChannelSelection => {
 
+  let dao = {
+    data: {
+      channelType: ChannelType.Chat,
+      collection: undefined,
+      creation_timestamp: new BN(1640991600),
+      encryption: undefined,
+      info: new ContentSourceString({
+        string: 'Hello world!'
+      }),
+      name: 'dao | xyz',
+      parent: undefined
+    },
+    pubkey: new PublicKey("BZkn78AdcPXmYRGgWbF8QV2oVWNhtLFgLwD1Gwz3WfQA")
+  };
+
+  let welcome = {
+    data: {
+      channelType: ChannelType.Chat,
+      collection: undefined,
+      creation_timestamp: new BN(1640991600),
+      encryption: undefined,
+      info: new ContentSourceString({
+        string: 'Hello world!'
+      }),
+      name: 'Welcome',
+      parent: dao.pubkey
+    },
+    pubkey: Keypair.generate().publicKey
+  };
+
+  let gm = {
+    data: {
+      channelType: ChannelType.Chat,
+      collection: undefined,
+      creation_timestamp: new BN(1640991600),
+      encryption: undefined,
+      info: new ContentSourceString({
+        string: 'Hello world!'
+      }),
+      name: 'gm',
+      parent: dao.pubkey
+    },
+    pubkey: Keypair.generate().publicKey
+  };
+
+  let forum = {
+    data: {
+      channelType: ChannelType.Chat,
+      collection: undefined,
+      creation_timestamp: new BN(1640991600),
+      encryption: undefined,
+      info: new ContentSourceString({
+        string: 'Hello world!'
+      }),
+      name: 'Forum',
+      parent: dao.pubkey
+    },
+    pubkey: Keypair.generate().publicKey
+  };
+  let governance = {
+    data: {
+      channelType: ChannelType.Chat,
+      collection: undefined,
+      creation_timestamp: new BN(1640991600),
+      encryption: undefined,
+      info: new ContentSourceString({
+        string: 'Hello world!'
+      }),
+      name: 'Governance',
+      parent: dao.pubkey
+    },
+    pubkey: Keypair.generate().publicKey
+  };
+  let coreUnits = {
+    data: {
+      channelType: ChannelType.Chat,
+      collection: undefined,
+      creation_timestamp: new BN(1640991600),
+      encryption: undefined,
+      info: new ContentSourceString({
+        string: 'Hello world!'
+      }),
+      name: 'Core units',
+      parent: dao.pubkey
+    },
+    pubkey: Keypair.generate().publicKey
+  };
+
+  let product = {
+    data: {
+      channelType: ChannelType.Chat,
+      collection: undefined,
+      creation_timestamp: new BN(1640991600),
+      encryption: undefined,
+      info: new ContentSourceString({
+        string: 'Hello world!'
+      }),
+      name: 'Product',
+      parent: coreUnits.pubkey
+    },
+    pubkey: Keypair.generate().publicKey
+  };
+
+  let roadmap = {
+    data: {
+      channelType: ChannelType.Chat,
+      collection: undefined,
+      creation_timestamp: new BN(1640991600),
+      encryption: undefined,
+      info: new ContentSourceString({
+        string: 'Hello world!'
+      }),
+      name: 'Roadmap',
+      parent: product.pubkey
+    },
+    pubkey: Keypair.generate().publicKey
+  };
+
+  let targetAudience = {
+    data: {
+      channelType: ChannelType.Chat,
+      collection: undefined,
+      creation_timestamp: new BN(1640991600),
+      encryption: undefined,
+      info: new ContentSourceString({
+        string: 'Hello world!'
+      }),
+      name: 'Target audience',
+      parent: product.pubkey
+    },
+    pubkey: Keypair.generate().publicKey
+  };
+
+  let userStories = {
+    data: {
+      channelType: ChannelType.Chat,
+      collection: undefined,
+      creation_timestamp: new BN(1640991600),
+      encryption: undefined,
+      info: new ContentSourceString({
+        string: 'Hello world!'
+      }),
+      name: 'User stories',
+      parent: product.pubkey
+    },
+    pubkey: Keypair.generate().publicKey
+  };
+
+
+  return {
+    authorities: [],
+    authoritiesByType: new Map(),
+    channel: welcome,
+    selectionPath: [welcome, dao],
+    selectionTree: {
+      [dao.pubkey.toBase58()]: [welcome, gm, forum, governance, coreUnits],
+      [welcome.pubkey.toBase58()]: [],
+      [forum.pubkey.toBase58()]: [],
+      [gm.pubkey.toBase58()]: [],
+      [governance.pubkey.toBase58()]: [],
+      [coreUnits.pubkey.toBase58()]: [product],
+      [product.pubkey.toBase58()]: [roadmap, targetAudience, userStories]
+    }
+  }
+}
 export const ChannelsProvider = ({ children }: { children: JSX.Element }) => {
   const { connection } = useConnection();
-  const [selection, setSelection] = React.useState<ChannelSelection>({
+
+
+  // const [accountCache, setAccountCache] = useState(new AccountCache<ChannelAccount>(50));
+  const { config, isMock } = useNetwork();
+  const [selection, setSelection] = React.useState<ChannelSelection>(isMock ? mockChannelSelection() : {
     selectionPath: undefined,
     selectionTree: undefined,
     authorities: undefined,
     authoritiesByType: undefined,
     channel: undefined,
   });
-  // const [accountCache, setAccountCache] = useState(new AccountCache<ChannelAccount>(50));
-  const network = React.useContext(NetworkContext);
+
   const [loading, setLoading] = useState(false);
   const selectionMemo = React.useMemo(
     () => ({
       selection,
       loading,
+      dao: selection.selectionPath?.length > 0 ? selection.selectionPath[selection.selectionPath.length - 1] : undefined,
       select: async (channel: PublicKey) => {
         setLoading(true);
+
+        if (isMock) {
+          setLoading(false);
+          setSelection(mockChannelSelection());
+          return;
+        }
+
         let previousSelection = selection;
         setSelection({
           selectionPath: undefined,
@@ -125,8 +304,9 @@ export const ChannelsProvider = ({ children }: { children: JSX.Element }) => {
         setLoading(false);
       },
     }),
-    [network.config.type, selection, loading]
+    [config.type, selection, loading]
   );
+
 
   return (
     <ChannelsContext.Provider value={selectionMemo}>

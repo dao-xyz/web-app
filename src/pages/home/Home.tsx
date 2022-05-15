@@ -5,7 +5,6 @@ import Toolbar from "@mui/material/Toolbar";
 import { useParams } from "react-router";
 import { ChannelsFilter } from "../../components/channel/ChannelsFilter";
 import { Container, Grid } from "@mui/material";
-import { PostsFeed } from "../../components/channel/forum/post/PostsFeed";
 import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { ChannelAccount } from "@dao-xyz/sdk-social";
 const drawerWidth = 240;
@@ -22,7 +21,6 @@ export function Home() {
                     }} />
                 </Grid>
                 <Grid item>
-                    <PostsFeed channels={channels} />
                 </Grid>
             </Grid>
         </Container>

@@ -13,6 +13,7 @@ export enum NetworkXYZ {
   Testnet = "Testnet",
   Devnet = "Devnet",
   Localhost = "Localhost",
+  Mock = "Mock"
 }
 
 const MAIN_NET: NetworkConfig = {
@@ -35,6 +36,14 @@ const DEV_NET: NetworkConfig = {
   path: "devnet",
 };
 
+const MOCK_NET: NetworkConfig = {
+  ...DEV_NET,
+  name: "mock",
+  path: "mock",
+  type: NetworkXYZ.Mock,
+
+};
+
 const LOCALHOST: NetworkConfig = {
   type: NetworkXYZ.Localhost,
   name: "localhost",
@@ -52,11 +61,13 @@ export const getWalletAdapterNetwork = (
       return WalletAdapterNetwork.Testnet;
     case NetworkXYZ.Mainnet:
       return WalletAdapterNetwork.Mainnet;
+    case NetworkXYZ.Mock:
+      return WalletAdapterNetwork.Devnet;
     default:
       return undefined;
   }
 };
-export const ALL_CONFIGS = [MAIN_NET, TEST_NET, DEV_NET];
+export const ALL_CONFIGS = [MAIN_NET, TEST_NET, DEV_NET, MOCK_NET];
 
 export const getNetworkConfig = (type: NetworkXYZ): NetworkConfig => {
   const network = ALL_CONFIGS.find((config) => config.type === type);

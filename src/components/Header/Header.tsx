@@ -11,7 +11,7 @@ import Button from "@mui/material/Button";
 import LogoWhite from "./../../logo.png";
 import LogoGray from "./../../logo-gray.png";
 import LogoVlack from "./../../logo-black.png";
-
+import ChildCareIcon from '@mui/icons-material/ChildCare';
 import ThemeToggle from "../ThemeToggle";
 import { Wallet } from "../network/Wallet/Wallet";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
@@ -20,16 +20,21 @@ import { useUser } from "../../contexts/UserContext";
 import { NetworkContext } from "../../contexts/Network";
 import UserMenu from "./UserMenu";
 import { ABOUT, EXPLORE, HOME, SETTINGS, USER_NEW } from "../../routes/routes";
-import { PersonAdd, Settings } from "@mui/icons-material";
+import { PersonAdd, Search, Settings } from "@mui/icons-material";
 import ChangeNetworkDialog from "../network/ChangeNetworkDialog";
 import { useTheme } from "@mui/styles";
-
+import ExploreIcon from '@mui/icons-material/Explore';
+import { InputAdornment, Stack, Switch, TextField } from "@mui/material";
+import ViewInArIcon from '@mui/icons-material/ViewInAr';
+import HomeIcon from '@mui/icons-material/Home';
+import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
+import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
 const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({ drawerWidth, onDrawerToggle }) => {
   const [anchorElMenuNav, setAnchorElMenuNav] = React.useState(null);
   const [anchorElSettingsNav, setAnchorElSettingsNav] = React.useState(null);
   const [openChangeNetworkDialog, setOpenChangeNetworkDialog] = React.useState(false);
   const theme = useTheme();
-  const network = React.useContext(NetworkContext);
+  const { isMock } = React.useContext(NetworkContext);
   const { publicKey } = React.useContext(WalletContext);
   const { user } = useUser();
 
@@ -103,7 +108,7 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
         </Typography>
       </Toolbar> */}
       <Container maxWidth="xl">
-        <Toolbar variant="dense">
+        <Toolbar> {/* variant="dense" */}
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -115,9 +120,7 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
           </IconButton>
           <Typography
             variant="h6"
-            noWrap
-            component="div"
-            sx={{ /* , display: { xs: "none", md: "flex" } */ }}
+            sx={{ mr: 2/* , display: { xs: "none", md: "flex" } */ }}
           >
             <IconButton
               component={RouterLink}
@@ -175,10 +178,23 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
             component="div"
             sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           ></Typography> */}
-
-          <Box sx={{ display: { md: "flex" }/*  flexGrow: 1, display: { xs: "none", md: "flex" }  */ }}>
-
+          {/*  <Stack direction="row" spacing={1} alignItems="center">
+            <DocumentScannerIcon />
+            <Switch disabled />
+            <ViewInArIcon />
+          </Stack> */}
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <Button startIcon={<HomeIcon />} >
+              Home
+            </Button>
           </Box>
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <Button startIcon={<ExploreIcon />} >
+              Explore
+            </Button>
+          </Box>
+
+
           {/*   <Button
             key="home"
             onClick={navigateToHome}
@@ -186,24 +202,43 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
           >
             Home
           </Button> */}
-          <Button
+          {/*  <Button
             key="github"
-            onClick={navigateToChannels}
+            disabled
             sx={{ display: "block" }}
           >
-            DAO Explorer
-          </Button>
+            dao | xyz
+          </Button> */}
+
 
           {/* <Box>
             {network.config.type != NetworkXYZ.Mainnet ? (<Typography
               variant="h6">Network: {network.config.type}</Typography>
             ) : (<></>)}
           </Box> */}
+          <Box sx={{ width: '100%', display: 'flex', ml: 1, mr: 1, justifyContent: 'center' }}>
+            <TextField
+              id="search"
+              size="small"
+              disabled
+              variant="outlined"
+              placeholder="Search in multiple DAOs: posts, files, images..."
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ maxWidth: '500px', width: '100%' }}
+            />
+          </Box>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent: "right", alignItems: "center" }}>
             <ThemeToggle />
-            {
-              publicKey ?
-                <UserMenu displayName={true}></UserMenu> : (<Wallet />)}
+            {!isMock ? (publicKey ?
+              <UserMenu displayName={true}></UserMenu> : (<Wallet />)) : (<Button disabled variant="outlined" startIcon={<ElectricalServicesIcon />}>
+                Connect
+              </Button>)}
           </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" }, justifyContent: "right", alignItems: "center" }}>
@@ -217,10 +252,13 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
             >
               <Settings />
             </IconButton>
-            {
-              publicKey ?
-                (<UserMenu displayName={false}></UserMenu>) : (<Wallet />)}
 
+            {!isMock ? (publicKey ?
+              <UserMenu displayName={true}></UserMenu> : (<Wallet />)) : (<>
+                <IconButton disabled >
+                  <ElectricalServicesIcon />
+                </IconButton>
+              </>)}
             <Menu
               id="settings-appbar"
               anchorEl={anchorElSettingsNav}

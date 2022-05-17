@@ -15,15 +15,14 @@ import { ChannelSettings } from "./ChannelSettings";
 import { useChannels } from "../../contexts/ChannelsContext";
 export const Channel: FC = () => {
 
-    const { connection } = useConnection();
     const [openSettings, setOpenSettings] = React.useState(false);
     const {
         loading,
         select,
         selection,
     } = useChannels();
-    return <Box sx={{ p: 3, height: '100%' }}>
-        <Grid container direction="row" justifyContent='right'>
+    return <Box sx={{ pt: 2, paddingBottom: "env(safe-area-inset-bottom)" }}>
+        <Grid container sx={{ pr: 2, pl: 2 }} direction="row" justifyContent='right'>
             <Grid item sx={{ mr: 'auto' }}>  <ChannelLabelBreadcrumb /></Grid>
             <Grid item> <IconButton onClick={() => setOpenSettings(!openSettings)} ><InfoIcon /></IconButton> </Grid>
             <Grid item> <IconButton onClick={() => setOpenSettings(!openSettings)} ><CastleIcon /></IconButton> </Grid>

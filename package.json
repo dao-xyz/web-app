@@ -1,8 +1,8 @@
 {
-  "name": "dao-xyz-web-app",
+  "name": "dao-xyz",
   "version": "0.1.1",
   "private": false,
-  "homepage": "https://dao-xyz.github.io/web-app/",
+  "homepage": "http://dao.xyz",
   "license": "Apache-2.0",
   "dependencies": {
     "@dao-xyz/ipfs-pinning-adapter": "^0.1.13",
@@ -43,7 +43,9 @@
     "react-markdown": "^8.0.0",
     "react-router-dom": "^6.0.2",
     "react-scripts": "5.0.0",
+    "react-scrollbar-size": "^5.0.0",
     "react-syntax-highlighter": "^15.5.0",
+    "rehype-raw": "^6.1.1",
     "stream-browserify": "^3.0.0",
     "typescript": "^4.5.5",
     "web-vitals": "^2.1.4"

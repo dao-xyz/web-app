@@ -18,7 +18,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import { styled } from '@mui/material/styles';
 import { useChannels } from "../../contexts/ChannelsContext";
 import { useNetwork } from "../../contexts/Network";
-
+import LockIcon from '@mui/icons-material/Lock';
 declare module 'react' {
     interface CSSProperties {
         '--tree-view-color'?: string;
@@ -32,6 +32,7 @@ type StyledTreeItemProps = TreeItemProps & {
     labelIcon: React.ElementType<SvgIconProps>;
     labelInfo?: string;
     labelText: string;
+    encrypted: boolean;
 }
 
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
@@ -72,6 +73,7 @@ function StyledTreeItem(props: StyledTreeItemProps) {
         labelIcon: LabelIcon,
         labelInfo,
         labelText,
+        encrypted,
         ...other
     } = props;
 
@@ -86,6 +88,7 @@ function StyledTreeItem(props: StyledTreeItemProps) {
                     <Typography variant="caption" color="inherit">
                         {labelInfo}
                     </Typography>
+                    {encrypted && <LockIcon sx={{ width: "16px" }} />}
                 </Box>
             }
             style={{
@@ -101,17 +104,29 @@ function StyledTreeItem(props: StyledTreeItemProps) {
 interface ChannelTreeItem {
     id: string,
     label: string,
-    type: ChannelType
+    type: ChannelType,
+    encrypted: boolean
 }
 type ChannelTree = { [key: string]: ChannelTreeItem[] };
 
-const channelsToTree = (channels: AccountInfoDeserialized<ChannelAccount>[]) => channels.map(channel => { return { id: channel.pubkey.toString(), label: channel.data.name, type: channel.data.channelType } })
+const findNode = (id: string, tree: ChannelTree): ChannelTreeItem | undefined => {
+    for (const key of Object.keys(tree)) {
+        let elements = tree[key];
+        for (const element of elements) {
+            if (element.id == id) {
+                return element;
+            }
+        }
+    }
+    return undefined;
+}
+
+const channelsToTree = (channels: AccountInfoDeserialized<ChannelAccount>[]) => channels.map(channel => { return { id: channel.pubkey.toString(), label: channel.data.name, type: channel.data.channelType, encrypted: !!channel.data.encryption } })
 export const ChannelTree: FC = () => {
     const { connection } = useConnection();
-    const [notFound, setNotFound] = useState(false);
     const [tree, setTree] = useState<ChannelTree>({});
     const navigate = useNavigate();
-    const { loading, select, selection } = useChannels();
+    const { selection } = useChannels();
     const [selected, setSelected] = React.useState<string[]>([]);
     const { isMock } = useNetwork();
     const [expanded, setExpanded] = React.useState<string[]>(isMock ? Object.keys(selection.selectionTree) : []);
@@ -141,7 +156,8 @@ export const ChannelTree: FC = () => {
                 return {
                     id: v.pubkey.toString(),
                     label: v.data.name,
-                    type: v.data.channelType
+                    type: v.data.channelType,
+                    encrypted: !!v.data.encryption
                 } as ChannelTreeItem
             });
         }
@@ -186,7 +202,7 @@ export const ChannelTree: FC = () => {
                     break;
             }
             return (
-                <StyledTreeItem key={child.id} nodeId={child.id} labelText={child.label} labelIcon={icon}>
+                <StyledTreeItem key={child.id} nodeId={child.id} labelText={child.label} labelIcon={icon} encrypted={child.encrypted}>
                     {childrenNodes}
                 </StyledTreeItem>
             );
@@ -195,6 +211,7 @@ export const ChannelTree: FC = () => {
     };
 
     const handleChange = (_event: any, nodeIds: string[]): any => {
+
         if (!isMock) {
             nodeIds.forEach((nodeId) => {
                 let toExpand = new PublicKey(nodeId);
@@ -215,18 +232,27 @@ export const ChannelTree: FC = () => {
         /*  if (isMock) {
              return;
          } */
+        if (nodeIds.length == 1) {
+            let id = nodeIds[0];
+            let node = findNode(id, tree);
+            if (node.encrypted) {
+                return;
+            }
+        }
+
         setSelected(nodeIds);
         if (nodeIds.length == 1) {
-            navigate(getChannelRoute(new PublicKey(nodeIds[0])), { replace: true });
+            let id = nodeIds[0];
+
+            navigate(getChannelRoute(new PublicKey(id)), { replace: true });
 
         }
     }
-
     return <TreeView
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
         defaultEndIcon={<div style={{ width: 24 }} />}
-        sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+        sx={{ maxHeight: '300px', flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
         onNodeToggle={handleChange}
         onNodeSelect={handleSelect}
         multiSelect

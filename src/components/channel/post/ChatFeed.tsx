@@ -15,15 +15,35 @@ import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { Message } from "./Message";
 import { useNetwork } from "../../../contexts/Network";
 import BN from 'bn.js';
-const mockPosts: AccountInfoDeserialized<PostAccount>[] = [
+import { useTheme } from "@mui/styles";
+
+const mockPosts = (darkMode: boolean): AccountInfoDeserialized<PostAccount>[] => [
     {
         data: ({
             channel: undefined,
             content: new StringPostContent({
-                string: '# dao | xyz \nThis is some info about DAO XYZ!'
+                string: `<div style="position: relative; height: 20px"><div style="position: absolute; top: 30px; left: 20px"><h3>dao | xyz</h3><br></div></div><video width="100%" playsinline autoplay muted loop style="margin-bottom: 10px"> <source src="https://dao-xyz-media.s3.us-east-1.amazonaws.com/${darkMode ? 'night' : 'day'}.mp4" type="video/mp4"> type="video/ogg">Your browser does not support the video tag.</video>\n\nThis is a platform where communities and organization can grow and prosper, just like this tree. By combining state of the art governance protocols with an adaptive  post-format and a fully decentralized data storage layer we will revolutionize the way internet is controlled and consumed`
+
+                /*                 string: `<video width="100%" playsinline autoplay muted loop style="margin-bottom: 10px"> <source src="https://dao-xyz-media.s3.us-east-1.amazonaws.com/${darkMode ? 'night' : 'day'}.mp4" type="video/mp4"> type="video/ogg">Your browser does not support the video tag.</video>\n\nThis is a platform where communities and organization can grow and prosper, just like this tree. By combining state of the art governance protocols with an adaptive  post-format and a fully decentralized data storage layer we will revolutionize the way internet is controlled and consumed` */
             }),
-            createAtTimestamp: new BN(1640991600),
-            creator: Keypair.generate().publicKey,
+            createAtTimestamp: new BN(1652531447),
+            creator: "Mr Shib",
+            hash: undefined,
+            parent: undefined,
+            source: undefined,
+            voteConfig: undefined
+        } as any as PostAccount),
+        pubkey: Keypair.generate().publicKey
+    },
+
+    {
+        data: ({
+            channel: undefined,
+            content: new StringPostContent({
+                string: 'We are not really live yet, but please follow our [Twitter](https://twitter.com/DAOxyzDAO)  <img src="https://avatars.githubusercontent.com/u/50278?s=200&v=4" alt="drawing" style="width: 30px; margin-bottom: -10px"/> for updates!'
+            }),
+            createAtTimestamp: new BN(1652531447),
+            creator: "Mr Shib",
             hash: undefined,
             parent: undefined,
             source: undefined,
@@ -35,10 +55,10 @@ const mockPosts: AccountInfoDeserialized<PostAccount>[] = [
         data: ({
             channel: undefined,
             content: new StringPostContent({
-                string: 'Welcome'
+                string: 'Just found this tune! wu think?\n\n\n<iframe width="100%" height="315" src="https://www.youtube.com/embed/IwLSrNu1ppI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
             }),
-            createAtTimestamp: new BN(1640991600),
-            creator: Keypair.generate().publicKey,
+            createAtTimestamp: new BN(1652531447),
+            creator: "Mr Shib",
             hash: undefined,
             parent: undefined,
             source: undefined,
@@ -46,21 +66,6 @@ const mockPosts: AccountInfoDeserialized<PostAccount>[] = [
         } as any as PostAccount),
         pubkey: Keypair.generate().publicKey
     },
-    {
-        data: ({
-            channel: undefined,
-            content: new StringPostContent({
-                string: 'Hello?'
-            }),
-            createAtTimestamp: new BN(1640991600),
-            creator: Keypair.generate().publicKey,
-            hash: undefined,
-            parent: undefined,
-            source: undefined,
-            voteConfig: undefined
-        } as any as PostAccount),
-        pubkey: Keypair.generate().publicKey
-    }
 ];
 // Assumes sorted
 const mergePosts = (a: AccountInfoDeserialized<PostAccount>[], b: AccountInfoDeserialized<PostAccount>[]): AccountInfoDeserialized<PostAccount>[] => {
@@ -129,6 +134,8 @@ export const PostFeed = (props: { channels: AccountInfoDeserialized<ChannelAccou
     const { connection } = useConnection();
     const [loading, setLoading] = useState(false);
     const { isMock } = useNetwork();
+    const theme = useTheme();
+
     const childrenCount = (key: PublicKey) => childrenPosts[key.toBase58()] ? childrenPosts[key.toBase58()].length : 0;
     const updateContent = () => {
         /* setLoading(true) */
@@ -156,8 +163,9 @@ export const PostFeed = (props: { channels: AccountInfoDeserialized<ChannelAccou
             })
         }
         else {
-            setPosts(mockPosts);
-            setChildrenPosts(createChildrenMap(mockPosts))
+            let mockPostsGenerated = mockPosts(theme["palette"].mode != 'light')
+            setPosts(mockPostsGenerated);
+            setChildrenPosts(createChildrenMap(mockPostsGenerated))
         }
 
 
@@ -167,8 +175,12 @@ export const PostFeed = (props: { channels: AccountInfoDeserialized<ChannelAccou
     }, [props.channels[0].pubkey.toString()])
 
     useEffect(() => {
+
+        updateContent();
+
+    }, [isMock, posts.length, theme["palette"].mode])
+    useEffect(() => {
         if (isMock) {
-            updateContent();
             return;
         }
         const interval = setInterval(() => {
@@ -179,10 +191,11 @@ export const PostFeed = (props: { channels: AccountInfoDeserialized<ChannelAccou
         return () => clearInterval(interval);
     }, [props.channels[0].pubkey.toString(), posts.length, posts ? posts[posts.length - 1]?.pubkey.toString() : undefined])
     return (
-        <>
+        <Box sx={{ pb: 1 }}>
             {loading ? <><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={200} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={75} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={150} /></> : <></>}
-            {!loading && (posts.length > 0 ? posts.map((post) => <Box key={post.pubkey.toBase58()} sx={{ mt: 2, mb: 2 }} ><Message post={post} commentsCount={childrenCount(post.pubkey)} /></Box>) : <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary">No messages found</Typography></Box>)}
-        </>
+            {!loading && (posts.length > 0 ? posts.map((post, ix) => <Box key={post.pubkey.toBase58()} sx={{ mt: ix > 0 ? 2 : 0, mb: 2 }} ><Message post={post} commentsCount={childrenCount(post.pubkey)} /></Box>) : <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary">No messages found</Typography></Box>)}
+
+        </Box>
     );
 }
 

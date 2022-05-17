@@ -16,6 +16,7 @@ import { getPostContentString } from "../../../utils/postUtils";
 import shiba from "../../../../src/shiba_inu_taiki.jpeg";
 import AddReactionIcon from '@mui/icons-material/AddReaction';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+
 export const Message: FC<{ post: AccountInfoDeserialized<PostAccount>, commentsCount: number }> = ({ post, commentsCount }) => {
 
     const [content, setContent] = useState<string | undefined>(undefined);
@@ -45,7 +46,7 @@ export const Message: FC<{ post: AccountInfoDeserialized<PostAccount>, commentsC
                     <Grid item container alignItems="top" spacing={1} direction="row">
                         <Grid item>
                             <Avatar
-                                alt="Remy Sharp"
+                                alt="avatar"
                                 src={shiba}
                                 sx={{ width: 40, height: 40 }}
                             />

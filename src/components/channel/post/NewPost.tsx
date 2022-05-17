@@ -39,6 +39,8 @@ import FormatIndentDecreaseIcon from '@mui/icons-material/FormatIndentDecrease';
 import TitleIcon from '@mui/icons-material/Title';
 import AddIcon from '@mui/icons-material/Add';
 import AbcIcon from '@mui/icons-material/Abc';
+import NotReadyYetDialog from "../../dialogs/NotReadyYetDialog";
+import { useTheme } from "@mui/styles";
 export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCreation: (post: PublicKey) => any }) {
     const { connection } = useConnection();
     const [text, setText] = React.useState('');
@@ -50,6 +52,8 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
     const [ipfsDialogVisible, setIpfsDialogVisible] = React.useState(false);
     const [passwordDialogVisible, setPasswordDialogVisible] = React.useState(false);
     const [previewMarkdown, setPreviewMarkdown] = React.useState(false);
+    const [openNotReady, setOpenNotReady] = React.useState(false);
+    const theme = useTheme();
     const { alertError, alert } = useAlert();
     const createPost = useCallback(async () => {
         if (!connected) {
@@ -187,24 +191,27 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
 
             </Grid >
             <Grid item container justifyContent="right">
-                <IconButton sx={{ marginRight: 'auto' }} ><AddIcon /></IconButton>
+                <IconButton sx={{ marginRight: 'auto' }} onClick={() => setOpenNotReady(true)}   ><AddIcon /></IconButton>
 
                 <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                    <IconButton ><FormatBoldIcon /></IconButton>
-                    <IconButton ><FormatItalicIcon /></IconButton>
-                    <IconButton ><FormatIndentIncreaseIcon /></IconButton>
-                    <IconButton ><FormatIndentDecreaseIcon /></IconButton>
-                    <IconButton ><TitleIcon /></IconButton>
+                    <Button color="inherit" onClick={() => setOpenNotReady(true)}>Proposal</Button>
+
+                    <IconButton onClick={() => setOpenNotReady(true)}><FormatBoldIcon /></IconButton>
+                    <IconButton onClick={() => setOpenNotReady(true)}><FormatItalicIcon /></IconButton>
+                    <IconButton onClick={() => setOpenNotReady(true)}><FormatIndentIncreaseIcon /></IconButton>
+                    <IconButton onClick={() => setOpenNotReady(true)} ><FormatIndentDecreaseIcon /></IconButton>
+                    <IconButton onClick={() => setOpenNotReady(true)}><TitleIcon /></IconButton>
                 </Box>
 
                 <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" }, justifyContent: "right", alignItems: "center" }}>
-                    <IconButton ><AbcIcon /></IconButton>
+                    <Button color="inherit" onClick={() => setOpenNotReady(true)}>Proposal</Button>
+
+                    <IconButton onClick={() => setOpenNotReady(true)}><AbcIcon /></IconButton>
 
                 </Box>
-                <IconButton ><VideoCallIcon /></IconButton>
-                <IconButton ><HeadsetMicIcon /></IconButton>
-                <IconButton ><AttachmentIcon /></IconButton>
-                <IconButton ><EmojiEmotionsIcon /></IconButton>
+                <IconButton onClick={() => setOpenNotReady(true)}><VideoCallIcon /></IconButton>
+                <IconButton onClick={() => setOpenNotReady(true)}><HeadsetMicIcon /></IconButton>
+                <IconButton onClick={() => setOpenNotReady(true)}><EmojiEmotionsIcon /></IconButton>
 
             </Grid>
 
@@ -214,6 +221,8 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
                     <Link variant="caption" component={RouterLink} to={SETTINGS_BURNER} target="_blank">Burner wallet balance: {burnerWalletBalance}</Link>
                 </Grid>}
             </Grid> */}
+            <NotReadyYetDialog open={openNotReady} onClose={() => setOpenNotReady(false)} />
+
         </Grid >
     );
 }

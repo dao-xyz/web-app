@@ -208,7 +208,7 @@ export const ChannelSettings: FC<{ channel: AccountInfoDeserialized<ChannelAccou
         });
     }, [channel.pubkey.toString()])
     return <>
-        <Toolbar />
+        <Toolbar variant="dense" />
         <Container maxWidth="sm" component="main">
             {!editAuthorities ? <Grid container sx={{ p: 2 }} spacing={2} justifyContent="center" direction="column" >
                 <Grid item sx={{ maxWidth: '50%', minWidth: '200px' }}>

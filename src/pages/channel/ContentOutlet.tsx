@@ -21,6 +21,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import LanIcon from '@mui/icons-material/Lan';
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import NotReadyYetDialog from '../../components/dialogs/NotReadyYetDialog';
 const drawerWidth = 240;
 
 export default function ContentOutlet() {
@@ -31,6 +32,8 @@ export default function ContentOutlet() {
     const [notFound, setNotFound] = React.useState(false);
     const { select, dao } = useChannels();
     const { isMock } = useNetwork();
+    const [openNotReady, setOpenNotReady] = React.useState(false);
+
     React.useEffect(() => {
         if (params?.key) {
             select(new PublicKey(params?.key))
@@ -44,18 +47,20 @@ export default function ContentOutlet() {
 
     const drawer = (
         <div>
-            <Toolbar />
+            <Toolbar variant="dense" />
             {!isMock && <><DAOsExploreSide />     <Divider /></>}
             <Typography sx={{ mt: 2, width: '100%', textAlign: 'center' }}>{dao?.data.name}</Typography>
             <Typography sx={{ ml: 2, mt: 2 }} >Channels</Typography>
             <DAOExploreSide />
             <Divider />
             <Box>
-                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<PeopleIcon />}>People</Button>
-                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<HowToVoteIcon />}>Vote delegation</Button>
-                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<WorkspacePremiumIcon />}>Contributions</Button>
-                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<LanIcon />}>Infrastructure</Button>
+                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<PeopleIcon />} onClick={() => setOpenNotReady(true)} >People</Button>
+                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<HowToVoteIcon />} onClick={() => setOpenNotReady(true)}>Vote delegation</Button>
+                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<WorkspacePremiumIcon />} onClick={() => setOpenNotReady(true)}>Contributions</Button>
+                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<LanIcon />} onClick={() => setOpenNotReady(true)}>Infrastructure</Button>
             </Box>
+            <NotReadyYetDialog open={openNotReady} onClose={() => setOpenNotReady(false)} />
+
             {/* <ChannelTree /> */}
         </div>
     );
@@ -122,11 +127,10 @@ export default function ContentOutlet() {
                 component="main"
                 sx={{ flexGrow: 1, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
             >
-                <Toolbar />
-                <Box sx={{ height: 'calc(100vh - 65px)' }}>
-                    <BaseRoutes />
-                </Box>
+                <Toolbar variant="dense" />
+                <BaseRoutes />
             </Box>
+
         </Box >
     );
 }

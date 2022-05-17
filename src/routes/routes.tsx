@@ -1,5 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 import { Routes, Route } from "react-router";
+import { Navigate, Params, useLocation, useParams } from 'react-router';
+
 import { Deposit } from "../pages/account/Deposit";
 import { DAOExplore } from "../pages/dao/DAOExplore";
 import { MyChannels } from "../pages/dao/MyDAOs";
@@ -25,7 +27,7 @@ export const SETTINGS = "/settings";
 export const SETTINGS_BURNER = "/settings/burner";
 export const ABOUT = "about";
 export const DAOS_MY = "user/channels";
-export const DAO = "c";
+export const DAO = "dao";
 export const DAO_NEW = "dao/new";
 
 export const getChannelRoute = (key: PublicKey) => {
@@ -46,7 +48,7 @@ export const getNewChannelRoute = (parent: PublicKey | undefined) => {
 export function BaseRoutes() {
   return (
     <Routes>
-      <Route path={USER_NEW} element={<NewUser />} />
+      {/* <Route path={USER_NEW} element={<NewUser />} />
       <Route path={USER_SETTINGS} element={<SettingsUser />} />
       <Route path={USER_PROFILE} element={<ProfileUser />} />
       <Route path={SETTINGS} element={<SettingsUser />} />
@@ -59,7 +61,11 @@ export function BaseRoutes() {
       <Route path={DAOS_MY} element={<MyChannels />} />
       <Route path={DAO_NEW + "/:key"} element={<NewChannel />} />
 
-      <Route path={DAO_NEW} element={<NewChannel />} />
+      <Route path={DAO_NEW} element={<NewChannel />} /> */}
+      <Route path={DAO + "/:key"} element={<Channel />} />
+      <Route path="*" element={
+        <Navigate to="/dao/JD7a6iHv7S9VRHkyH9uS5W1HQ37xeM9LGHYZWoR23KB" />
+      } />
     </Routes>
   );
 }

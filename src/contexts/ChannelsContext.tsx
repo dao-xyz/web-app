@@ -69,7 +69,7 @@ const mockChannelSelection = (): ChannelSelection => {
       name: 'dao | xyz',
       parent: undefined
     },
-    pubkey: new PublicKey("BZkn78AdcPXmYRGgWbF8QV2oVWNhtLFgLwD1Gwz3WfQA")
+    pubkey: new PublicKey("4MaR5cd9MsmZ274hX1ZTP3x7vgxASPGLLbyouBbKC5tr")
   };
 
   let welcome = {
@@ -92,7 +92,7 @@ const mockChannelSelection = (): ChannelSelection => {
       channelType: ChannelType.Chat,
       collection: undefined,
       creation_timestamp: new BN(1640991600),
-      encryption: undefined,
+      encryption: 1,
       info: new ContentSourceString({
         string: 'Hello world!'
       }),
@@ -107,7 +107,7 @@ const mockChannelSelection = (): ChannelSelection => {
       channelType: ChannelType.Chat,
       collection: undefined,
       creation_timestamp: new BN(1640991600),
-      encryption: undefined,
+      encryption: 1,
       info: new ContentSourceString({
         string: 'Hello world!'
       }),
@@ -121,7 +121,7 @@ const mockChannelSelection = (): ChannelSelection => {
       channelType: ChannelType.Chat,
       collection: undefined,
       creation_timestamp: new BN(1640991600),
-      encryption: undefined,
+      encryption: 1,
       info: new ContentSourceString({
         string: 'Hello world!'
       }),
@@ -135,7 +135,7 @@ const mockChannelSelection = (): ChannelSelection => {
       channelType: ChannelType.Chat,
       collection: undefined,
       creation_timestamp: new BN(1640991600),
-      encryption: undefined,
+      encryption: 1,
       info: new ContentSourceString({
         string: 'Hello world!'
       }),
@@ -150,7 +150,7 @@ const mockChannelSelection = (): ChannelSelection => {
       channelType: ChannelType.Chat,
       collection: undefined,
       creation_timestamp: new BN(1640991600),
-      encryption: undefined,
+      encryption: 1,
       info: new ContentSourceString({
         string: 'Hello world!'
       }),
@@ -165,7 +165,7 @@ const mockChannelSelection = (): ChannelSelection => {
       channelType: ChannelType.Chat,
       collection: undefined,
       creation_timestamp: new BN(1640991600),
-      encryption: undefined,
+      encryption: 1,
       info: new ContentSourceString({
         string: 'Hello world!'
       }),
@@ -180,7 +180,7 @@ const mockChannelSelection = (): ChannelSelection => {
       channelType: ChannelType.Chat,
       collection: undefined,
       creation_timestamp: new BN(1640991600),
-      encryption: undefined,
+      encryption: 1,
       info: new ContentSourceString({
         string: 'Hello world!'
       }),
@@ -195,7 +195,7 @@ const mockChannelSelection = (): ChannelSelection => {
       channelType: ChannelType.Chat,
       collection: undefined,
       creation_timestamp: new BN(1640991600),
-      encryption: undefined,
+      encryption: 1,
       info: new ContentSourceString({
         string: 'Hello world!'
       }),

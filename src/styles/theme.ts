@@ -20,41 +20,48 @@ export  interface ThemeInterface {
     gradient: string,
 } */
 
-import { createTheme, PaletteMode } from "@mui/material";
+import { createTheme, PaletteMode, ThemeOptions } from "@mui/material";
 import {
   amber,
   blue,
   orange,
   deepOrange,
+  lime,
   grey,
   lightBlue,
+  lightGreen,
+  green,
   yellow,
+  teal,
+  indigo,
+  blueGrey
 } from "@mui/material/colors";
 
-export const getDesignTokens = (mode: PaletteMode) => ({
+export const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
+
   palette: {
     mode,
-    /*  ...(mode === "light"
-       ? {
-         // palette values for light mode
-         primary: blue,
-         secondary: orange,
-         divider: blue[200],
-         text: {
-           primary: grey[900],
-           secondary: grey[800],
-         },
-       }
-       : {
-         // palette values for dark mode
-         primary: lightBlue,
-         secondary: orange,
-         divider: lightBlue[200],
-         text: {
-           primary: grey[100],
-           secondary: grey[500],
-         },
-       }), */
+    ...(mode === "light"
+      ? {
+        // palette values for light mode
+        primary: blue,
+        secondary: orange,
+        /*  divider: blue[200], */
+        text: {
+          primary: grey[900],
+          secondary: grey[800],
+        }
+      }
+      : {
+        // palette values for dark mode
+        primary: lightBlue,
+        secondary: orange,
+        /*   divider: lightBlue[200], */
+        text: {
+          primary: grey[100],
+          secondary: grey[500],
+        },
+      }),
   },
   typography: {
     fontFamily: [

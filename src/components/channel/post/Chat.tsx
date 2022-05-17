@@ -10,6 +10,8 @@ import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { PostFeed } from "./ChatFeed";
 import { useChannels } from "../../../contexts/ChannelsContext";
 import NewPost from "./NewPost";
+import useScrollbarSize from 'react-scrollbar-size';
+import { useTheme } from "@mui/styles";
 
 export const Chat: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({ channel }) => {
     const contentRef = useRef<HTMLDivElement>(null);
@@ -20,7 +22,8 @@ export const Chat: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({
     const { selection, loading } = useChannels();
     const [createdPost, setCreatedPost] = React.useState<PublicKey | undefined>(undefined);
     const [scrollTop, setScrollTop] = useState(0);
-
+    const theme = useTheme();
+    const { width } = useScrollbarSize();
     useEffect(() => {
         const onScroll = e => {
             setScrollTop(e.target.documentElement.scrollTop);
@@ -45,29 +48,42 @@ export const Chat: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({
 
     }
 
-    return <Box sx={{ height: '100%' }}>{
+    return <Box sx={{ height: '100%', backgroundColor: (theme as any).palette.mode == 'light' ? (theme as any).palette.grey["50"] : (theme as any).palette.background.default }}>{
         notFound ? <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Typography variant="h6">DAO not found</Typography>
         </Box> :
             /*  <Box sx={{ height: 'calc(100vh - 120px)' }}> */
             /*    <Box sx={{ overflowY: 'scroll', height: '100%' }}> */
-            <Container maxWidth="md" sx={{ height: '100%' }} disableGutters >
-                <Grid container flexDirection="column" sx={{ height: '100%' }} spacing={2}>
-                    <Grid ref={contentRef} item sx={{ flex: 1, width: '100%', mt: 2, mr: -2, pr: 2 }} >
-                        <PostFeed onFeedChange={onFeedChange} channels={channel ? [channel] : []} />
+            <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "calc(100vh - 105px)" }} >
+                <Grid container flexDirection="column" alignItems="center" sx={{ height: '100%' }}>
+                    <Grid ref={contentRef} container item sx={{ flex: 1, display: 'flex', justifyContent: "center", overflowY: 'scroll', width: '100%', mt: 2, /* mr: -2, pr: 2  */ }} >
+                        <Grid item>
+                            <Box sx={{ /* ml: 2, pr: 16 + "px"  */ }}>
+                                <Box sx={{ maxWidth: "md", width: '100%' }}>
+
+                                    <PostFeed onFeedChange={onFeedChange} channels={channel ? [channel] : []} />
+
+                                </Box>
+                            </Box>
+                        </Grid>
                     </Grid>
                     {showNewMessageAlert && initialFeed && !loading && <Alert variant="filled" severity="info">
                         New messages available
                     </Alert>}
-                    <Grid item>
-                        <Card raised elevation={2}>
-                            <CardContent sx={{ pb: "4px !important" }}>
-                                {channel?.pubkey ? <NewPost previewable={true} onCreation={setCreatedPost} channel={channel?.pubkey} /> : <></>}
-                            </CardContent>
-                        </Card>
+                    <Grid container item direction="row" sx={{ width: `100%`, display: 'flex', justifyContent: 'center' }} >
+                        <Grid item sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
+                            <Card sx={{ width: '100%', flex: 1, maxWidth: 'md' }} raised elevation={8}>
+                                <CardContent sx={{ pb: "4px !important" }}>
+                                    {channel?.pubkey ? <NewPost previewable={true} onCreation={setCreatedPost} channel={channel?.pubkey} /> : <></>}
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item sx={{ width: width + 'px', height: '100%' }}>
+                            <div></div>
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Container>
+            </Box>
         /*   </Box> */
 
 

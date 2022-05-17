@@ -30,6 +30,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
 import NotReadyYetDialog from "../dialogs/NotReadyYetDialog";
+import { useFeatures } from "../../contexts/FeatureContext";
 const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({ drawerWidth, onDrawerToggle }) => {
   const [anchorElMenuNav, setAnchorElMenuNav] = React.useState(null);
   const [anchorElSettingsNav, setAnchorElSettingsNav] = React.useState(null);
@@ -37,7 +38,7 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
   const theme = useTheme();
   const { isMock } = React.useContext(NetworkContext);
   const { publicKey } = React.useContext(WalletContext);
-  const [openNotReady, setOpenNotReady] = React.useState(false);
+  const { openNotReady } = useFeatures();
 
   const navigate = useNavigate();
   const handleOpenNavMenu = (event: any) => {
@@ -127,7 +128,7 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
               /*         component={RouterLink}
                       to="/"
                       size='small' */
-              onClick={() => setOpenNotReady(true)}
+              onClick={openNotReady}
             >
               <Box sx={{ width: '30px', height: '30px', display: 'flex' }}>
                 <img src={theme["palette"].mode == 'light' ? LogoGray : LogoWhite} alt="logo" />
@@ -186,13 +187,13 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
             <ViewInArIcon />
           </Stack> */}
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <Button startIcon={<HomeIcon />} onClick={() => setOpenNotReady(true)}
+            <Button startIcon={<HomeIcon />} onClick={openNotReady}
             >
               Home
             </Button>
           </Box>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <Button startIcon={<ExploreIcon />} onClick={() => setOpenNotReady(true)}
+            <Button startIcon={<ExploreIcon />} onClick={openNotReady}
             >
               Explore
             </Button>
@@ -290,7 +291,6 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
         </Toolbar>
       </Container>
       <ChangeNetworkDialog open={openChangeNetworkDialog} onClose={() => setOpenChangeNetworkDialog(false)}></ChangeNetworkDialog>
-      <NotReadyYetDialog open={openNotReady} onClose={() => setOpenNotReady(false)} />
 
     </AppBar >
   );

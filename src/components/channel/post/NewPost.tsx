@@ -41,6 +41,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AbcIcon from '@mui/icons-material/Abc';
 import NotReadyYetDialog from "../../dialogs/NotReadyYetDialog";
 import { useTheme } from "@mui/styles";
+import { useFeatures } from "../../../contexts/FeatureContext";
 export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCreation: (post: PublicKey) => any }) {
     const { connection } = useConnection();
     const [text, setText] = React.useState('');
@@ -52,9 +53,10 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
     const [ipfsDialogVisible, setIpfsDialogVisible] = React.useState(false);
     const [passwordDialogVisible, setPasswordDialogVisible] = React.useState(false);
     const [previewMarkdown, setPreviewMarkdown] = React.useState(false);
-    const [openNotReady, setOpenNotReady] = React.useState(false);
     const theme = useTheme();
     const { alertError, alert } = useAlert();
+    const { openNotReady } = useFeatures();
+
     const createPost = useCallback(async () => {
         if (!connected) {
             setIpfsDialogVisible(true);
@@ -191,27 +193,27 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
 
             </Grid >
             <Grid item container justifyContent="right">
-                <IconButton sx={{ marginRight: 'auto' }} onClick={() => setOpenNotReady(true)}   ><AddIcon /></IconButton>
+                <IconButton sx={{ marginRight: 'auto' }} onClick={openNotReady}   ><AddIcon /></IconButton>
 
                 <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                    <Button color="inherit" onClick={() => setOpenNotReady(true)}>Proposal</Button>
+                    <Button color="inherit" onClick={openNotReady}>Proposal</Button>
 
-                    <IconButton onClick={() => setOpenNotReady(true)}><FormatBoldIcon /></IconButton>
-                    <IconButton onClick={() => setOpenNotReady(true)}><FormatItalicIcon /></IconButton>
-                    <IconButton onClick={() => setOpenNotReady(true)}><FormatIndentIncreaseIcon /></IconButton>
-                    <IconButton onClick={() => setOpenNotReady(true)} ><FormatIndentDecreaseIcon /></IconButton>
-                    <IconButton onClick={() => setOpenNotReady(true)}><TitleIcon /></IconButton>
+                    <IconButton onClick={openNotReady}><FormatBoldIcon /></IconButton>
+                    <IconButton onClick={openNotReady}><FormatItalicIcon /></IconButton>
+                    <IconButton onClick={openNotReady}><FormatIndentIncreaseIcon /></IconButton>
+                    <IconButton onClick={openNotReady} ><FormatIndentDecreaseIcon /></IconButton>
+                    <IconButton onClick={openNotReady}><TitleIcon /></IconButton>
                 </Box>
 
                 <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" }, justifyContent: "right", alignItems: "center" }}>
-                    <Button color="inherit" onClick={() => setOpenNotReady(true)}>Proposal</Button>
+                    <Button color="inherit" onClick={openNotReady}>Proposal</Button>
 
-                    <IconButton onClick={() => setOpenNotReady(true)}><AbcIcon /></IconButton>
+                    <IconButton onClick={openNotReady}><AbcIcon /></IconButton>
 
                 </Box>
-                <IconButton onClick={() => setOpenNotReady(true)}><VideoCallIcon /></IconButton>
-                <IconButton onClick={() => setOpenNotReady(true)}><HeadsetMicIcon /></IconButton>
-                <IconButton onClick={() => setOpenNotReady(true)}><EmojiEmotionsIcon /></IconButton>
+                <IconButton onClick={openNotReady}><VideoCallIcon /></IconButton>
+                <IconButton onClick={openNotReady}><HeadsetMicIcon /></IconButton>
+                <IconButton onClick={openNotReady}><EmojiEmotionsIcon /></IconButton>
 
             </Grid>
 
@@ -221,7 +223,6 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
                     <Link variant="caption" component={RouterLink} to={SETTINGS_BURNER} target="_blank">Burner wallet balance: {burnerWalletBalance}</Link>
                 </Grid>}
             </Grid> */}
-            <NotReadyYetDialog open={openNotReady} onClose={() => setOpenNotReady(false)} />
 
         </Grid >
     );

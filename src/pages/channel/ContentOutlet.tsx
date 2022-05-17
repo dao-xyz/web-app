@@ -22,6 +22,7 @@ import LanIcon from '@mui/icons-material/Lan';
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import NotReadyYetDialog from '../../components/dialogs/NotReadyYetDialog';
+import { useFeatures } from '../../contexts/FeatureContext';
 const drawerWidth = 240;
 
 export default function ContentOutlet() {
@@ -32,7 +33,7 @@ export default function ContentOutlet() {
     const [notFound, setNotFound] = React.useState(false);
     const { select, dao } = useChannels();
     const { isMock } = useNetwork();
-    const [openNotReady, setOpenNotReady] = React.useState(false);
+    const { openNotReady } = useFeatures();
 
     React.useEffect(() => {
         if (params?.key) {
@@ -54,12 +55,11 @@ export default function ContentOutlet() {
             <DAOExploreSide />
             <Divider />
             <Box>
-                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<PeopleIcon />} onClick={() => setOpenNotReady(true)} >People</Button>
-                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<HowToVoteIcon />} onClick={() => setOpenNotReady(true)}>Vote delegation</Button>
-                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<WorkspacePremiumIcon />} onClick={() => setOpenNotReady(true)}>Contributions</Button>
-                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<LanIcon />} onClick={() => setOpenNotReady(true)}>Infrastructure</Button>
+                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<PeopleIcon />} onClick={openNotReady} >People</Button>
+                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<HowToVoteIcon />} onClick={openNotReady}>Vote delegation</Button>
+                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<WorkspacePremiumIcon />} onClick={openNotReady}>Contributions</Button>
+                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<LanIcon />} onClick={openNotReady}>Infrastructure</Button>
             </Box>
-            <NotReadyYetDialog open={openNotReady} onClose={() => setOpenNotReady(false)} />
 
             {/* <ChannelTree /> */}
         </div>

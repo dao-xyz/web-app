@@ -16,13 +16,14 @@ import { getPostContentString } from "../../../utils/postUtils";
 import shiba from "../../../../src/shiba_inu_taiki.jpeg";
 import AddReactionIcon from '@mui/icons-material/AddReaction';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import { useFeatures } from "../../../contexts/FeatureContext";
 
 export const Message: FC<{ post: AccountInfoDeserialized<PostAccount>, commentsCount: number }> = ({ post, commentsCount }) => {
 
     const [content, setContent] = useState<string | undefined>(undefined);
     const [username, setUsername] = useState<string | undefined>(undefined);
     const [date, setDate] = useState<string | undefined>(undefined);
-
+    const { openNotReady } = useFeatures();
     const { connection } = useConnection();
 
     const upvote = () => {
@@ -66,11 +67,11 @@ export const Message: FC<{ post: AccountInfoDeserialized<PostAccount>, commentsC
 
                         </Grid>
                         <Grid item>
-                            <IconButton size="small"><AddReactionIcon /></IconButton>
+                            <IconButton size="small" onClick={openNotReady}><AddReactionIcon /></IconButton>
 
                         </Grid>
                         <Grid item sx={{ position: 'relative' }}>
-                            <IconButton size="small"><ChatBubbleOutlineIcon /></IconButton>
+                            <IconButton size="small" onClick={openNotReady}><ChatBubbleOutlineIcon /></IconButton>
                             <Typography variant="body2" sx={{ position: 'absolute', left: '21px', top: '13px' }}>{commentsCount}</Typography>
                         </Grid>
                     </Grid>

@@ -22,7 +22,7 @@ export default function NotReadyYetDialog(props: { open: boolean, onClose?: () =
 
     const nav = (event) => {
         event.stopPropagation();
-        document.location.href = "https://twitter.com/DAOxyzDAO";
+        window.open("https://twitter.com/DAOxyzDAO", '_blank').focus();
 
     }
     const action = (

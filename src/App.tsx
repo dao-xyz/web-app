@@ -24,6 +24,7 @@ import ResponsiveDrawer from "./pages/channel/ContentOutlet";
 import ContentOutlet from "./pages/channel/ContentOutlet";
 import { ChannelsProvider } from "./contexts/ChannelsContext";
 import { SmartWalletProvider } from "./contexts/SmartWalletContext";
+import { FeatureProvider } from "./contexts/FeatureContext";
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
 });
@@ -65,7 +66,7 @@ function App() {
                     <UserProvider>
                       <SmartWalletProvider>
                         <ChannelsProvider>
-                          <Box>
+                          <FeatureProvider>
                             <Box className="column" sx={{ width: "100%" }}>
                               {/*  <Toolbar variant="dense" />*/}
                               <ContentOutlet />
@@ -73,7 +74,7 @@ function App() {
                            
                           </Box> */}
                             </Box>
-                          </Box>
+                          </FeatureProvider>
                         </ChannelsProvider>
                       </SmartWalletProvider>
                     </UserProvider>

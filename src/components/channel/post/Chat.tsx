@@ -1,29 +1,29 @@
 import { ChildCare, RocketLaunch, Send } from "@mui/icons-material";
 import { Alert, Button, Card, CardContent, Container, Grid, IconButton, Paper, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { useConnection } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
-import { ChannelAccount, getChannel } from '@dao-xyz/sdk-social';
 import React, { FC, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router";
-import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
-import { PostFeed } from "./ChatFeed";
-import { useChannels } from "../../../contexts/ChannelsContext";
+import { PostFeed } from "./PostFeed";
+import { usePosts } from "../../../contexts/PostContext";
 import NewPost from "./NewPost";
 import useScrollbarSize from 'react-scrollbar-size';
 import { useTheme } from "@mui/styles";
+import { Shard } from '@dao-xyz/shard';
+import { PostInterface } from '@dao-xyz/social-interface';
 
-export const Chat: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({ channel }) => {
+
+export const Chat: FC<{ parentPost?: Shard<PostInterface> }> = ({ parentPost }) => {
     const contentRef = useRef<HTMLDivElement>(null);
     const [notFound, setNotFound] = React.useState(false);
     const [initialFeed, setInitialFeed] = React.useState(false);
 
     const [showNewMessageAlert, setShowNewMessageAlert] = React.useState(false);
-    const { selection, loading } = useChannels();
-    const [createdPost, setCreatedPost] = React.useState<PublicKey | undefined>(undefined);
+    const { selection, loading } = usePosts();
+    const [createdPost, setCreatedPost] = React.useState<string | undefined>(undefined);
     const [scrollTop, setScrollTop] = useState(0);
     const theme = useTheme();
     const { width } = useScrollbarSize();
+    const { root } = usePosts();
+
     useEffect(() => {
         const onScroll = e => {
             setScrollTop(e.target.documentElement.scrollTop);
@@ -33,8 +33,13 @@ export const Chat: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({
         return () => window.removeEventListener("scroll", onScroll);
     }, [scrollTop]);
 
+    useEffect(() => {
+        if (!parentPost) {
+            parentPost = root;
+        }
+        console.log("PARENT POST", parentPost, root)
 
-
+    }, [parentPost?.cid, root?.cid])
     const onFeedChange = () => {
         let isAtBottom = contentRef?.current?.scrollHeight - contentRef?.current?.scrollTop === contentRef?.current?.clientHeight;
         if (!isAtBottom) {
@@ -61,7 +66,7 @@ export const Chat: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({
                             <Box sx={{ /* ml: 2, pr: 16 + "px"  */ }}>
                                 <Box sx={{ maxWidth: "md", width: '100%' }}>
 
-                                    <PostFeed onFeedChange={onFeedChange} channels={channel ? [channel] : []} />
+                                    <PostFeed onFeedChange={onFeedChange} parentPosts={parentPost ? [parentPost] : []} />
 
                                 </Box>
                             </Box>
@@ -74,7 +79,7 @@ export const Chat: FC<{ channel: AccountInfoDeserialized<ChannelAccount> }> = ({
                         <Grid item sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
                             <Card sx={{ width: '100%', flex: 1, maxWidth: 'md' }} raised elevation={8}>
                                 <CardContent sx={{ pb: "4px !important" }}>
-                                    {channel?.pubkey ? <NewPost previewable={true} onCreation={setCreatedPost} channel={channel?.pubkey} /> : <></>}
+                                    {parentPost?.cid ? <NewPost previewable={true} onCreation={setCreatedPost} post={parentPost?.cid} /> : <></>}
                                 </CardContent>
                             </Card>
                         </Grid>

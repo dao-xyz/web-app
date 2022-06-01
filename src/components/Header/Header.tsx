@@ -10,14 +10,9 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import LogoWhite from "./../../logo.png";
 import LogoGray from "./../../logo-gray.png";
-import LogoVlack from "./../../logo-black.png";
-import ChildCareIcon from '@mui/icons-material/ChildCare';
 import ThemeToggle from "../ThemeToggle";
-import { Wallet } from "../network/Wallet/Wallet";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { WalletContext } from "@solana/wallet-adapter-react";
-import { useUser } from "../../contexts/UserContext";
-import { NetworkContext } from "../../contexts/Network";
 import UserMenu from "./UserMenu";
 import { ABOUT, EXPLORE, HOME, SETTINGS, USER_NEW } from "../../routes/routes";
 import { PersonAdd, Search, Settings } from "@mui/icons-material";
@@ -25,21 +20,18 @@ import ChangeNetworkDialog from "../network/ChangeNetworkDialog";
 import { useTheme } from "@mui/styles";
 import ExploreIcon from '@mui/icons-material/Explore';
 import { InputAdornment, Stack, Switch, TextField } from "@mui/material";
-import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import HomeIcon from '@mui/icons-material/Home';
-import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
-import NotReadyYetDialog from "../dialogs/NotReadyYetDialog";
 import { useFeatures } from "../../contexts/FeatureContext";
+import { useConnect } from "../../contexts/ConnectContext";
 const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({ drawerWidth, onDrawerToggle }) => {
   const [anchorElMenuNav, setAnchorElMenuNav] = React.useState(null);
   const [anchorElSettingsNav, setAnchorElSettingsNav] = React.useState(null);
   const [openChangeNetworkDialog, setOpenChangeNetworkDialog] = React.useState(false);
   const theme = useTheme();
-  const { isMock } = React.useContext(NetworkContext);
   const { publicKey } = React.useContext(WalletContext);
   const { openNotReady } = useFeatures();
-
+  const { openConnect } = useConnect();
   const navigate = useNavigate();
   const handleOpenNavMenu = (event: any) => {
     setAnchorElMenuNav(event.currentTarget);
@@ -242,10 +234,10 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, justifyContent: "right", alignItems: "center" }}>
             <ThemeToggle />
-            {!isMock ? (publicKey ?
-              <UserMenu displayName={true}></UserMenu> : (<Wallet />)) : (<Button disabled variant="outlined" startIcon={<ElectricalServicesIcon />}>
+            {publicKey ?
+              <UserMenu displayName={true}></UserMenu> : <Button onClick={openConnect} variant="outlined" startIcon={<ElectricalServicesIcon />}>
                 Connect
-              </Button>)}
+              </Button>}
           </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" }, justifyContent: "right", alignItems: "center" }}>
@@ -260,12 +252,12 @@ const Header: React.FC<{ drawerWidth: Number, onDrawerToggle: () => void }> = ({
               <Settings />
             </IconButton>
 
-            {!isMock ? (publicKey ?
-              <UserMenu displayName={true}></UserMenu> : (<Wallet />)) : (<>
-                <IconButton disabled >
+            {publicKey ?
+              <UserMenu displayName={true}></UserMenu> : <>
+                <IconButton onClick={openConnect} >
                   <ElectricalServicesIcon />
                 </IconButton>
-              </>)}
+              </>}
             <Menu
               id="settings-appbar"
               anchorEl={anchorElSettingsNav}

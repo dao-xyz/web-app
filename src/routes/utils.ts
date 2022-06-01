@@ -1,15 +1,15 @@
 import { Location } from "history";
-import {
+/* import {
   getNetworkConfigFromPath,
   getPathForNetwork,
   NetworkConfig,
   NetworkXYZ,
-} from "../utils/network";
+} from "../utils/network"; */
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 
 export const REDIRECT_URL_PARAM_KEY = "redir";
 
-export const getRedirect = (
+/* export const getRedirect = (
   location: Location,
   network: NetworkXYZ
 ): string | null => {
@@ -18,3 +18,4 @@ export const getRedirect = (
   if (path) return getPathForNetwork(network, path);
   return null;
 };
+ */

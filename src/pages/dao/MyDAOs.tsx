@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useState } from "react";
 import Box from '@mui/material/Box';
 import { useConnection, useLocalStorage, useWallet } from '@solana/wallet-adapter-react';
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { ChannelAccount, getChannel } from '@dao-xyz/sdk-social'
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -12,10 +11,11 @@ import ImageIcon from '@mui/icons-material/Image';
 import WorkIcon from '@mui/icons-material/Work';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import { IconButton } from "@mui/material";
-import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
-import { useNetwork } from "../../contexts/Network";
 import { useUser } from "../../contexts/UserContext";
 import { PublicKey } from "@solana/web3.js";
+import { Shard } from '@dao-xyz/shard';
+import { PostInterface } from "@dao-xyz/social-interface";
+import { usePeer } from "../../contexts/PeerContext";
 
 
 export function MyChannels() {
@@ -23,15 +23,14 @@ export function MyChannels() {
     const { user } = useUser();
 
     const [savedChannels, setSavedChannels] = useLocalStorage<string[]>("saved_channels", []);
-    const [channels, setChannels] = useState<AccountInfoDeserialized<ChannelAccount>[]>([]);
+    const [channels, setChannels] = useState<Shard<PostInterface>[]>([]);
 
-    const { connection } = useConnection();
-    const { config } = useNetwork();
+    const { peer } = usePeer();
     //networkContext.changeNetwork(getWalletAdapterNetwork(state.network))
     const updateChannels = useCallback(async () => {
-        let arr: AccountInfoDeserialized<ChannelAccount>[] = [];
+        let arr: Shard<PostInterface>[] = [];
         for (const channel of savedChannels) {
-            arr.push(await getChannel(new PublicKey(channel), connection));
+            arr.push(await Shard.loadFromCID<PostInterface>(channel, peer.node));
         }
         setChannels(arr)
     }, [savedChannels])

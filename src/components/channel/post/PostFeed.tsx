@@ -10,21 +10,19 @@ import { Send } from "@mui/icons-material";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ChannelAccount, getPostsByChannel, PostAccount, StringPostContent } from "@dao-xyz/sdk-social";
-import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { Message } from "./Message";
-import { useNetwork } from "../../../contexts/Network";
 import BN from 'bn.js';
 import { useTheme } from "@mui/styles";
-
-const mockPosts = (darkMode: boolean): AccountInfoDeserialized<PostAccount>[] => [
+import { Shard } from '@dao-xyz/shard';
+import { PostInterface } from '@dao-xyz/social-interface';
+/* 
+const mockPosts = (darkMode: boolean): Shard<PostInterface>[] => [
     {
         data: ({
             channel: undefined,
             content: new StringPostContent({
                 string: `<div style="position: relative; height: 20px"><div style="position: absolute; top: 30px; left: 20px"><h3>dao | xyz</h3><br></div></div><video width="100%" playsinline autoplay muted loop style="margin-bottom: 10px"> <source src="https://dao-xyz-media.s3.us-east-1.amazonaws.com/${darkMode ? 'night' : 'day'}.mp4" type="video/mp4"> type="video/ogg">Your browser does not support the video tag.</video>\n\nThis is a platform where communities and organization can grow and prosper, just like this tree. By combining state of the art governance protocols with an adaptive  post-format and a fully decentralized data storage layer we will revolutionize the way internet is controlled and consumed`
 
-                /*                 string: `<video width="100%" playsinline autoplay muted loop style="margin-bottom: 10px"> <source src="https://dao-xyz-media.s3.us-east-1.amazonaws.com/${darkMode ? 'night' : 'day'}.mp4" type="video/mp4"> type="video/ogg">Your browser does not support the video tag.</video>\n\nThis is a platform where communities and organization can grow and prosper, just like this tree. By combining state of the art governance protocols with an adaptive  post-format and a fully decentralized data storage layer we will revolutionize the way internet is controlled and consumed` */
             }),
             createAtTimestamp: new BN(1652531447),
             creator: "Mr Shib",
@@ -66,9 +64,9 @@ const mockPosts = (darkMode: boolean): AccountInfoDeserialized<PostAccount>[] =>
         } as any as PostAccount),
         pubkey: Keypair.generate().publicKey
     },
-];
+]; */
 // Assumes sorted
-const mergePosts = (a: AccountInfoDeserialized<PostAccount>[], b: AccountInfoDeserialized<PostAccount>[]): AccountInfoDeserialized<PostAccount>[] => {
+/* const mergePosts = (a: Shard<PostInterface>[], b: Shard<PostInterface>[]): Shard<PostInterface>[] => {
     if (a.length == 0)
         return b
     if (b.length == 0)
@@ -76,7 +74,7 @@ const mergePosts = (a: AccountInfoDeserialized<PostAccount>[], b: AccountInfoDes
     let j = 0;
     let ret = [];
     let added = new Set<string>();
-    const save = (account: AccountInfoDeserialized<PostAccount>) => {
+    const save = (account: Shard<PostInterface>) => {
         const str = account.pubkey.toString();
         if (!added.has(str)) {
             added.add(str);
@@ -96,12 +94,12 @@ const mergePosts = (a: AccountInfoDeserialized<PostAccount>[], b: AccountInfoDes
         j++;
     }
     return ret;
-}
+} 
 
 
 
 
-const postsEquals = (a: AccountInfoDeserialized<PostAccount>[], b: AccountInfoDeserialized<PostAccount>[]): boolean => {
+const postsEquals = (a: Shard<PostInterface>[], b: Shard<PostInterface>[]): boolean => {
     if (a.length != b.length) {
         return false;
     }
@@ -111,15 +109,15 @@ const postsEquals = (a: AccountInfoDeserialized<PostAccount>[], b: AccountInfoDe
         }
     }
     return true;
-}
-const createChildrenMap = (posts: AccountInfoDeserialized<PostAccount>[]): { [key: string]: AccountInfoDeserialized<PostAccount>[] } => {
+}*/
+const createChildrenMap = (posts: Shard<PostInterface>[]): { [key: string]: Shard<PostInterface>[] } => {
     let ret = {};
     posts.forEach((post) => {
-        if (post.data.parent) {
-            let arr = ret[post.data.parent.toBase58()];
+        if (post.parentShardCID) {
+            let arr = ret[post.parentShardCID];
             if (!arr) {
                 arr = [];
-                ret[post.data.parent.toBase58()] = arr;
+                ret[post.parentShardCID] = arr;
             }
             arr.push(post)
         }
@@ -127,73 +125,76 @@ const createChildrenMap = (posts: AccountInfoDeserialized<PostAccount>[]): { [ke
 
     return ret;
 }
-export const PostFeed = (props: { channels: AccountInfoDeserialized<ChannelAccount>[], onFeedChange?: () => void }) => {
-    const [posts, setPosts] = useState<AccountInfoDeserialized<PostAccount>[]>([]);
-    const [childrenPosts, setChildrenPosts] = useState<{ [key: string]: AccountInfoDeserialized<PostAccount>[] }>({});
 
-    const { connection } = useConnection();
+
+export const PostFeed = (props: { parentPosts: Shard<PostInterface>[], onFeedChange?: () => void }) => {
+    const [posts, setPosts] = useState<Shard<PostInterface>[]>([]);
+    const [childrenPosts, setChildrenPosts] = useState<{ [key: string]: Shard<PostInterface>[] }>({});
     const [loading, setLoading] = useState(false);
-    const { isMock } = useNetwork();
     const theme = useTheme();
 
-    const childrenCount = (key: PublicKey) => childrenPosts[key.toBase58()] ? childrenPosts[key.toBase58()].length : 0;
+    const childrenCount = (key: string) => childrenPosts[key] ? childrenPosts[key].length : 0;
     const updateContent = () => {
         /* setLoading(true) */
 
-        if (!isMock) {
-            setLoading(true);
-            const postPromises: Promise<AccountInfoDeserialized<PostAccount>[]>[] = []
-            for (const channel of props.channels) {
-                postPromises.push(getPostsByChannel(channel.pubkey, connection))
-            }
-            Promise.all(postPromises).then(results => {
-                let flatResults = results.flat(1);
-                let updatedResults = mergePosts(posts, flatResults.sort((a, b) => a.data.createAtTimestamp.cmp(b.data.createAtTimestamp)));
-                if (!postsEquals(posts, updatedResults)) {
-                    setPosts(updatedResults);
-                    if (props.onFeedChange) {
-                        props.onFeedChange();
-                    }
-                }
-            }).finally(() => {
-                /*  setLoading(false) */
-                setChildrenPosts(createChildrenMap(posts))
-                setLoading(false);
+        /*       if (!isMock)  */
+        {
+            /*  setLoading(true);
+             const postPromises: Promise<Shard<PostInterface>[]>[] = []
+             for (const channel of props.channels) {
+                 postPromises.push(getPostsByChannel(channel.pubkey, connection))
+             }
+             Promise.all(postPromises).then(results => {
+                 let flatResults = results.flat(1);
+                 let updatedResults = mergePosts(posts, flatResults.sort((a, b) => a.data.createAtTimestamp.cmp(b.data.createAtTimestamp)));
+                 if (!postsEquals(posts, updatedResults)) {
+                     setPosts(updatedResults);
+                     if (props.onFeedChange) {
+                         props.onFeedChange();
+                     }
+                 }
+             }).finally(() => {
+                 setChildrenPosts(createChildrenMap(posts))
+                 setLoading(false);
+ 
+             }) */
 
-            })
+            const posts = props.parentPosts.map(parentPost => parentPost.interface.comments.db.db.all).flat(1);
+            setChildrenPosts(createChildrenMap(posts));
+
         }
-        else {
+        /* else {
             let mockPostsGenerated = mockPosts(theme["palette"].mode != 'light')
             setPosts(mockPostsGenerated);
             setChildrenPosts(createChildrenMap(mockPostsGenerated))
-        }
+        } */
 
 
     }
     useEffect(() => {
         setPosts([]);
-    }, [props.channels[0].pubkey.toString()])
+    }, [props.parentPosts[0] ? props.parentPosts[0].cid : !!props.parentPosts[0]])
 
     useEffect(() => {
 
         updateContent();
 
-    }, [isMock, posts.length, theme["palette"].mode])
+    }, [/* isMock,  */posts.length, theme["palette"].mode])
     useEffect(() => {
-        if (isMock) {
-            return;
-        }
+        /*   if (isMock) {
+              return;
+          } */
         const interval = setInterval(() => {
             if (!loading) {
                 updateContent();
             }
         }, 3000);
         return () => clearInterval(interval);
-    }, [props.channels[0].pubkey.toString(), posts.length, posts ? posts[posts.length - 1]?.pubkey.toString() : undefined])
+    }, [props.parentPosts[0] ? props.parentPosts[0].cid : !!props.parentPosts[0], posts.length, posts ? posts[posts.length - 1]?.cid : undefined])
     return (
         <Box sx={{ pb: 1 }}>
             {loading ? <><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={200} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={75} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={150} /></> : <></>}
-            {!loading && (posts.length > 0 ? posts.map((post, ix) => <Box key={post.pubkey.toBase58()} sx={{ mt: ix > 0 ? 2 : 0, mb: 2 }} ><Message post={post} commentsCount={childrenCount(post.pubkey)} /></Box>) : <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary">No messages found</Typography></Box>)}
+            {!loading && (posts.length > 0 ? posts.map((post, ix) => <Box key={post.cid} sx={{ mt: ix > 0 ? 2 : 0, mb: 2 }} ><Message post={post} commentsCount={childrenCount(post.cid)} /></Box>) : <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary">No messages found</Typography></Box>)}
 
         </Box>
     );

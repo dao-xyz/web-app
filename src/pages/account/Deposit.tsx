@@ -1,10 +1,8 @@
 import { Avatar, CircularProgress, Container, FormControl, FormGroup, FormHelperText, Grid, Input, InputLabel, Paper, Slide, Slider, Snackbar, Theme, Toolbar, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
-import { NetworkContext } from '../../contexts/Network';
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
-import { getUserByName } from '@dao-xyz/sdk-user';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { LAMPORTS_PER_SOL, Transaction } from '@solana/web3.js'
 import { Wallet } from '../../components/network/Wallet/Wallet';
@@ -15,71 +13,71 @@ import { TokenIcon } from '../../components/icons/TokenIcon';
 
 const userNameRegex = new RegExp('^[a-zA-Z0-9_]*$');
 export const Deposit: FC = () => {
-
-    const { publicKey, sendTransaction, connecting } = useWallet();
-    const { balance, transactionEvent } = useAccount();
-    const { connection, } = useConnection();
-    const [loading, setLoading] = useState(false);
-    const network = useContext(NetworkContext);
-    const [solBalance, setSolBalance] = useState<number | undefined>(undefined);
-    const [value, setValue] = React.useState(0.001);
-    const { alert, alertError } = useAlert();
-
-    const handleSliderChange = (event: Event, newValue: number | number[]) => {
-        if (typeof newValue !== 'number') {
-            throw Error("Invalid slider value: " + typeof newValue);
-        }
-        setValue(newValue);
-    };
-
-    const handleInputChange = (event: any) => {
-        setValue(event.target.value === '' ? 0 : Number(event.target.value));
-    };
-
-    const onDeposit = useCallback(async (_: any) => {
-        /*  if (!publicKey)
-             throw new Error('No wallet connected')
-         setLoading(true);
-         try {
-             // Update stake pool (maybe necessary)
-             if (true) {
+    /* 
+        const { publicKey, sendTransaction, connecting } = useWallet();
+        const { balance, transactionEvent } = useAccount();
+        const { connection, } = useConnection();
+        const [loading, setLoading] = useState(false);
+        const network = useContext(NetworkContext);
+        const [solBalance, setSolBalance] = useState<number | undefined>(undefined);
+        const [value, setValue] = React.useState(0.001);
+        const { alert, alertError } = useAlert();
+    
+        const handleSliderChange = (event: Event, newValue: number | number[]) => {
+            if (typeof newValue !== 'number') {
+                throw Error("Invalid slider value: " + typeof newValue);
+            }
+            setValue(newValue);
+        };
+    
+        const handleInputChange = (event: any) => {
+            setValue(event.target.value === '' ? 0 : Number(event.target.value));
+        };
+    
+        const onDeposit = useCallback(async (_: any) => { */
+    /*  if (!publicKey)
+         throw new Error('No wallet connected')
+     setLoading(true);
+     try {
+         // Update stake pool (maybe necessary)
+         if (true) {
  
-                 const update = await updateStakePool(connection);
+             const update = await updateStakePool(connection);
  
-                 if (update.instructions.length > 0) {
+             if (update.instructions.length > 0) {
  
-                     let signature = await sendTransaction(new Transaction().add(...update.instructions), connection, {
-                         signers: []
-                     });
-                     await connection.confirmTransaction(signature);
- 
-                 }
-                 let signature = await sendTransaction(new Transaction().add(...update.finalInstructions), connection, {
+                 let signature = await sendTransaction(new Transaction().add(...update.instructions), connection, {
                      signers: []
                  });
                  await connection.confirmTransaction(signature);
+ 
              }
- 
-             // Perform deposit
-             console.log('depsoit', value)
-             const { instructions, signers } = await depositSol(connection, publicKey, value * LAMPORTS_PER_SOL)
-             let signature = await sendTransaction(new Transaction().add(...instructions), connection, { signers: signers });
+             let signature = await sendTransaction(new Transaction().add(...update.finalInstructions), connection, {
+                 signers: []
+             });
              await connection.confirmTransaction(signature);
-             transactionEvent();
-             alert({
-                 severity: 'success',
-                 text: 'Deposit successful!'
-             })
-             setValue(0);
+         }
  
-         } catch (error) {
-             alertError(error)
-             console.error(error);
-         } finally {
-             setLoading(false);
-         } */
+         // Perform deposit
+         console.log('depsoit', value)
+         const { instructions, signers } = await depositSol(connection, publicKey, value * LAMPORTS_PER_SOL)
+         let signature = await sendTransaction(new Transaction().add(...instructions), connection, { signers: signers });
+         await connection.confirmTransaction(signature);
+         transactionEvent();
+         alert({
+             severity: 'success',
+             text: 'Deposit successful!'
+         })
+         setValue(0);
+ 
+     } catch (error) {
+         alertError(error)
+         console.error(error);
+     } finally {
+         setLoading(false);
+     } */
 
-    }, [value, publicKey, connection]);
+    /*}, [value, publicKey, connection]);
     useEffect(() => {
         if (publicKey) {
             setLoading(true);
@@ -159,19 +157,9 @@ export const Deposit: FC = () => {
                 </Grid>
             </Grid> : <Box>{!connecting ? <Typography>Connect a wallet to continue</Typography > : <></>} <Wallet /></Box>
             }
-            {/*   <Box sx={{ alignItems: "end", width: "100%" }} className="column" >
-                    <Box sx={{
-                        alignItems: "end"
-                    }} className="column">
-                        <LoadingButton loading={loading} onClick={onClick} disabled={!state.username || usernameState !== UserNameState.OK || !publicKey
-                        } >
-                            Create user
-                        </LoadingButton>
-                        {!publicKey && <FormHelperText error id="connect-wallet-help">Connect a wallet to create a user</FormHelperText>}
-
-                    </Box>
-                </Box> */}
+            
         </Container >
 
-    )
+    )*/
+    return <></>
 }

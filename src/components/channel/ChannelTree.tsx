@@ -1,10 +1,6 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { useConnection } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
-import { ChannelAccount, ChannelType, getChannelsWithParent } from '@dao-xyz/sdk-social';
 import React, { FC, useEffect, useState } from "react";
-import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { getChannelRoute } from "../../routes/routes";
 import TreeView from '@mui/lab/TreeView';
@@ -16,9 +12,11 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ForumIcon from '@mui/icons-material/Forum';
 import ChatIcon from '@mui/icons-material/Chat';
 import { styled } from '@mui/material/styles';
-import { useChannels } from "../../contexts/ChannelsContext";
-import { useNetwork } from "../../contexts/Network";
+import { usePosts } from "../../contexts/PostContext";
 import LockIcon from '@mui/icons-material/Lock';
+import { Shard } from '@dao-xyz/shard';
+import { PostInterface } from '@dao-xyz/social-interface';
+
 declare module 'react' {
     interface CSSProperties {
         '--tree-view-color'?: string;
@@ -104,7 +102,6 @@ function StyledTreeItem(props: StyledTreeItemProps) {
 interface ChannelTreeItem {
     id: string,
     label: string,
-    type: ChannelType,
     encrypted: boolean
 }
 type ChannelTree = { [key: string]: ChannelTreeItem[] };
@@ -121,15 +118,13 @@ const findNode = (id: string, tree: ChannelTree): ChannelTreeItem | undefined =>
     return undefined;
 }
 
-const channelsToTree = (channels: AccountInfoDeserialized<ChannelAccount>[]) => channels.map(channel => { return { id: channel.pubkey.toString(), label: channel.data.name, type: channel.data.channelType, encrypted: !!channel.data.encryption } })
+/* const channelsToTree = (channels: Shard<PostInterface>[]) => channels.map(channel => { return { id: channel.cid, label: channel.interface.content.toString(), encrypted: !!channel.data.encryption } })*/
 export const ChannelTree: FC = () => {
-    const { connection } = useConnection();
     const [tree, setTree] = useState<ChannelTree>({});
     const navigate = useNavigate();
-    const { selection } = useChannels();
+    const { selection } = usePosts();
     const [selected, setSelected] = React.useState<string[]>([]);
-    const { isMock } = useNetwork();
-    const [expanded, setExpanded] = React.useState<string[]>(isMock ? Object.keys(selection.selectionTree) : []);
+    const [expanded, setExpanded] = React.useState<string[]>([]);
 
     useEffect(() => {
 
@@ -144,7 +139,7 @@ export const ChannelTree: FC = () => {
                 newTree[root.pubkey.toString()] = channelsToTree(channels);
                 setTree(newTree);
             })
-
+ 
             console.log('NEW TREE', selectionTree, newTree)
             // Expand selection tree
             setDefaultExpanded(selectionTree.map(el => el.pubkey.toString()))
@@ -154,16 +149,15 @@ export const ChannelTree: FC = () => {
             let value = selection.selectionTree[property];
             newTree[property] = value.map(v => {
                 return {
-                    id: v.pubkey.toString(),
-                    label: v.data.name,
-                    type: v.data.channelType,
-                    encrypted: !!v.data.encryption
+                    id: v.cid,
+                    label: v.interface.content.toString(),
+                    encrypted: false/* !!v.data.encryption */
                 } as ChannelTreeItem
             });
         }
 
-        let dao = selection.selectionPath[selection.selectionPath.length - 1].pubkey.toString();
-        let newExpanded = selection.selectionPath.map(el => el.pubkey.toString());
+        let dao = selection.selectionPath[selection.selectionPath.length - 1].cid;
+        let newExpanded = selection.selectionPath.map(el => el.cid);
         // Keep old expansions if same dao
         if (expanded.find(x => x == dao) != undefined) {
 
@@ -183,26 +177,10 @@ export const ChannelTree: FC = () => {
             const childrenNodes =
                 tree[child.id] && tree[child.id].length > 0
                     ? renderTree(tree[child.id])
-                    : child.type == ChannelType.Collection ? <div key={child.id} /> : undefined;
-            let icon = undefined;
-            switch (child.type) {
-                case ChannelType.Collection:
-                    icon = Label
-                    break;
+                    : <div key={child.id} />;
 
-                case ChannelType.Chat:
-                    icon = ChatIcon
-                    break;
-
-                case ChannelType.Forum:
-                    icon = ForumIcon
-                    break;
-
-                default:
-                    break;
-            }
             return (
-                <StyledTreeItem key={child.id} nodeId={child.id} labelText={child.label} labelIcon={icon} encrypted={child.encrypted}>
+                <StyledTreeItem key={child.id} nodeId={child.id} labelText={child.label} labelIcon={undefined} encrypted={child.encrypted}>
                     {childrenNodes}
                 </StyledTreeItem>
             );
@@ -212,18 +190,18 @@ export const ChannelTree: FC = () => {
 
     const handleChange = (_event: any, nodeIds: string[]): any => {
 
-        if (!isMock) {
-            nodeIds.forEach((nodeId) => {
-                let toExpand = new PublicKey(nodeId);
-                getChannelsWithParent(toExpand, connection).then((channels) => {
-                    const newTree = {
-                        ...tree,
-                        [nodeId]: channelsToTree(channels)
-                    };
-                    setTree(newTree);
-                });
-            })
-        }
+        /*  if (!isMock) {
+             nodeIds.forEach((nodeId) => {
+                 let toExpand = new PublicKey(nodeId);
+                 getChannelsWithParent(toExpand, connection).then((channels) => {
+                     const newTree = {
+                         ...tree,
+                         [nodeId]: channelsToTree(channels)
+                     };
+                     setTree(newTree);
+                 });
+             })
+         } */
 
         setExpanded(nodeIds);
 
@@ -244,7 +222,7 @@ export const ChannelTree: FC = () => {
         if (nodeIds.length == 1) {
             let id = nodeIds[0];
 
-            navigate(getChannelRoute(new PublicKey(id)), { replace: true });
+            navigate(getChannelRoute(id), { replace: true });
 
         }
     }
@@ -259,6 +237,6 @@ export const ChannelTree: FC = () => {
         expanded={expanded}
         selected={selected}
     >
-        {renderTree(tree[selection.selectionPath[selection.selectionPath.length - 1].pubkey.toString()])}
+        {renderTree(tree[selection.selectionPath[selection.selectionPath.length - 1].cid])}
     </TreeView>
 }

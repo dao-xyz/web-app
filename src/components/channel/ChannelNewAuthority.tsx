@@ -1,40 +1,24 @@
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
-import { createAuthorityTransaction, ChannelAccount, ChannelAuthorityAccount, CreateAuthority, ChannelType, getChannel } from '@dao-xyz/sdk-social';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router";
-import { getTagRecord } from "@dao-xyz/sdk-tag";
-
-import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
-import { AuthorityCondition, KeyAuthorityCondition, TagAuthorityCondition, NoneAuthorityCondition } from "@dao-xyz/sdk-social";
 import { Box, Button, FormControl, FormHelperText, Grid, IconButton, InputLabel, ListItem, ListItemIcon, ListItemText, MenuItem, Select, SelectChangeEvent, TextField, Toolbar, Typography } from "@mui/material";
-import { getChannelContentString } from "../../utils/channelUtils";
 import { MarkdownContent } from "../data/MarkdownContent";
 import SendIcon from '@mui/icons-material/Send';
-import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import ThumbsUpDownIcon from '@mui/icons-material/ThumbsUpDown';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import PublickeyText from "../network/PublickeyText";
 import InfoIcon from '@mui/icons-material/Info';
 import StreamIcon from '@mui/icons-material/Stream';
-import { useSmartWallet } from "../../contexts/SmartWalletContext";
-import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import { AuthorityType, getSignerAuthority } from "@dao-xyz/sdk-social";
-import { SignerMaybeSignForMe } from "@dao-xyz/sdk-signforme";
 import { useAlert } from "../../contexts/AlertContext";
 import { LoadingButton } from "@mui/lab";
+import { Shard } from '@dao-xyz/shard';
+import { PostInterface } from '@dao-xyz/social-interface';
 
-const AUTHORITY_TYPES = [AuthorityType.Admin, AuthorityType.CreatePost, AuthorityType.Vote, AuthorityType.DeleteAnyPost, AuthorityType.CreateSubChannel, AuthorityType.RemoveSubChannel, AuthorityType.ManageInfo];
-const hasAuthority = (authorityType: AuthorityType, myAuthorityTypes: Set<AuthorityType>) => {
-    return myAuthorityTypes.has(authorityType) || myAuthorityTypes.has(AuthorityType.Admin);
-}
 
-interface ChannelAuthorityBuilder {
+/* interface ChannelAuthorityBuilder {
     authorityTypes: AuthorityType[],
     condition: AuthorityCondition
-}
+} */
 
 const isPublicKey = (key: string): boolean => {
     try {
@@ -45,9 +29,9 @@ const isPublicKey = (key: string): boolean => {
     }
 }
 
-export const ChannelNewAuthority: FC<{ channel: AccountInfoDeserialized<ChannelAccount>, suggestedType?: AuthorityType }> = ({ channel, suggestedType }) => {
+export const ChannelNewAuthority: FC<{ channel: Shard<PostInterface>/* , suggestedType?: AuthorityType */ }> = ({ channel/* , suggestedType  */ }) => {
 
-    const { publicKey, sendTransaction } = useWallet();
+    /* const { publicKey, sendTransaction } = useWallet();
     const [loading, setLoading] = useState(false);
     const { alert, alertError } = useAlert();
     const { connection } = useConnection();
@@ -249,5 +233,6 @@ export const ChannelNewAuthority: FC<{ channel: AccountInfoDeserialized<ChannelA
 
             </Grid>
         </Grid>
-    </>
+    </> */
+    return <></>
 }

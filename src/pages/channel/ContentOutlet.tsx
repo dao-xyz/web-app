@@ -6,38 +6,35 @@ import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import Header from '../../components/Header/Header';
-import { ChannelAccount } from '@dao-xyz/sdk-social';
-import { PublicKey } from '@solana/web3.js';
-import { AccountInfoDeserialized } from '@dao-xyz/sdk-common';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { BaseRoutes, DAO } from '../../routes/routes';
 import { DAOsExploreSide } from '../../components/channel/DAOsExploreSide';
 import { DAOExploreSide } from '../../components/channel/DAOExploreSide';
-import { useChannels } from '../../contexts/ChannelsContext';
+import { usePosts } from '../../contexts/PostContext';
 import { useMatch } from 'react-router-dom';
-import { useNetwork } from '../../contexts/Network';
 import { Button, Typography } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 import LanIcon from '@mui/icons-material/Lan';
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
-import NotReadyYetDialog from '../../components/dialogs/NotReadyYetDialog';
 import { useFeatures } from '../../contexts/FeatureContext';
+import { Shard } from '@dao-xyz/shard';
+import { PostInterface } from '@dao-xyz/social-interface';
+
 const drawerWidth = 240;
 
 export default function ContentOutlet() {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const params = useMatch(DAO + "/:key")?.params;
     const { connection } = useConnection();
-    const [channel, setChannel] = React.useState<AccountInfoDeserialized<ChannelAccount> | null>(null);
+    const [channel, setChannel] = React.useState<Shard<PostInterface> | null>(null);
     const [notFound, setNotFound] = React.useState(false);
-    const { select, dao } = useChannels();
-    const { isMock } = useNetwork();
+    const { select, dao } = usePosts();
     const { openNotReady } = useFeatures();
 
     React.useEffect(() => {
         if (params?.key) {
-            select(new PublicKey(params?.key))
+            select(params?.key)
         }
     }, [params?.key])
 
@@ -49,18 +46,11 @@ export default function ContentOutlet() {
     const drawer = (
         <div>
             <Toolbar variant="dense" />
-            {!isMock && <><DAOsExploreSide />     <Divider /></>}
-            <Typography sx={{ mt: 2, width: '100%', textAlign: 'center' }}>{dao?.data.name}</Typography>
+            <DAOsExploreSide />
+            <Divider />
+            <Typography sx={{ mt: 2, width: '100%', textAlign: 'center' }}>{dao?.interface.content.toString()}</Typography>
             <Typography sx={{ ml: 2, mt: 2 }} >Channels</Typography>
             <DAOExploreSide />
-            <Divider />
-            <Box>
-                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<PeopleIcon />} onClick={openNotReady} >People</Button>
-                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<HowToVoteIcon />} onClick={openNotReady}>Vote delegation</Button>
-                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<WorkspacePremiumIcon />} onClick={openNotReady}>Contributions</Button>
-                <Button sx={{ width: '100%', justifyContent: 'left', pl: 2 }} startIcon={<LanIcon />} onClick={openNotReady}>Infrastructure</Button>
-            </Box>
-
             {/* <ChannelTree /> */}
         </div>
     );

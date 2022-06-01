@@ -1,8 +1,6 @@
 import { useConnection } from "@solana/wallet-adapter-react";
-import { ChannelAccount, getChannels, getChannelsWithParent } from '@dao-xyz/sdk-social';
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { Box, Button, Card, CardContent, CircularProgress, Container, Grid, Toolbar, Typography } from "@mui/material";
 import { DAO_NEW, getChannelRoute, getNewChannelRoute } from "../../routes/routes";
 import { Paper } from '@mui/material';
@@ -10,22 +8,26 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { PublicKey } from "@solana/web3.js";
 import solana from "./../../assets/solana.png";
 import { ChannelButton } from "../../components/channel/ChannelButton";
-
+import { Shard } from '@dao-xyz/shard';
+import { PostInterface } from "@dao-xyz/social-interface";
+import { usePeer } from "../../contexts/PeerContext";
+import { useConfig } from "../../contexts/ConfigContext";
 export const DAOExplore: FC = () => {
     const { connection } = useConnection();
     const [loading, setLoading] = useState(false);
-
+    const { config } = useConfig();
+    const { peer } = usePeer();
     const navigate = useNavigate();
-    const navigateToChannel = (channel: PublicKey) => {
+    const navigateToChannel = (channel: string) => {
         navigate(getChannelRoute(channel));
 
     }
-    const [daos, setDaos] = React.useState<AccountInfoDeserialized<ChannelAccount>[] | null>(null);
+    const [daos, setDaos] = React.useState<Shard<PostInterface>[] | null>(null);
 
     useEffect(() => {
         setLoading(true);
-        getChannelsWithParent(undefined, connection).then((collections) => {
-            setDaos(collections);
+        Shard.loadFromCID<PostInterface>(config.postShardCID, peer.node).then((root) => {
+            setDaos(root.interface.comments.db.db.all)
         }).finally(() => {
             setLoading(false);
         })

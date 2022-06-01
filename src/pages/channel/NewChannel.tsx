@@ -1,19 +1,14 @@
 import { Button, Checkbox, Container, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Input, InputLabel, MenuItem, Radio, RadioGroup, Toolbar, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
-import { AuthorityType, ChannelAccount, ChannelType, createChannelTransaction, getChannel, getChannelByName, getSignerAuthority } from '@dao-xyz/sdk-social';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { WalletAdapterNetwork, WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import React, { FC, useCallback } from "react";
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useNavigate, useParams } from 'react-router';
-import { useUser } from '../../contexts/UserContext';
 import { useAlert } from '../../contexts/AlertContext';
-import { useNetwork } from '../../contexts/Network';
 import { getChannelRoute } from '../../routes/routes';
-import { AccountInfoDeserialized, ContentSourceString } from '@dao-xyz/sdk-common';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { SignerMaybeSignForMe } from '@dao-xyz/sdk-signforme';
 
 interface NewChannelForm {
 
@@ -23,19 +18,18 @@ interface NewChannelForm {
     /*     encrypted: boolean,*/
     password: string,
     passwordConfirm: string
-    type: ChannelType
 }
 
 const isDao = (parent: PublicKey) => !parent
 
 export const NewChannel: FC = () => {
-    const { key } = useParams();
+    /* const { key } = useParams();
     const { publicKey, sendTransaction } = useWallet();
     const { connection } = useConnection();
     const { alert } = useAlert();
     const [loading, setLoading] = React.useState(false);
     const [notFound, setNotFound] = React.useState(false);
-    const [parent, setParent] = React.useState<AccountInfoDeserialized<ChannelAccount> | undefined>(undefined);
+    const [parent, setParent] = React.useState<Shard<PostInterface> | undefined>(undefined);
     const [alreadyExist, setAlreadyExist] = React.useState(false);
 
     const navigate = useNavigate();
@@ -146,13 +140,36 @@ export const NewChannel: FC = () => {
                     </Select>
                 </FormControl>}
 
-                {/*   <FormControl margin="dense">
+
+            </FormGroup>
+            <Box sx={{ alignItems: "end", width: "100%" }} className="column" >
+                <Box sx={{
+                    alignItems: "end"
+                }} className="column">
+
+                    {<Box sx={{ display: "flex", justifyContent: "right", mt: 2 }}>
+                        <LoadingButton loading={loading} onClick={onClick} disabled={!publicKey} >
+                            Create
+                        </LoadingButton>
+
+
+                    </Box>}
+                    {!publicKey && <FormHelperText error id="connect-wallet-help">You need to connect a wallet</FormHelperText>}
+                    {alreadyExist && <FormHelperText error id="create-user-help" >You need a user to create a channel</FormHelperText>}
+
+                </Box>
+            </Box>
+        </Container>
+    ) */
+    return <></>
+}
+{/*   <FormControl margin="dense">
                     <InputLabel htmlFor="channel-description">Description</InputLabel>
                     <Input id="channel-description" aria-describedby="channel-description-help" onChange={handleChange("description")} />
                     <FormHelperText id="channel-description-help">What is this channel about?</FormHelperText>
                 </FormControl> */}
 
-                {/* <FormControl margin="dense">
+{/* <FormControl margin="dense">
                     <FormControlLabel id="encypted" control={<Checkbox disabled onChange={handleChange('encrypted')} value="encrypted" />} label="Encryption (not available yet)" />
                 </FormControl>
                 {
@@ -170,24 +187,3 @@ export const NewChannel: FC = () => {
                         </>
                         : <></>
                 } */}
-            </FormGroup>
-            <Box sx={{ alignItems: "end", width: "100%" }} className="column" >
-                <Box sx={{
-                    alignItems: "end"
-                }} className="column">
-
-                    {<Box sx={{ display: "flex", justifyContent: "right", mt: 2 }}>
-                        <LoadingButton loading={loading} onClick={onClick} disabled={!publicKey} > {/* (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0) */}
-                            Create
-                        </LoadingButton>
-
-                        {/* <Send disabled={changingNetwork || (state.encrypted && (state.password != state.passwordConfirm || state.password.length == 0) || state.name.length == 0)} name={state.name} network={state.network}></Send> */}
-                    </Box>}
-                    {!publicKey && <FormHelperText error id="connect-wallet-help">You need to connect a wallet</FormHelperText>}
-                    {alreadyExist && <FormHelperText error id="create-user-help" >You need a user to create a channel</FormHelperText>}
-
-                </Box>
-            </Box>
-        </Container>
-    )
-}

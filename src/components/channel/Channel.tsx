@@ -1,21 +1,17 @@
-import { useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { ChannelAccount, ChannelType, getChannel } from '@dao-xyz/sdk-social';
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { Chat } from "./post/Chat";
 import { Collection } from "./Collection";
 import { ChannelLabelBreadcrumb } from "./ChannelLabelBreadcrumb";
 import { Box, Button, CircularProgress, Drawer, Grid, IconButton } from "@mui/material";
 import CastleIcon from '@mui/icons-material/Castle';
 import InfoIcon from '@mui/icons-material/Info';
-
 import { ChannelSettings } from "./ChannelSettings";
-import { useChannels } from "../../contexts/ChannelsContext";
+import { usePosts } from "../../contexts/PostContext";
 export const Channel: FC = () => {
 
-    const [openSettings, setOpenSettings] = React.useState(false);
+    /* const [openSettings, setOpenSettings] = React.useState(false);
     const {
         loading,
         select,
@@ -43,7 +39,7 @@ export const Channel: FC = () => {
         {
 
             selection.channel?.data &&
-            { [ChannelType.Chat]: (<Chat channel={selection.channel}></Chat>), [ChannelType.Collection]: (<Collection channel={selection.channel}></Collection>) }
+            { [ChannelType.Chat]: (<Chat parentPost={selection.channel}></Chat>), [ChannelType.Collection]: (<Collection channel={selection.channel}></Collection>) }
             [selection.channel.data.channelType]
 
         }
@@ -52,5 +48,6 @@ export const Channel: FC = () => {
         }
 
 
-    </Box >
+    </Box > */
+    return <></>
 }

@@ -2,7 +2,7 @@ import { Button, ButtonProps } from '@mui/material';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import React, { FC, MouseEvent, useCallback } from 'react';
 
-export const WalletModalButton: FC<ButtonProps> = ({ children = 'Signin with wallet', onClick, ...props }) => {
+export const WalletModalButton: FC<ButtonProps> = ({ children = 'Solana wallet', onClick, ...props }) => {
     const { visible, setVisible } = useWalletModal();
 
     const handleClick = useCallback(

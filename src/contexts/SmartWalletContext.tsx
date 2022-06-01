@@ -5,13 +5,14 @@ import React, {
   useEffect,
   useState,
 } from "react";
+/* 
 import {
   useConnection,
   useLocalStorage,
   useWallet,
 } from "@solana/wallet-adapter-react";
 import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
-import { ChannelAccount, getChannel, getChannels } from "@dao-xyz/sdk-social";
+import { Shard, getChannel, getChannels } from "@dao-xyz/sdk-social";
 import {
   createUserTransaction,
   UserAccount,
@@ -252,3 +253,4 @@ export const SmartWalletProvider = ({
     </SmartWalletContext.Provider>
   );
 };
+ */

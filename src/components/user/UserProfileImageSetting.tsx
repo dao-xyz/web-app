@@ -3,8 +3,8 @@ import { Box, Button, CircularProgress, Dialog, DialogContent, DialogContentText
 import { PublicKey } from "@solana/web3.js";
 import { IpfsServiceProviderButton } from "../ipfs/IpfsServiceProviderButton";
 import { makeStyles } from '@mui/styles';
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+/* import { Metadata } from "@metaplex-foundation/mpl-token-metadata";*/
+import { useWallet } from "@solana/wallet-adapter-react";
 import { fetchNFTManifestImageUrl } from "../../contexts/UserContext";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -29,31 +29,30 @@ interface NFTAsset {
 export const UserProfileSettings: FC = () => {
     const classes = useStyles();
     const { publicKey } = useWallet();
-    const { connection } = useConnection();
     const [selectedNft, setSelectedNft] = React.useState<PublicKey | undefined>(undefined);
     const [nfts, setNfts] = React.useState<NFTAsset[]>([]);
     const [loadingNfts, setLoadingNfts] = React.useState<boolean>(false);
     const [showDialog, setShowDialog] = React.useState<boolean>(false);
     const [loading, setLoading] = React.useState(false);
-    useEffect(() => {
-        if (publicKey) {
-            setLoadingNfts(true);
-            Metadata.findByOwnerV2(connection, publicKey).then((results) => {
-                Promise.all(results.map(async (result) => {
-                    return {
-                        pubkey: result.pubkey,
-                        name: result.data.data.name,
-                        image: await fetchNFTManifestImageUrl(result.data.data.uri)
-                    } as NFTAsset;
-                })).then((assets) => {
-                    setNfts(assets);
-                }).finally(() => {
-                    setLoadingNfts(false);
-                })
-            })
-        }
-
-    }, [publicKey]);
+    /*   useEffect(() => {
+          if (publicKey) {
+              setLoadingNfts(true);
+              Metadata.findByOwnerV2(connection, publicKey).then((results) => {
+                  Promise.all(results.map(async (result) => {
+                      return {
+                          pubkey: result.pubkey,
+                          name: result.data.data.name,
+                          image: await fetchNFTManifestImageUrl(result.data.data.uri)
+                      } as NFTAsset;
+                  })).then((assets) => {
+                      setNfts(assets);
+                  }).finally(() => {
+                      setLoadingNfts(false);
+                  })
+              })
+          }
+  
+      }, [publicKey]); */
 
 
     return <>

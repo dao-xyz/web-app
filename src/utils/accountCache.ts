@@ -1,22 +1,20 @@
-import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
-import { PublicKey } from "@solana/web3.js";
 
 export class AccountCache<T> {
-  mem: Map<string, { account: AccountInfoDeserialized<T>; insertedAt: number }>;
+  mem: Map<string, { account: T; insertedAt: number }>;
   queue: string[];
   constructor(public maxSize: number, public tls: number = 5000) {
     this.queue = [];
     this.mem = new Map();
   }
 
-  public insert(key: PublicKey, value: AccountInfoDeserialized<T>) {
+  public insert(key: string, value: T) {
     if (this.queue.length > this.maxSize) {
       while (!this.mem.has(this.queue[0])) {
         this.queue = this.queue.slice(1);
       }
       this.mem.delete(this.queue[0]);
     }
-    let keyString = key.toBase58();
+    let keyString = key;
     this.queue.push(keyString);
     this.mem.set(keyString, {
       account: value,
@@ -24,9 +22,9 @@ export class AccountCache<T> {
     });
   }
 
-  public get(key: PublicKey): AccountInfoDeserialized<T> {
+  public get(key: string): T {
     if (!key) return undefined;
-    let keyString = key.toBase58();
+    let keyString = key;
     let cache = this.mem.get(keyString);
     if (!cache) {
       return undefined;

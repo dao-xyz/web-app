@@ -12,25 +12,16 @@ import {
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import { Send } from "@mui/icons-material";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey, sendAndConfirmTransaction, Transaction } from "@solana/web3.js";
+import { useWallet } from "@solana/wallet-adapter-react";
 import React, { useCallback } from 'react';
-import { createPostTransaction, CreateUpvoteDownvoteVoteConfig, LinkPostContent } from "@dao-xyz/sdk-social";
 import ReactMarkdown from 'react-markdown'
-import { SignerMaybeSignForMe, SignForMe } from "@dao-xyz/sdk-signforme";
-import { AuthorityType, getSignerAuthority } from "@dao-xyz/sdk-social";
-import { Link as RouterLink } from 'react-router-dom';
-import { useSmartWallet } from "../../../contexts/SmartWalletContext";
 import { useIpfsService } from "../../../contexts/IpfsServiceContext";
 import { useAlert } from "../../../contexts/AlertContext";
 import { IpfsWalletContext } from "../../ipfs/useIpfsProviderModal";
 import IpfsProviderPasswordDialog from "../../ipfs/IpfsProviderPasswordDialog";
 import { IpfsServiceModal } from "../../ipfs/IpfsServiceModal";
-import { SETTINGS_BURNER } from "../../../routes/routes";
-import GifIcon from '@mui/icons-material/Gif';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
-import AttachmentIcon from '@mui/icons-material/Attachment';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
@@ -39,16 +30,16 @@ import FormatIndentDecreaseIcon from '@mui/icons-material/FormatIndentDecrease';
 import TitleIcon from '@mui/icons-material/Title';
 import AddIcon from '@mui/icons-material/Add';
 import AbcIcon from '@mui/icons-material/Abc';
-import NotReadyYetDialog from "../../dialogs/NotReadyYetDialog";
 import { useTheme } from "@mui/styles";
 import { useFeatures } from "../../../contexts/FeatureContext";
-export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCreation: (post: PublicKey) => any }) {
-    const { connection } = useConnection();
+
+
+export function NewPost(props: { previewable?: boolean, post: string, onCreation: (post: string) => any }) {
     const [text, setText] = React.useState('');
     const [loading, setLoading] = React.useState(false);
     const [password, setPassword] = React.useState<string | undefined>(undefined);
-    const { publicKey, sendTransaction } = useWallet();
-    const { burnerWallet, burnerWalletBalance } = useSmartWallet();
+    /* const { publicKey, sendTransaction } = useWallet();
+    const { burnerWallet, burnerWalletBalance } = useSmartWallet(); */
     const { connected, getAdapter, checkPassword, reset } = useIpfsService();
     const [ipfsDialogVisible, setIpfsDialogVisible] = React.useState(false);
     const [passwordDialogVisible, setPasswordDialogVisible] = React.useState(false);
@@ -56,7 +47,7 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
     const theme = useTheme();
     const { alertError, alert } = useAlert();
     const { openNotReady } = useFeatures();
-
+    console.log('NEW POST')
     const createPost = useCallback(async () => {
         if (!connected) {
             setIpfsDialogVisible(true);
@@ -80,17 +71,17 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
             return;
         }
 
-        if (!publicKey && !burnerWallet) {
-            alert({
-                severity: 'error', text: 'Wallet is not connected'
-            })
-            setLoading(false);
-            return;
-        }
+        /*  if (!publicKey && !burnerWallet) {
+             alert({
+                 severity: 'error', text: 'Wallet is not connected'
+             })
+             setLoading(false);
+             return;
+         } */
 
 
         try {
-            let burnerAsSigner = !!burnerWallet;
+            /* let burnerAsSigner = !!burnerWallet;
             let payer = publicKey;
             let owner = new SignerMaybeSignForMe(publicKey);
             if (burnerAsSigner) {
@@ -109,14 +100,15 @@ export function NewPost(props: { previewable?: boolean, channel: PublicKey, onCr
             }), undefined, new CreateUpvoteDownvoteVoteConfig(), authorityConfig);
             let transaction = new Transaction().add(tx);
             const signature = burnerAsSigner ? await sendAndConfirmTransaction(connection, transaction, [burnerWallet.keypair]) : await sendTransaction(transaction, connection);
-            await connection.confirmTransaction(signature);
+            await connection.confirmTransaction(signature); */
+
             setPreviewMarkdown(false);
             alert({
                 severity: 'success',
                 text: 'Post created!'
             })
             setText('');
-            props.onCreation(postKey);
+            /*  props.onCreation(postKey); */
             // navigate to redirect if exist, else to home
         }
         catch (error) {

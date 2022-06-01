@@ -6,25 +6,23 @@ import {
   CssBaseline,
   PaletteMode,
   ThemeProvider,
-  Toolbar,
 } from "@mui/material";
 import { getDesignTokens } from "./styles/theme";
 import Box from "@mui/material/Box";
-import Header from "./components/Header/Header";
-import { Network } from "./contexts/Network";
+/* import { Network } from "./contexts/Network";*/
 import { UserProvider } from "./contexts/UserContext";
-import { ConditionalRedirect } from "./components/navigation/ConditionalRedirect";
-import { getNetworkConfigFromPathParam } from "./utils/network";
 import { AlertProvider } from "./contexts/AlertContext";
-import { BaseRoutes } from "./routes/routes";
-import { EncryptionProvider } from "./contexts/EncryptionContext";
 import { IpfsServiceProvider } from "./contexts/IpfsServiceContext";
 import { AccountProvider } from "./contexts/AccountContext";
-import ResponsiveDrawer from "./pages/channel/ContentOutlet";
 import ContentOutlet from "./pages/channel/ContentOutlet";
-import { ChannelsProvider } from "./contexts/ChannelsContext";
-import { SmartWalletProvider } from "./contexts/SmartWalletContext";
+import { PostsProvider } from "./contexts/PostContext";
 import { FeatureProvider } from "./contexts/FeatureContext";
+import { PeerProvider } from "./contexts/PeerContext";
+import { ConfigProvider } from "./contexts/ConfigContext";
+import { WalletProvider } from "@solana/wallet-adapter-react";
+import { AnyWalletProvider } from "./contexts/AnyWalletContext";
+import { ConnectContextProvider } from "./contexts/ConnectContext";
+import { Network, NetworkContext } from "./contexts/SolanaNetwork";
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => { }, // For some reason this should just be like this
 });
@@ -55,35 +53,35 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <HashRouter basename="/">
-
           <CssBaseline>
-            <Network>
-              <AlertProvider>
-                <AccountProvider>
-                  <IpfsServiceProvider>
-                    {/*               <EncryptionProvider>
-                 */}
-                    <UserProvider>
-                      <SmartWalletProvider>
-                        <ChannelsProvider>
-                          <FeatureProvider>
-                            <Box className="column" sx={{ width: "100%" }}>
-                              {/*  <Toolbar variant="dense" />*/}
-                              <ContentOutlet />
-                              {/*  <Box sx={{ padding: 2 }}>
-                           
-                          </Box> */}
-                            </Box>
-                          </FeatureProvider>
-                        </ChannelsProvider>
-                      </SmartWalletProvider>
-                    </UserProvider>
-                  </IpfsServiceProvider>
-                  {/*                  
-                </EncryptionProvider> */}
-                </AccountProvider>
-              </AlertProvider>
-            </Network>
+            <ConfigProvider>
+              <Network>
+                <AnyWalletProvider>
+                  <ConnectContextProvider>
+                    <PeerProvider>
+                      <AlertProvider>
+                        <AccountProvider>
+                          <IpfsServiceProvider>
+
+                            <UserProvider>
+                              <PostsProvider>
+                                <FeatureProvider>
+                                  <Box className="column" sx={{ width: "100%" }}>
+                                    <ContentOutlet />
+
+                                  </Box>
+                                </FeatureProvider>
+                              </PostsProvider>
+                            </UserProvider>
+                          </IpfsServiceProvider>
+
+                        </AccountProvider>
+                      </AlertProvider>
+                    </PeerProvider>
+                  </ConnectContextProvider>
+                </AnyWalletProvider>
+              </Network>
+            </ConfigProvider>
           </CssBaseline>
         </HashRouter>
 

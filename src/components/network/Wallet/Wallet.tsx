@@ -1,8 +1,4 @@
 import React, { FC, useMemo } from "react";
-import {
-  ConnectionProvider,
-  WalletProvider,
-} from "@solana/wallet-adapter-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 
 import {
@@ -22,7 +18,7 @@ const STORAGE_KEY_CONNECT_CLICK_ONCE = "wallet.connected_click_once"
 export const walletConnectClickOnce = (): boolean => localStorage.getItem(STORAGE_KEY_CONNECT_CLICK_ONCE) === "true"
 const walletConnectClicked = (): void => localStorage.setItem(STORAGE_KEY_CONNECT_CLICK_ONCE, "true")
 
-export const Wallet: FC<ButtonProps> = ({ children, ...props }) => {
+export const Wallet: FC<ButtonProps & { onWalletModalClick?: (event: React.MouseEvent) => void }> = ({ onWalletModalClick, children, ...props }) => {
 
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   /* const network = type;
@@ -59,7 +55,7 @@ export const Wallet: FC<ButtonProps> = ({ children, ...props }) => {
     ); */
   return (
     <WalletModalProvider >
-      <WalletMultiButtonMui onWalletModalClick={walletConnectClicked} {...props} />
+      <WalletMultiButtonMui onWalletModalClick={(event) => { walletConnectClicked(); onWalletModalClick && onWalletModalClick(event) }} {...props} />
     </WalletModalProvider>
   )
 };

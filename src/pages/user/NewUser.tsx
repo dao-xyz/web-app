@@ -1,16 +1,18 @@
 import { CircularProgress, Container, FormControl, FormGroup, FormHelperText, Grid, Input, InputLabel, Paper, Slide, Snackbar, Theme, Toolbar, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
-import { NetworkContext } from '../../contexts/Network';
+/* import { NetworkContext } from '../../contexts/Network';
+import { getUserByName } from '@dao-xyz/sdk-user';
+import { getRedirect } from '../../routes/utils'; */
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
-import { getUserByName } from '@dao-xyz/sdk-user';
+
+
 import LoadingButton from '@mui/lab/LoadingButton';
+
 import { UserContext, useUser } from '../../contexts/UserContext';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getRedirect } from '../../routes/utils';
 import { HOME } from '../../routes/routes';
-import { Metadata } from '@metaplex-foundation/mpl-token-metadata';
 import { makeStyles } from '@mui/styles';
 import { UserProfileSettings } from '../../components/user/UserProfileImageSetting';
 import { ConditionalRedirect } from '../../components/navigation/ConditionalRedirect';
@@ -31,9 +33,7 @@ const userNameRegex = new RegExp('^[a-zA-Z0-9_]*$');
 export const NewUser: FC = () => {
 
     const { publicKey, sendTransaction } = useWallet();
-    const { connection } = useConnection();
     const [loading, setLoading] = useState(false);
-    const network = useContext(NetworkContext);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -68,20 +68,21 @@ export const NewUser: FC = () => {
         }
         setLoading(false)
         if (success) {
-            const redirect = getRedirect(location, network.config.type);
-            if (redirect) {
-                navigate(redirect)
-            }
-            else {
+            /*  const redirect = getRedirect(location, network.config.type);
+             if (redirect) {
+                 navigate(redirect)
+             }
+             else  */
+            {
                 navigate(HOME);
             }
         }
 
-    }, [publicKey, sendTransaction, connection, state]);
+    }, [publicKey, sendTransaction, state]);
 
 
     const userExist = async (name: string): Promise<boolean> => {
-        const user = await getUserByName(name, connection);
+        const user = false;/*  await getUserByName(name, connection); */
         return !!user;
     }
 

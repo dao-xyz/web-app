@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
+/* import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -8,9 +8,9 @@ import { NetworkContext } from '../../contexts/Network';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { useLocation, useParams, useNavigate } from 'react-router';
 import { ALL_CONFIGS, getNetworkConfigFromPathParam, getPathForNetwork, NetworkXYZ } from '../../utils/network';
-
+ */
 export const SelectNetwork = (props: { toggle?: boolean }) => {
-    let { pathname } = useLocation();
+    /* let { pathname } = useLocation();
     let navigator = useNavigate();
 
     const { config, changeNetwork } = React.useContext(NetworkContext);
@@ -42,5 +42,6 @@ export const SelectNetwork = (props: { toggle?: boolean }) => {
 
             </Select>
         </FormControl >
-    )
+    ) */
+    return <></>
 }

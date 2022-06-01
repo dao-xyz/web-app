@@ -20,6 +20,10 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "experimentalDecorators": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/@dao-xyz-types",
+    ]
   },
   "include": [
     "src",

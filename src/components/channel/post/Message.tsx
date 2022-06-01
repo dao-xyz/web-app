@@ -1,15 +1,10 @@
 import { ArrowDownward, ArrowUpward, ChildCare, RocketLaunch, Send } from "@mui/icons-material";
 import { Avatar, Button, Card, CardContent, Container, Grid, IconButton, Link, Paper, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { useConnection } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
-import { ChannelAccount, getChannel, PostAccount, UpvoteDownvoteVoteConfig } from '@dao-xyz/sdk-social';
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
-import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
 import { Link as RouterLink } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown'
-import { ContentSourceExternal } from "@dao-xyz/sdk-common";
-import { getUser } from "@dao-xyz/sdk-user";
+
 import { getUserProfilePath } from "../../../routes/routes";
 import { MarkdownContent } from "../../data/MarkdownContent";
 import { getPostContentString } from "../../../utils/postUtils";
@@ -17,14 +12,14 @@ import shiba from "../../../../src/shiba_inu_taiki.jpeg";
 import AddReactionIcon from '@mui/icons-material/AddReaction';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { useFeatures } from "../../../contexts/FeatureContext";
-
-export const Message: FC<{ post: AccountInfoDeserialized<PostAccount>, commentsCount: number }> = ({ post, commentsCount }) => {
+import { Shard } from '@dao-xyz/shard';
+import { PostInterface } from '@dao-xyz/social-interface';
+export const Message: FC<{ post: Shard<PostInterface>, commentsCount: number }> = ({ post, commentsCount }) => {
 
     const [content, setContent] = useState<string | undefined>(undefined);
     const [username, setUsername] = useState<string | undefined>(undefined);
     const [date, setDate] = useState<string | undefined>(undefined);
     const { openNotReady } = useFeatures();
-    const { connection } = useConnection();
 
     const upvote = () => {
 
@@ -34,11 +29,11 @@ export const Message: FC<{ post: AccountInfoDeserialized<PostAccount>, commentsC
     }
 
     useEffect(() => {
-        getPostContentString(post.data).then((result) => { setContent(result) });
+        getPostContentString(post).then((result) => { setContent(result) });
         /*  getUser(post.data.creator, connection).then((user) => {
-             setUsername(user.data.name);
+            setUsername(user.data.name);
          }) */
-        setDate(new Date(post.data.createAtTimestamp.toNumber() * 1000).toLocaleDateString())
+        setDate(new Date(post.interface.timestamp.toNumber() * 1000).toLocaleDateString())
     }, [])
     return <Card raised elevation={2} >
         <CardContent sx={{}}>
@@ -59,7 +54,7 @@ export const Message: FC<{ post: AccountInfoDeserialized<PostAccount>, commentsC
                                         <Typography variant="body2"  >
                                             {username}</Typography>
                                         : <Typography variant="body2" noWrap sx={{ maxWidth: '150px' }}>
-                                            {post.data.creator.toString()}</Typography>
+                                            {post.interface.author.toString()}</Typography>
                                 }
                             </Link></Grid>
                             <Grid item ><Typography color="test.secondary" variant="body2">

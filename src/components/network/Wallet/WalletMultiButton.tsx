@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useWalletModal, WalletIcon } from '@solana/wallet-adapter-react-ui';
+import { useWalletModal, WalletIcon, } from '@solana/wallet-adapter-react-ui';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState, MouseEvent, ReactElement, CSSProperties } from 'react';
 import { usePublicKeyWalletToCopy } from '../../../utils/keys';
 import { WalletConnectButton } from './WalletConnectButton';
@@ -8,7 +8,7 @@ import { WalletModalButton } from './WalletModalButton';
 
 
 
-export const WalletMultiButtonMui: FC<ButtonProps & { onWalletModalClick: () => void }> = ({ children, onWalletModalClick, ...props }) => {
+export const WalletMultiButtonMui: FC<ButtonProps & { onWalletModalClick: (event: React.MouseEvent) => void }> = ({ children, onWalletModalClick, ...props }) => {
     const { publicKey, wallet, disconnect } = useWallet();
     const { setVisible } = useWalletModal();
     const [copied, setCopied] = useState(false);

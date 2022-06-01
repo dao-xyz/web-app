@@ -1,59 +1,45 @@
 import {
-    Box,
     Chip,
-    FormHelperText,
-    Grid,
     Link,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    ListSubheader,
-    Toolbar,
-    Tooltip,
-    Typography,
 } from "@mui/material";
 import React, { FC, useContext, useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { ChannelAccount, getChannel, getChannelsByNamePrefix } from "@dao-xyz/sdk-social";
-import { AccountInfoDeserialized } from "@dao-xyz/sdk-common";
-import { useNetwork } from "../../contexts/Network";
 import { DAO_NEW, getChannelRoute } from "../../routes/routes";
-import { useChannels } from "../../contexts/ChannelsContext";
+import { usePosts } from "../../contexts/PostContext";
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { useConnection, useLocalStorage } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
+import { PostInterface } from "@dao-xyz/social-interface";
+import { Shard } from "@dao-xyz/shard";
 
-const defaultChannel = "4NxwUQVVcJTh58ywcQ5aVoBbZUHZNuGZxmepEPTWxyZh"
-
-const difference = (a: AccountInfoDeserialized<ChannelAccount>[], b: AccountInfoDeserialized<ChannelAccount>[]) => {
+/* const defaultChannel = "4NxwUQVVcJTh58ywcQ5aVoBbZUHZNuGZxmepEPTWxyZh"
+ */
+const difference = (a: Shard<PostInterface>[], b: Shard<PostInterface>[]) => {
     if (a.length != b.length)
         return true;
     for (let i = 0; i < a.length; i++) {
-        if (!a[i].pubkey.equals(b[i].pubkey)) {
+        if (a[i].cid != b[i].cid) {
             return true
         }
     }
     return false;
 }
-export const ChannelsFilter: FC<{ onChange: (channels: AccountInfoDeserialized<ChannelAccount>[]) => any }> = ({ onChange }) => {
-    const [searchResults, setSearchResults] = useState<AccountInfoDeserialized<ChannelAccount>[]>([]);
-    const network = useNetwork();
+export const ChannelsFilter: FC<{ onChange: (channels: Shard<PostInterface>[]) => any }> = ({ onChange }) => {
+    /* const [searchResults, setSearchResults] = useState<Shard<PostInterface>[]>([]);
     const { connection } = useConnection();
     const navigate = useNavigate();
-    const onClickChannel = (channel: AccountInfoDeserialized<ChannelAccount>) => {
-        navigate(getChannelRoute(channel.pubkey));
+    const onClickChannel = (channel: Shard<PostInterface>) => {
+        navigate(getChannelRoute(channel.cid));
     }
     // Data might grow old using localstorage cache of whole channel accounts, but thats okay for now
     const [storageValue, setStorageValue] = useLocalStorage<string[]>('FEED_CHANNEL_FILTER', []);
 
 
-    const [value, setValue] = useState<AccountInfoDeserialized<ChannelAccount>[]>([]);
-    const loadStoredFilter = async (pubkeys: string[]): Promise<AccountInfoDeserialized<ChannelAccount>[]> => {
+    const [value, setValue] = useState<Shard<PostInterface>[]>([]);
+    const loadStoredFilter = async (pubkeys: string[]): Promise<Shard<PostInterface>[]> => {
         return Promise.all(pubkeys.map(key => {
             return getChannel(new PublicKey(key), connection)
         }))
@@ -84,7 +70,7 @@ export const ChannelsFilter: FC<{ onChange: (channels: AccountInfoDeserialized<C
     },
         [])
 
-    const updateValue = (newValue: AccountInfoDeserialized<ChannelAccount>[]) => {
+    const updateValue = (newValue: Shard<PostInterface>[]) => {
         if (difference(newValue, value)) {
             setStorageValue(newValue.map(x => x.pubkey.toBase58()));
             setValue(newValue);
@@ -135,5 +121,6 @@ export const ChannelsFilter: FC<{ onChange: (channels: AccountInfoDeserialized<C
                 Create a new channel
             </Link>
         </>
-    );
+    ); */
+    return <></>
 }

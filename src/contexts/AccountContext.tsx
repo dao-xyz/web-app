@@ -11,9 +11,9 @@ import {
   NftStorageAdapter,
   PinataAdapter,
   IPFSAdapter,
+  SimpleConfig, KeySecretConfig
 } from "@dao-xyz/ipfs-pinning-adapter";
 
-import { SimpleConfig, KeySecretConfig } from "@dao-xyz/ipfs-pinning-adapter";
 import {
   useConnection,
   useLocalStorage,
@@ -22,7 +22,6 @@ import {
 import { hash } from "./EncryptionContext";
 import { Encrypter } from "../helpers/encrypter";
 import { Balance } from "@mui/icons-material";
-import { useNetwork } from "./Network";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 export interface AccountState {
@@ -39,7 +38,6 @@ export function useAccount(): AccountState {
 export const AccountProvider: FC = ({ children, ...props }) => {
   const [balance, setBalance] = useState<number | undefined>(0);
   const { publicKey } = useWallet();
-  const { connection } = useConnection();
 
   const state = useMemo<AccountState>(
     () => ({
@@ -51,13 +49,13 @@ export const AccountProvider: FC = ({ children, ...props }) => {
     [balance, publicKey]
   );
   const updateTokenBalance = useCallback(() => {
-    if (publicKey)
-      connection.getBalance(publicKey).then((balance) => {
-        setBalance(balance / LAMPORTS_PER_SOL);
-      });
-    else {
-      setBalance(undefined);
-    }
+    /*  if (publicKey)
+       connection.getBalance(publicKey).then((balance) => {
+         setBalance(balance / LAMPORTS_PER_SOL);
+       });
+     else {
+       setBalance(undefined);
+     } */
   }, [publicKey]);
   useEffect(() => {
     updateTokenBalance();

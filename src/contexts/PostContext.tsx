@@ -1,48 +1,34 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { AccountInfoDeserialized, ContentSourceString } from "@dao-xyz/sdk-common";
-import {
-  ChannelAccount,
-  getChannel,
-  ChannelAuthorityAccount,
-  getChannels,
-  getChannelAuthorities,
-  AuthorityType,
-  ChannelType,
-} from "@dao-xyz/sdk-social";
+import { PostInterface, Access, AccessType } from '@dao-xyz/social-interface';
+import { Shard } from '@dao-xyz/shard';
+import { usePeer } from "./PeerContext";
+import { getParentPostChain, getParentPostChainTree, PostTree } from "../utils/postUtils";
+import { useConfig } from "./ConfigContext";
 
-import { useNetwork } from "./Network";
-import { Keypair, PublicKey } from "@solana/web3.js";
-import {
-  ChannelTree,
-  getParentChannelChain,
-  getParentChannelChainTree,
-} from "../utils/channelUtils";
-import BN from 'bn.js';
-
-interface ChannelSelection {
-  selectionPath: AccountInfoDeserialized<ChannelAccount>[];
-  selectionTree: ChannelTree;
-  channel: AccountInfoDeserialized<ChannelAccount>;
-  authorities: AccountInfoDeserialized<ChannelAuthorityAccount>[];
+interface PostSelection {
+  selectionPath: Shard<PostInterface>[];
+  selectionTree: PostTree;
+  channel: Shard<PostInterface>;
+  authorities: Access[];
   authoritiesByType: Map<
-    AuthorityType,
-    AccountInfoDeserialized<ChannelAuthorityAccount>[]
+    AccessType,
+    Access[]
   >;
 }
-interface IChannelContext {
+interface IPostContext {
   loading: boolean;
-  selection: ChannelSelection;
-  select: (channel: PublicKey) => Promise<void>;
-  dao: AccountInfoDeserialized<ChannelAccount> | undefined
+  selection: PostSelection;
+  select: (postCID: string) => Promise<void>;
+  dao: Shard<PostInterface>
+  root: Shard<PostInterface>
 }
 
 const groupAuthoritiesByType = (
-  authorities: AccountInfoDeserialized<ChannelAuthorityAccount>[]
-): Map<AuthorityType, AccountInfoDeserialized<ChannelAuthorityAccount>[]> => {
+  authorities: Access[]
+): Map<AccessType, Access[]> => {
   let ret = new Map();
   for (const authority of authorities) {
-    for (const type of authority.data.authorityTypes) {
+    for (const type of authority.accessTypes) {
       let arr = ret.get(type);
       if (!arr) {
         arr = [];
@@ -53,9 +39,9 @@ const groupAuthoritiesByType = (
   }
   return ret;
 };
-export const ChannelsContext = React.createContext<IChannelContext>({} as any);
-export const useChannels = () => useContext(ChannelsContext);
-const mockChannelSelection = (): ChannelSelection => {
+export const Postscontext = React.createContext<IPostContext>({} as any);
+export const usePosts = () => useContext(Postscontext);
+/* const mockChannelSelection = (): ChannelSelection => {
 
   let dao = {
     data: {
@@ -221,36 +207,41 @@ const mockChannelSelection = (): ChannelSelection => {
       [product.pubkey.toBase58()]: [roadmap, targetAudience, userStories]
     }
   }
-}
-export const ChannelsProvider = ({ children }: { children: JSX.Element }) => {
-  const { connection } = useConnection();
+} */
+export const PostsProvider = ({ children }: { children: JSX.Element }) => {
 
 
-  // const [accountCache, setAccountCache] = useState(new AccountCache<ChannelAccount>(50));
-  const { config, isMock } = useNetwork();
-  const [selection, setSelection] = React.useState<ChannelSelection>(isMock ? mockChannelSelection() : {
+  // const [accountCache, setAccountCache] = useState(new AccountCache<Shard<PostInterface>>(50));
+  const [selection, setSelection] = React.useState<PostSelection>(/* isMock ? mockChannelSelection() :  */{
     selectionPath: undefined,
     selectionTree: undefined,
     authorities: undefined,
     authoritiesByType: undefined,
     channel: undefined,
   });
-
+  const { config } = useConfig();
+  const { peer } = usePeer();
   const [loading, setLoading] = useState(false);
+  const [root, setRoot] = useState<Shard<PostInterface>>();
+
+  useEffect(() => {
+    if (peer?.node)
+      Shard.loadFromCID<PostInterface>(config.postShardCID, peer.node).then((shard) => {
+        setRoot(shard)
+      })
+  },
+    [config?.postShardCID, !!peer?.node])
   const selectionMemo = React.useMemo(
     () => ({
       selection,
       loading,
+      root,
       dao: selection.selectionPath?.length > 0 ? selection.selectionPath[selection.selectionPath.length - 1] : undefined,
-      select: async (channel: PublicKey) => {
-        setLoading(true);
-
-        if (isMock) {
-          setLoading(false);
-          setSelection(mockChannelSelection());
-          return;
+      select: async (postCID: string) => {
+        if (!peer?.node) {
+          return undefined;
         }
-
+        setLoading(true);
         let previousSelection = selection;
         setSelection({
           selectionPath: undefined,
@@ -259,29 +250,27 @@ export const ChannelsProvider = ({ children }: { children: JSX.Element }) => {
           authoritiesByType: undefined,
           channel: undefined,
         });
-        let channelAccount = undefined;
-        /*   if (accountCache) {
-            channelAccount = await getChannel(channel, connection);
-          } */
-        if (!channelAccount) {
-          channelAccount = await getChannel(channel, connection);
+        let post: Shard<PostInterface> = undefined;
+
+        if (!post) {
+          post = await Shard.loadFromCID<PostInterface>(postCID, peer.node);
         }
 
-        let parents = [
-          channelAccount,
-          ...(await getParentChannelChain(
-            channelAccount,
-            connection /* accountCache */
+        let parents: Shard<PostInterface>[] = [
+          post,
+          ...(await getParentPostChain(
+            post,
+            peer /* accountCache */
           )),
         ];
-        let parentTree = await getParentChannelChainTree(parents, connection);
+        let parentTree = await getParentPostChainTree(parents);
         let previousParentTree = previousSelection.selectionTree;
 
         // If same DAO, then keep memory
         if (
           selection.selectionPath &&
-          parents[parents.length - 1].pubkey.equals(
-            selection.selectionPath[selection.selectionPath.length - 1].pubkey
+          parents[parents.length - 1].cid == (
+            selection.selectionPath[selection.selectionPath.length - 1].cid
           )
         ) {
           for (const key in previousParentTree) {
@@ -290,27 +279,25 @@ export const ChannelsProvider = ({ children }: { children: JSX.Element }) => {
             }
           }
         }
-        let authoritiesForChannel = await getChannelAuthorities(
-          channelAccount.pubkey,
-          connection
-        );
+
+        let authoritiesForPost = post.interface.acl.db.all;
         setSelection({
-          channel: channelAccount,
+          channel: post,
           selectionPath: parents,
           selectionTree: parentTree,
-          authorities: authoritiesForChannel,
-          authoritiesByType: groupAuthoritiesByType(authoritiesForChannel),
+          authorities: authoritiesForPost,
+          authoritiesByType: groupAuthoritiesByType(authoritiesForPost),
         });
         setLoading(false);
       },
     }),
-    [config.type, selection, loading]
+    [selection, loading, root?.cid, !!peer?.node]
   );
 
 
   return (
-    <ChannelsContext.Provider value={selectionMemo}>
+    <Postscontext.Provider value={selectionMemo}>
       {children}
-    </ChannelsContext.Provider>
+    </Postscontext.Provider>
   );
 };

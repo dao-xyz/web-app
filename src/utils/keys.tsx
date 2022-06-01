@@ -8,7 +8,7 @@ export const usePublicKeyWalletToCopy = (
   children: React.ReactNode,
   setCopied: (copied: boolean) => any
 ) => {
-  const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
+  const base58 = useMemo(() => typeof publicKey != 'string' ? publicKey?.toBase58() : publicKey, [publicKey]);
   const content = useMemo(() => {
     if (children) return children;
     if (!wallet || !base58) return null;

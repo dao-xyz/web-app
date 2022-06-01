@@ -9,13 +9,11 @@ import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import PaidIcon from '@mui/icons-material/Paid';
 import { Link as RouterLink } from "react-router-dom";
-import { NetworkContext } from "../../contexts/Network";
 import { HOME } from "../../routes/routes";
 
 // Landing page for choosing network
 export default function Join() {
     const icon = PublicIcon;
-    const config = React.useContext(NetworkContext);
     return (
         <>
             <Container disableGutters maxWidth="sm" component="main" sx={{ pt: 8, pb: 6 }}>

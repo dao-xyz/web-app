@@ -21,6 +21,7 @@ interface IPostContext {
   select: (postCID: string) => Promise<void>;
   dao: Shard<PostInterface>
   root: Shard<PostInterface>
+  loadingRoot: boolean,
 }
 
 const groupAuthoritiesByType = (
@@ -223,14 +224,30 @@ export const PostsProvider = ({ children }: { children: JSX.Element }) => {
   const { peer } = usePeer();
   const [loading, setLoading] = useState(false);
   const [root, setRoot] = useState<Shard<PostInterface>>();
+  const [loadingRoot, setLoadingRoot] = useState(false);
 
   useEffect(() => {
-    if (peer?.node)
-      Shard.loadFromCID<PostInterface>(config.postShardCID, peer.node).then((shard) => {
+    if (peer?.node) {
+      setLoadingRoot(true);
+      Shard.loadFromCID<PostInterface>(config.rootPostShard, peer.node).then(async (shard) => {
+        await shard.init(peer);
+        await shard.interface.comments.load();
+        console.log("found root shard", shard.interface.comments.db.address)
         setRoot(shard)
+
+        while (true) {
+
+          // console.log(Object.keys(shard.interface.comments.db.db.index._index), Object.keys(shard.interface.comments.db.db.all).length);
+          await new Promise(r => setTimeout(r, 2000));
+
+        }
+
+      }).finally(() => {
+        setLoadingRoot(false);
       })
+    }
   },
-    [config?.postShardCID, !!peer?.node])
+    [config?.rootPostShard, !!peer?.node])
   const selectionMemo = React.useMemo(
     () => ({
       selection,
@@ -290,9 +307,14 @@ export const PostsProvider = ({ children }: { children: JSX.Element }) => {
         });
         setLoading(false);
       },
+      loadingRoot
     }),
-    [selection, loading, root?.cid, !!peer?.node]
+    [selection, loading, root?.cid, !!peer?.node, loadingRoot]
   );
+
+  if (peer) {
+    peer?.node.pubsub.ls().then((ls) => console.log(ls));
+  }
 
 
   return (

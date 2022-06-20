@@ -68,7 +68,6 @@ export const checkConnection = async (provider: Web3Provider): Promise<boolean> 
           return connected; */
         return false;
     }
-    return true;
 }
 /* export async function waitForAccount(wallet: MetaMaskWallet): Promise<boolean> {
     const timeOut = 10 * 1000;
@@ -107,13 +106,13 @@ export class MetaMaskWalletAdapter extends BaseMessageSignerWalletAdapter {
             scopePollingDetectionStrategy(() => {
                 if (window.ethereum?.isMetaMask) {
                     this._readyState = WalletReadyState.Installed;
+                    console.log('installed', this._readyState)
                     this.emit('readyStateChange', this._readyState);
                     return true;
                 }
                 return false;
             });
         }
-        console.log(this);
 
     }
 
@@ -126,14 +125,19 @@ export class MetaMaskWalletAdapter extends BaseMessageSignerWalletAdapter {
     }
 
     get connected(): boolean {
-        return this._wallet?.isConnected();
+        return !!this._wallet?.isConnected();
     }
 
     get readyState(): WalletReadyState {
         return this._readyState;
     }
 
+    get provider(): Web3Provider {
+        return this._provider;
+    }
+
     async connect(): Promise<void> {
+
         try {
             console.log('CONNECT 1!', this.connected, this.connecting, this._readyState);
 
@@ -146,18 +150,20 @@ export class MetaMaskWalletAdapter extends BaseMessageSignerWalletAdapter {
             const wallet = window!.ethereum!;
             const provider = new ethers.providers.Web3Provider(wallet)
 
-            let connected = await checkConnection(provider);
-            console.log('CONNECT 2!', wallet, connected, wallet.isConnected());
-
-            if (!connected) {
-                try {
-                    let accounts = await provider.send('eth_requestAccounts', []);
-                } catch (error: any) {
-                    if (error instanceof WalletError) throw error;
-                    throw new WalletConnectionError(error?.message, error);
-                } finally {
-                }
+            while (!await checkConnection(provider)) {
+                console.log('Waiting for connection to wallet');
             }
+            /*  console.log('CONNECT 2!', wallet, connected, wallet.isConnected());
+ 
+             if (!connected) {
+                 try {
+                     await provider.send('eth_requestAccounts', []);
+                 } catch (error: any) {
+                     if (error instanceof WalletError) throw error;
+                     throw new WalletConnectionError(error?.message, error);
+                 } finally {
+                 }
+             } */
 
             provider.on('disconnect', this._disconnected);
 
@@ -165,6 +171,7 @@ export class MetaMaskWalletAdapter extends BaseMessageSignerWalletAdapter {
             this._provider = provider;
 
             this.emit('connect', this._wallet.selectedAddress as any as PublicKey);
+            console.log("GOT ADDRS", this._wallet)
         } catch (error: any) {
             this.emit('error', error);
             throw error;

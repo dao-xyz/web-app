@@ -20,10 +20,7 @@ export default function ConnectDialog(props: { open: boolean, onClose?: () => vo
     const [expanded, setExpanded] = React.useState(false);
 
     const handleClose = (event: React.MouseEvent) => {
-        event.preventDefault();
-        event.stopPropagation();
 
-        console.log(event)
         setOpen(false);
         if (props.onClose)
             props.onClose();
@@ -121,17 +118,16 @@ export default function ConnectDialog(props: { open: boolean, onClose?: () => vo
                 ) : (
                     <>
                         <h1 className="wallet-adapter-modal-title">
-                            You'll need a wallet on Solana to continue
+                            You need to install a wallet to continue
                         </h1>
                         <div className="wallet-adapter-modal-middle">
                             <WalletSVG />
-                            <button
+                            {/*    <button
                                 type="button"
                                 className="wallet-adapter-modal-middle-button"
                                 onClick={(event) => handleWalletClick(event, getStartedWallet.adapter.name)}
                             >
-                                Get started
-                            </button>
+                            </button> */}
                         </div>
                         {otherWallets.length ? (
                             <>

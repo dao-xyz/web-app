@@ -2,7 +2,6 @@
 import { PostInterface, TextContent } from "@dao-xyz/social-interface";
 import { Shard, AnyPeer } from '@dao-xyz/shard';
 import { AccountCache } from "./accountCache";
-
 export const getParentPostChain = async (
   channel: Shard<PostInterface>,
   node: AnyPeer,
@@ -30,6 +29,8 @@ export const getParentPostChainTree = async (
 ): Promise<PostTree> => {
   let ret: PostTree = {};
   for (const parent of parents) {
+    /*     if(!parent.interface.comments.db.db)
+         await parent.interface.comments.db.db.load(1); */
     let children = Object.values(parent.interface.comments.db.db.all);
     ret[parent ? parent?.cid.toString() : CHANNEL_TREE_ROOT] = children;
   }
@@ -59,25 +60,7 @@ export const getChannelContentString = async (
 };
  */
 
-export const getPostContentString = async (
-  post: Shard<PostInterface>
-): Promise<string | undefined> => {
-  if (post.interface.content instanceof TextContent) {
-    return Promise.resolve(post.interface.content.toString());
-  }
-  /* let url = (post.content as LinkPostContent).url;
-  if (url && isValidHttpUrl(url)) {
-    const result = await fetch(url, {}).catch(() => undefined);
-    if (result) {
-      if (result.status >= 200 && result.status < 300) {
-        let text = await result.text().catch(() => undefined);
-        return text;
-      }
-    }
-    return undefined;
-  } */
-  return undefined;
-};
+
 
 
 

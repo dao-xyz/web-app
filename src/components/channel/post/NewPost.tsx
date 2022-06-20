@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import { Send } from "@mui/icons-material";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import React, { useCallback } from 'react';
 import ReactMarkdown from 'react-markdown'
 import { useIpfsService } from "../../../contexts/IpfsServiceContext";
@@ -32,36 +32,41 @@ import AddIcon from '@mui/icons-material/Add';
 import AbcIcon from '@mui/icons-material/Abc';
 import { useTheme } from "@mui/styles";
 import { useFeatures } from "../../../contexts/FeatureContext";
+import { createPostShard, PostInterface, TextContent } from "@dao-xyz/social-interface";
+import { PublicKey, Shard, P2PTrust } from "@dao-xyz/shard";
+import { usePeer } from "../../../contexts/PeerContext";
 
 
-export function NewPost(props: { previewable?: boolean, post: string, onCreation: (post: string) => any }) {
+export function NewPost(props: { previewable?: boolean, parentPost: Shard<PostInterface>, onCreation: (post: string) => any }) {
     const [text, setText] = React.useState('');
+    const { publicKey } = useWallet();
     const [loading, setLoading] = React.useState(false);
     const [password, setPassword] = React.useState<string | undefined>(undefined);
     /* const { publicKey, sendTransaction } = useWallet();
     const { burnerWallet, burnerWalletBalance } = useSmartWallet(); */
-    const { connected, getAdapter, checkPassword, reset } = useIpfsService();
-    const [ipfsDialogVisible, setIpfsDialogVisible] = React.useState(false);
+    /* const { connected, getAdapter, checkPassword, reset } = useIpfsService();
+      const [ipfsDialogVisible, setIpfsDialogVisible] = React.useState(false); */
     const [passwordDialogVisible, setPasswordDialogVisible] = React.useState(false);
     const [previewMarkdown, setPreviewMarkdown] = React.useState(false);
     const theme = useTheme();
     const { alertError, alert } = useAlert();
     const { openNotReady } = useFeatures();
-    console.log('NEW POST')
+    const { peer } = usePeer();
+
     const createPost = useCallback(async () => {
-        if (!connected) {
+        /* if (!connected) {
             setIpfsDialogVisible(true);
             return;
-        }
+        } */
 
-        if (!await checkPassword(password)) {
-            setPasswordDialogVisible(true);
-            return;
-        }
+        /*  if (!await checkPassword(password)) {
+             setPasswordDialogVisible(true);
+             return;
+         } */
         // Upload content
         setLoading(true)
 
-        const adapter = await getAdapter(password);
+        /*   const adapter = await getAdapter(password); 
         let cid: string = undefined;
         try {
             cid = await adapter.pin(Buffer.from(text), true)
@@ -70,7 +75,7 @@ export function NewPost(props: { previewable?: boolean, post: string, onCreation
             setLoading(false);
             return;
         }
-
+        */
         /*  if (!publicKey && !burnerWallet) {
              alert({
                  severity: 'error', text: 'Wallet is not connected'
@@ -79,8 +84,30 @@ export function NewPost(props: { previewable?: boolean, post: string, onCreation
              return;
          } */
 
+        //  omething went wrong. Error: {"stack":"Error: The provided document doesn't contain field 'id'\n at BinaryDocumentStore.put (http://localhost:3000/static/js/bundle.js:297412:15)\n at _callee$ (http://localhost:3000/static/js/bundle.js:4841:62)\
+        console.log((await peer.node.swarm.peers()).map(x => x.addr.toString()))
+        /*         await peer.node.swarm.connect("/ip4/127.0.0.1/tcp/5432/ws/p2p/12D3KooWC1Pb6XmSxY4YKGUPicYME8Ea27Y2gS4SbFKRndPzgF4C");
+              console.log((await peer.node.swarm.peers()).map(x => x.addr.toString())) */
+        let newShard = await createPostShard(PublicKey.from(peer.orbitDB.identity), new TextContent(), props.parentPost.trust)
+        await newShard.init(peer, props.parentPost.cid);
+        await newShard.requestReplicate();
+        if (!(props.parentPost.interface.comments.db.db)) {
+            await props.parentPost.interface.comments.load()
+        }
+        await props.parentPost.interface.comments.db.write((x) => props.parentPost.interface.comments.db.db.put(x, { pin: true }), newShard)
+        console.log('db to put ', props.parentPost.interface.comments.db.db.address.toString());
+
+        let store = (newShard.interface.content as TextContent).db;
+        await store.load();
+        await store.write((obj) => store.db.add(obj, { offset: 0 }), 'hello world')
+
 
         try {
+
+            /*            console.log(newShard.cid);
+                      */
+
+            //
             /* let burnerAsSigner = !!burnerWallet;
             let payer = publicKey;
             let owner = new SignerMaybeSignForMe(publicKey);
@@ -124,7 +151,7 @@ export function NewPost(props: { previewable?: boolean, post: string, onCreation
 
 
 
-    }, [text, connected, password])
+    }, [text, /* connected,  */password])
     return (
         <Grid container direction="column" >
             <Grid container item justifyContent="space-between" spacing={1}>
@@ -173,7 +200,7 @@ export function NewPost(props: { previewable?: boolean, post: string, onCreation
                     </IconButton>
                 </Grid>
 
-                <IpfsWalletContext.Provider
+                {/*  <IpfsWalletContext.Provider
                     value={{
                         visible: ipfsDialogVisible,
                         setVisible: setIpfsDialogVisible,
@@ -181,7 +208,7 @@ export function NewPost(props: { previewable?: boolean, post: string, onCreation
                 >
                     {ipfsDialogVisible && <IpfsServiceModal onSave={createPost} />}
                 </IpfsWalletContext.Provider>
-                <IpfsProviderPasswordDialog open={passwordDialogVisible} onReset={() => { }} setOpen={setPasswordDialogVisible} setPassword={(password) => { setPassword(password); createPost() }} />
+                <IpfsProviderPasswordDialog open={passwordDialogVisible} onReset={() => { }} setOpen={setPasswordDialogVisible} setPassword={(password) => { setPassword(password); createPost() }} /> */}
 
             </Grid >
             <Grid item container justifyContent="right">

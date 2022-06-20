@@ -26,7 +26,7 @@ export const DAOExplore: FC = () => {
 
     useEffect(() => {
         setLoading(true);
-        Shard.loadFromCID<PostInterface>(config.postShardCID, peer.node).then((root) => {
+        Shard.loadFromCID<PostInterface>(config.rootPostShard, peer.node).then((root) => {
             setDaos(root.interface.comments.db.db.all)
         }).finally(() => {
             setLoading(false);

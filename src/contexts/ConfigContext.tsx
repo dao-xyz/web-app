@@ -1,11 +1,12 @@
 import React, { useContext, useEffect } from "react";
 
 interface Config {
-    rootTrustCID: string,
-    trustShardCID: string,
-    postShardCID: string,
-    usersShardCID: string
+    rootTrust: string,
+    rootTrustShard: string,
+    rootPostShard: string,
+    rootUsersShard: string
 }
+
 
 interface IConfigContext {
     config: Config
@@ -14,13 +15,7 @@ export const ConfigContext = React.createContext<IConfigContext>({} as any);
 export const useConfig = () => useContext(ConfigContext);
 
 export const ConfigProvider = ({ children }: { children: JSX.Element }) => {
-    const [config, setConfig] = React.useState<Config>({
-
-        rootTrustCID: "QmUAs67w3EwFqZneRuzPvEdMKowFLeD3ArDtb35r3Dy98h",
-        trustShardCID: "QmNWoaLbKDVDPUYGctMuQUUtNPfPjGQg3mPhZWvPKHcHdb",
-        postShardCID: "QmRaRGXAspRj7g8ZmRNLuSyfeLwdgr8d1MPv7vg8ywGFjZ",
-        usersShardCID: "QmUYSmze7F3dBUcKio8sdRQVuvZDdU1wi9LZCY4dg4uJxV"
-    });
+    const [config, setConfig] = React.useState<Config>({ "rootTrust": "Qme3snzS2C9U4ggLMEqrPAYQFiWqWq9R6UBvkNnLFHwd4h", "rootTrustShard": "QmemEtCJ8uzZyXGZpbY66tDQm8Q84kLpkPzBPA53DUJkZU", "rootPostShard": "QmcxnDyaJ8KqNx3EVpa3UG1WejeqjiUGuWg9qJa785YCBk", "rootUsersShard": "QmX2huH26PQu4pGkviKR46AxyweVTeV5HgbkmeNWFkWQuw" });
     const memo = React.useMemo<IConfigContext>(
         () => ({
             config

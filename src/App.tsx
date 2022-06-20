@@ -56,30 +56,28 @@ function App() {
           <CssBaseline>
             <ConfigProvider>
               <Network>
-                <AnyWalletProvider>
-                  <ConnectContextProvider>
-                    <PeerProvider>
-                      <AlertProvider>
-                        <AccountProvider>
-                          <IpfsServiceProvider>
+                <ConnectContextProvider>
+                  <PeerProvider>
+                    <AlertProvider>
+                      <AccountProvider>
+                        <IpfsServiceProvider>
 
-                            <UserProvider>
-                              <PostsProvider>
-                                <FeatureProvider>
-                                  <Box className="column" sx={{ width: "100%" }}>
-                                    <ContentOutlet />
+                          <UserProvider>
+                            <PostsProvider>
+                              <FeatureProvider>
+                                <Box className="column" sx={{ width: "100%" }}>
+                                  <ContentOutlet />
 
-                                  </Box>
-                                </FeatureProvider>
-                              </PostsProvider>
-                            </UserProvider>
-                          </IpfsServiceProvider>
+                                </Box>
+                              </FeatureProvider>
+                            </PostsProvider>
+                          </UserProvider>
+                        </IpfsServiceProvider>
 
-                        </AccountProvider>
-                      </AlertProvider>
-                    </PeerProvider>
-                  </ConnectContextProvider>
-                </AnyWalletProvider>
+                      </AccountProvider>
+                    </AlertProvider>
+                  </PeerProvider>
+                </ConnectContextProvider>
               </Network>
             </ConfigProvider>
           </CssBaseline>

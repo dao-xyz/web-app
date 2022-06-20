@@ -195,7 +195,7 @@ export const Network = ({ children }: { children: JSX.Element }) => {
       return "http://localhost:8899";
     }
   }, [network]);
-  const walletConnectedOnce = walletConnectClickOnce();
+  // const walletConnectedOnce = walletConnectClickOnce();
   // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking --
   // Only the wallets you configure here will be compiled into your application
   const wallets = useMemo(
@@ -217,7 +217,7 @@ export const Network = ({ children }: { children: JSX.Element }) => {
   return (
     <NetworkContext.Provider value={networkMemo}>
       <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets} autoConnect={walletConnectedOnce}>
+        <WalletProvider wallets={wallets} autoConnect={true}>
           {children}
         </WalletProvider>
       </ConnectionProvider>

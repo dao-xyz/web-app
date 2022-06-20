@@ -7,13 +7,12 @@ import ReactMarkdown from 'react-markdown'
 
 import { getUserProfilePath } from "../../../routes/routes";
 import { MarkdownContent } from "../../data/MarkdownContent";
-import { getPostContentString } from "../../../utils/postUtils";
 import shiba from "../../../../src/shiba_inu_taiki.jpeg";
 import AddReactionIcon from '@mui/icons-material/AddReaction';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { useFeatures } from "../../../contexts/FeatureContext";
 import { Shard } from '@dao-xyz/shard';
-import { PostInterface } from '@dao-xyz/social-interface';
+import { PostInterface, TextContent } from '@dao-xyz/social-interface';
 export const Message: FC<{ post: Shard<PostInterface>, commentsCount: number }> = ({ post, commentsCount }) => {
 
     const [content, setContent] = useState<string | undefined>(undefined);
@@ -29,7 +28,22 @@ export const Message: FC<{ post: Shard<PostInterface>, commentsCount: number }> 
     }
 
     useEffect(() => {
-        getPostContentString(post).then((result) => { setContent(result) });
+        const load = async () => {
+            let db = (post.interface.content as TextContent);
+            console.log('init!')
+            await db.init(post)
+            console.log('query!')
+            db.toStringRemote((content) => {
+                console.log('Succeeded to load content');
+                setContent(content)
+            });
+
+        }
+        console.log('laod!')
+        load();
+        /* .catch((error) => {
+            console.log('failed to load conent', error.toString())
+        }); */
         /*  getUser(post.data.creator, connection).then((user) => {
             setUsername(user.data.name);
          }) */

@@ -1,20 +1,15 @@
 import {
     Box,
-
     Skeleton,
-
     Typography,
 } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import { Send } from "@mui/icons-material";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Message } from "./Message";
 import BN from 'bn.js';
 import { useTheme } from "@mui/styles";
 import { Shard } from '@dao-xyz/shard';
 import { PostInterface } from '@dao-xyz/social-interface';
+import { QueryRequestV0, DocumentQueryRequest, ResultWithSource } from '@dao-xyz/bquery';
 /* 
 const mockPosts = (darkMode: boolean): Shard<PostInterface>[] => [
     {
@@ -159,7 +154,16 @@ export const PostFeed = (props: { parentPosts: Shard<PostInterface>[], onFeedCha
  
              }) */
 
-            const posts = props.parentPosts.map(parentPost => parentPost.interface.comments.db.db.all).flat(1);
+            props.parentPosts.forEach(post => post.interface.comments.db.db.query(new QueryRequestV0({
+                type: new DocumentQueryRequest({
+                    queries: []
+                })
+            }), (resp) => {
+                console.log('got post resp', resp, props.parentPosts);
+                setPosts(resp.results.map(r => { const s = ((r as ResultWithSource).source as Shard<PostInterface>); s.peer = post.peer; return s }));
+            }))
+
+            //const posts = props.parentPosts.map(parentPost => parentPost.interface.comments.db.db.all).flat(1);
             setChildrenPosts(createChildrenMap(posts));
 
         }
@@ -173,17 +177,21 @@ export const PostFeed = (props: { parentPosts: Shard<PostInterface>[], onFeedCha
     }
     useEffect(() => {
         setPosts([]);
-    }, [props.parentPosts[0] ? props.parentPosts[0].cid : !!props.parentPosts[0]])
 
+    }, [props.parentPosts[0] ? props.parentPosts[0].cid : !!props.parentPosts[0]])
+    /*  useEffect(() => {
+        if (props.parentPosts[0]) {
+            props.parentPosts[0].interface.comments.db.db.events.on('log.op.ADD', (id, hash, payload) => console.log('POST', hash))
+        }
+    }, [props.parentPosts[0] ? props.parentPosts[0].cid : !!props.parentPosts[0]]) */
+    // console.log(props.parentPosts[0] ? props.parentPosts[0].interface.comments.db.db.all : 'loading');
+    console.log('psts length', posts.length)
     useEffect(() => {
 
         updateContent();
 
-    }, [/* isMock,  */posts.length, theme["palette"].mode])
+    }, [/* isMock,  */posts.length])/* posts.length, theme["palette"].mode */
     useEffect(() => {
-        /*   if (isMock) {
-              return;
-          } */
         const interval = setInterval(() => {
             if (!loading) {
                 updateContent();
@@ -194,7 +202,7 @@ export const PostFeed = (props: { parentPosts: Shard<PostInterface>[], onFeedCha
     return (
         <Box sx={{ pb: 1 }}>
             {loading ? <><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={200} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={75} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={150} /></> : <></>}
-            {!loading && (posts.length > 0 ? posts.map((post, ix) => <Box key={post.cid} sx={{ mt: ix > 0 ? 2 : 0, mb: 2 }} ><Message post={post} commentsCount={childrenCount(post.cid)} /></Box>) : <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary">No messages found</Typography></Box>)}
+            {!loading && (posts.length > 0 ? posts.map((post, ix) => <Box key={ix} sx={{ mt: ix > 0 ? 2 : 0, mb: 2 }} ><Message post={post} commentsCount={childrenCount(post.cid)} /></Box>) : <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary">No messages found</Typography></Box>)}
 
         </Box>
     );

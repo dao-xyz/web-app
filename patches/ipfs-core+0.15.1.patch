@@ -1,0 +1,70 @@
+diff --git a/node_modules/ipfs-core/src/components/libp2p.js b/node_modules/ipfs-core/src/components/libp2p.js
+index 0c4d752..68ad2ae 100644
+--- a/node_modules/ipfs-core/src/components/libp2p.js
++++ b/node_modules/ipfs-core/src/components/libp2p.js
+@@ -48,7 +48,7 @@ const mergeOptions = mergeOpts.bind({ ignoreUndefined: true, concatArrays: true
+  * @param {KeychainConfig|undefined} config.keychainConfig
+  * @param {Partial<IPFSConfig>|undefined} config.config
+  */
+-export function createLibp2p ({
++export function createLibp2p({
+   options = {},
+   peerId,
+   multiaddrs = [],
+@@ -84,7 +84,7 @@ export function createLibp2p ({
+  * @param {Multiaddr[]} input.multiaddrs
+  * @returns {Libp2pOptions}
+  */
+-function getLibp2pOptions ({ options, config, datastore, keychainConfig, peerId, multiaddrs }) {
++function getLibp2pOptions({ options, config, datastore, keychainConfig, peerId, multiaddrs }) {
+   const getPubsubRouter = () => {
+     const router = get(config, 'Pubsub.Router') || 'gossipsub'
+ 
+@@ -111,6 +111,7 @@ function getLibp2pOptions ({ options, config, datastore, keychainConfig, peerId,
+       noAnnounce: get(options, 'addresses.noAnnounce', get(config, 'Addresses.NoAnnounce', []))
+     },
+     connectionManager: get(options, 'connectionManager', {
++      autoDial: options.libp2p?.connectionManager?.autoDial !== undefined ? options.libp2p?.connectionManager?.autoDial : true,
+       maxConnections: get(options, 'config.Swarm.ConnMgr.HighWater', get(config, 'Swarm.ConnMgr.HighWater')),
+       minConnections: get(options, 'config.Swarm.ConnMgr.LowWater', get(config, 'Swarm.ConnMgr.LowWater'))
+     }),
+@@ -145,7 +146,7 @@ function getLibp2pOptions ({ options, config, datastore, keychainConfig, peerId,
+       enabled: !get(config, 'Swarm.DisableNatPortMap', false)
+     }
+   }
+-
++  console.log('OPTIONS', libp2pOptions)
+   if (get(options, 'config.Pubsub.Enabled', get(config, 'Pubsub.Enabled', true))) {
+     libp2pOptions.pubsub = getPubsubRouter()
+   }
+diff --git a/node_modules/ipfs-core/src/components/storage.js b/node_modules/ipfs-core/src/components/storage.js
+index d300064..5a09247 100644
+--- a/node_modules/ipfs-core/src/components/storage.js
++++ b/node_modules/ipfs-core/src/components/storage.js
+@@ -37,7 +37,7 @@ export class Storage {
+    * @param {Print} print
+    * @param {boolean} isNew
+    */
+-  constructor (peerId, keychain, repo, print, isNew) {
++  constructor(peerId, keychain, repo, print, isNew) {
+     this.print = print
+     this.peerId = peerId
+     this.keychain = keychain
+@@ -51,7 +51,7 @@ export class Storage {
+    * @param {import('ipfs-core-utils/multicodecs').Multicodecs} codecs
+    * @param {IPFSOptions} options
+    */
+-  static async start (print, codecs, options) {
++  static async start(print, codecs, options) {
+     const { repoAutoMigrate, repo: inputRepo, onMigrationProgress } = options
+ 
+     const repo = (typeof inputRepo === 'string' || inputRepo == null)
+@@ -150,7 +150,7 @@ const initRepo = async (print, repo, options) => {
+ 
+   // Create libp2p for Keychain creation
+   const libp2p = await createLibp2p({
+-    options: undefined,
++    options: options.libp2p,
+     multiaddrs: undefined,
+     peerId,
+     repo,

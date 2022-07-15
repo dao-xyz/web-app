@@ -13,6 +13,7 @@ export const getParentPostChain = async (
     if (accountCache && !!accountCache.get(current?.parentShardCID)) {
       current = accountCache.get(current.parentShardCID);
     } else {
+      console.log('load parent post from cid', current.parentShardCID)
       current = await Shard.loadFromCID(current.parentShardCID, node.node)
     }
     ret.push(current);
@@ -31,7 +32,7 @@ export const getParentPostChainTree = async (
   for (const parent of parents) {
     /*     if(!parent.interface.comments.db.db)
          await parent.interface.comments.db.db.load(1); */
-    let children = Object.values(parent.interface.comments.db.db.all);
+    let children = Object.values(parent.interface.comments.db.db.index);
     ret[parent ? parent?.cid.toString() : CHANNEL_TREE_ROOT] = children;
   }
   return ret;

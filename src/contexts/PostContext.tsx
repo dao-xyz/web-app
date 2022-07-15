@@ -42,173 +42,6 @@ const groupAuthoritiesByType = (
 };
 export const Postscontext = React.createContext<IPostContext>({} as any);
 export const usePosts = () => useContext(Postscontext);
-/* const mockChannelSelection = (): ChannelSelection => {
-
-  let dao = {
-    data: {
-      channelType: ChannelType.Chat,
-      collection: undefined,
-      creation_timestamp: new BN(1640991600),
-      encryption: undefined,
-      info: new ContentSourceString({
-        string: 'Hello world!'
-      }),
-      name: 'dao | xyz',
-      parent: undefined
-    },
-    pubkey: new PublicKey("4MaR5cd9MsmZ274hX1ZTP3x7vgxASPGLLbyouBbKC5tr")
-  };
-
-  let welcome = {
-    data: {
-      channelType: ChannelType.Chat,
-      collection: undefined,
-      creation_timestamp: new BN(1640991600),
-      encryption: undefined,
-      info: new ContentSourceString({
-        string: 'Hello world!'
-      }),
-      name: 'Welcome',
-      parent: dao.pubkey
-    },
-    pubkey: Keypair.generate().publicKey
-  };
-
-  let gm = {
-    data: {
-      channelType: ChannelType.Chat,
-      collection: undefined,
-      creation_timestamp: new BN(1640991600),
-      encryption: 1,
-      info: new ContentSourceString({
-        string: 'Hello world!'
-      }),
-      name: 'gm',
-      parent: dao.pubkey
-    },
-    pubkey: Keypair.generate().publicKey
-  };
-
-  let forum = {
-    data: {
-      channelType: ChannelType.Chat,
-      collection: undefined,
-      creation_timestamp: new BN(1640991600),
-      encryption: 1,
-      info: new ContentSourceString({
-        string: 'Hello world!'
-      }),
-      name: 'Forum',
-      parent: dao.pubkey
-    },
-    pubkey: Keypair.generate().publicKey
-  };
-  let governance = {
-    data: {
-      channelType: ChannelType.Chat,
-      collection: undefined,
-      creation_timestamp: new BN(1640991600),
-      encryption: 1,
-      info: new ContentSourceString({
-        string: 'Hello world!'
-      }),
-      name: 'Governance',
-      parent: dao.pubkey
-    },
-    pubkey: Keypair.generate().publicKey
-  };
-  let coreUnits = {
-    data: {
-      channelType: ChannelType.Chat,
-      collection: undefined,
-      creation_timestamp: new BN(1640991600),
-      encryption: 1,
-      info: new ContentSourceString({
-        string: 'Hello world!'
-      }),
-      name: 'Core units',
-      parent: dao.pubkey
-    },
-    pubkey: Keypair.generate().publicKey
-  };
-
-  let product = {
-    data: {
-      channelType: ChannelType.Chat,
-      collection: undefined,
-      creation_timestamp: new BN(1640991600),
-      encryption: 1,
-      info: new ContentSourceString({
-        string: 'Hello world!'
-      }),
-      name: 'Product',
-      parent: coreUnits.pubkey
-    },
-    pubkey: Keypair.generate().publicKey
-  };
-
-  let roadmap = {
-    data: {
-      channelType: ChannelType.Chat,
-      collection: undefined,
-      creation_timestamp: new BN(1640991600),
-      encryption: 1,
-      info: new ContentSourceString({
-        string: 'Hello world!'
-      }),
-      name: 'Roadmap',
-      parent: product.pubkey
-    },
-    pubkey: Keypair.generate().publicKey
-  };
-
-  let targetAudience = {
-    data: {
-      channelType: ChannelType.Chat,
-      collection: undefined,
-      creation_timestamp: new BN(1640991600),
-      encryption: 1,
-      info: new ContentSourceString({
-        string: 'Hello world!'
-      }),
-      name: 'Target audience',
-      parent: product.pubkey
-    },
-    pubkey: Keypair.generate().publicKey
-  };
-
-  let userStories = {
-    data: {
-      channelType: ChannelType.Chat,
-      collection: undefined,
-      creation_timestamp: new BN(1640991600),
-      encryption: 1,
-      info: new ContentSourceString({
-        string: 'Hello world!'
-      }),
-      name: 'User stories',
-      parent: product.pubkey
-    },
-    pubkey: Keypair.generate().publicKey
-  };
-
-
-  return {
-    authorities: [],
-    authoritiesByType: new Map(),
-    channel: welcome,
-    selectionPath: [welcome, dao],
-    selectionTree: {
-      [dao.pubkey.toBase58()]: [welcome, gm, forum, governance, coreUnits],
-      [welcome.pubkey.toBase58()]: [],
-      [forum.pubkey.toBase58()]: [],
-      [gm.pubkey.toBase58()]: [],
-      [governance.pubkey.toBase58()]: [],
-      [coreUnits.pubkey.toBase58()]: [product],
-      [product.pubkey.toBase58()]: [roadmap, targetAudience, userStories]
-    }
-  }
-} */
 export const PostsProvider = ({ children }: { children: JSX.Element }) => {
 
 
@@ -226,10 +59,15 @@ export const PostsProvider = ({ children }: { children: JSX.Element }) => {
   const [root, setRoot] = useState<Shard<PostInterface>>();
   const [loadingRoot, setLoadingRoot] = useState(false);
 
+  if (peer) {
+    peer?.node.pubsub.ls().then((ls) => console.log(ls));
+  }
   useEffect(() => {
     if (peer?.node) {
       setLoadingRoot(true);
+      console.log('load post from root cid', config.rootPostShard)
       Shard.loadFromCID<PostInterface>(config.rootPostShard, peer.node).then(async (shard) => {
+        console.log('got shard from root cid', shard)
         await shard.init(peer);
         await shard.interface.comments.load();
         console.log("found root shard", shard.interface.comments.db.address)
@@ -270,6 +108,7 @@ export const PostsProvider = ({ children }: { children: JSX.Element }) => {
         let post: Shard<PostInterface> = undefined;
 
         if (!post) {
+          console.log('load post from cid', postCID)
           post = await Shard.loadFromCID<PostInterface>(postCID, peer.node);
         }
 
@@ -297,7 +136,7 @@ export const PostsProvider = ({ children }: { children: JSX.Element }) => {
           }
         }
 
-        let authoritiesForPost = post.interface.acl.db.all;
+        let authoritiesForPost = Object.values(post.interface.acl.db.index);
         setSelection({
           channel: post,
           selectionPath: parents,
@@ -312,9 +151,7 @@ export const PostsProvider = ({ children }: { children: JSX.Element }) => {
     [selection, loading, root?.cid, !!peer?.node, loadingRoot]
   );
 
-  if (peer) {
-    peer?.node.pubsub.ls().then((ls) => console.log(ls));
-  }
+
 
 
   return (

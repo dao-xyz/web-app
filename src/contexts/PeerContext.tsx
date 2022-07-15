@@ -1,10 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { AnyPeer } from '@dao-xyz/shard';
 import { createNode } from "@dao-xyz/social-interface";
-import BN from 'bn.js';
 import * as IPFS from 'ipfs';
-import { IPFS as IPFSInstance } from 'ipfs-core-types'
-import { create } from 'ipfs-http-client'
 import { useWallet } from "@solana/wallet-adapter-react";
 import { MetaMaskWalletAdapter } from "./MetamaskWallet";
 import Identities from "orbit-db-identity-provider";
@@ -63,16 +60,21 @@ export const PeerProvider = ({ children }: { children: JSX.Element }) => {
                     webRTCStar: { enabled: false },
                 },
             },
-
-            repo: String(Math.random() + Date.now())
+            repo: String(Math.random() + Date.now()),
+            libp2p: {
+                connectionManager: {
+                    autoDial: false
+                }
+            }
 
         }).then(async (node) => {
 
             console.log("Created ipfs node", node);
-            node.libp2p.connectionManager.opts.autoDial = false;
-            await node.libp2p.connectionManager.dialer.stop();
-            console.log(node.libp2p)
-            await node.swarm.connect("/ip4/127.0.0.1/tcp/5432/ws/p2p/12D3KooWC1Pb6XmSxY4YKGUPicYME8Ea27Y2gS4SbFKRndPzgF4C")
+            await node.swarm.connect("/dns4/ea100f3767ba4e79c8cc2d963fcae5c4ad1180a0.peerchecker.com/tcp/4002/wss/p2p/12D3KooWFDsqRkrk6CbkJTtBKVxTZUn2m8rkYVcX7qRxeAQcEt5C").catch(error => {
+                console.error("PEER CONNECT ERROR", error);
+                throw error;
+            })
+            // await node.swarm.connect("/ip4/127.0.0.1/tcp/5432/ws/p2p/12D3KooWC1Pb6XmSxY4YKGUPicYME8Ea27Y2gS4SbFKRndPzgF4C")
             await new Promise((resolve) => {
                 setTimeout(() => {
                     resolve(true)

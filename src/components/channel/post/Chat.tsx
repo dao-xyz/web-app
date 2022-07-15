@@ -23,7 +23,6 @@ export const Chat: FC<{ parentPost?: Shard<PostInterface> }> = ({ parentPost: pa
     const theme = useTheme();
     const { width } = useScrollbarSize();
     const { root, loading } = usePosts();
-
     const [openSettings, setOpenSettings] = React.useState(false);
     /*   const {
           loading,
@@ -103,10 +102,10 @@ export const Chat: FC<{ parentPost?: Shard<PostInterface> }> = ({ parentPost: pa
             <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "calc(100vh - 90px)" }} >
 
                 <Grid container flexDirection="column" alignItems="center" sx={{ height: '100%' }}>
-                    <Grid ref={contentRef} container item sx={{ flex: 1, display: 'flex', justifyContent: "center", overflowY: 'scroll', width: '100%', mt: 2, /* mr: -2, pr: 2  */ }} >
-                        <Grid item>
+                    <Grid ref={contentRef} container item sx={{ width: '100%', flex: 1, display: 'flex', justifyContent: "center", overflowY: 'scroll', mt: 2, /* mr: -2, pr: 2  */ }} >
+                        <Grid item sx={{ maxWidth: "md", width: '100%', }}>
                             <Box sx={{ /* ml: 2, pr: 16 + "px"  */ }}>
-                                <Box sx={{ maxWidth: "md", width: '100%' }}>
+                                <Box sx={{ width: '100%' }}>
 
                                     <PostFeed onFeedChange={onFeedChange} parentPosts={parentPost ? [parentPost] : []} />
 

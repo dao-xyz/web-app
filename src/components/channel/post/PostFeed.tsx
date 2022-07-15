@@ -185,7 +185,7 @@ export const PostFeed = (props: { parentPosts: Shard<PostInterface>[], onFeedCha
         }
     }, [props.parentPosts[0] ? props.parentPosts[0].cid : !!props.parentPosts[0]]) */
     // console.log(props.parentPosts[0] ? props.parentPosts[0].interface.comments.db.db.all : 'loading');
-    console.log('psts length', posts.length)
+    //console.log('psts length', posts.length)
     useEffect(() => {
 
         updateContent();
@@ -202,7 +202,7 @@ export const PostFeed = (props: { parentPosts: Shard<PostInterface>[], onFeedCha
     return (
         <Box sx={{ pb: 1 }}>
             {loading ? <><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={200} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={75} /><Skeleton sx={{ mt: 2, mb: 2 }} animation="wave" variant="rectangular" width='100%' height={150} /></> : <></>}
-            {!loading && (posts.length > 0 ? posts.map((post, ix) => <Box key={ix} sx={{ mt: ix > 0 ? 2 : 0, mb: 2 }} ><Message post={post} commentsCount={childrenCount(post.cid)} /></Box>) : <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary">No messages found</Typography></Box>)}
+            {!loading && (posts.length > 0 ? posts.map((post, ix) => <Box key={ix} sx={{ width: "100%", mt: ix > 0 ? 2 : 0, mb: 2 }} ><Message post={post} commentsCount={childrenCount(post.cid)} /></Box>) : <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}><Typography color="text.secondary">No messages found</Typography></Box>)}
 
         </Box>
     );

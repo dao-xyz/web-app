@@ -1265,15 +1265,16 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-2.0.0.tgz#65b12f12db55188422070e34687bf3af09870922"
   integrity sha512-rZ6vufeY/UjAgtyiJ4WvfF6XP6HizIyOfbZOg0RnecIwjrvH8Am3nN1BpKnnPZunYAkUcPPXDhwbxOtGop8cfQ==
 
-"@dao-xyz-types/orbit-db@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@dao-xyz-types/orbit-db/-/orbit-db-0.0.8.tgz#52fdd49d42445ac07bd352c276be943a0504bf57"
-  integrity sha512-dx4NcYjKgq/1xsZZay405YtyoK2sHDtSpJ5LJ2nQynENSHFQiZ5UgG8tKxU09lqxNhx9IpIfUUt4qsVO7vlpLQ==
+"@dao-xyz-types/orbit-db@^0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@dao-xyz-types/orbit-db/-/orbit-db-0.0.21.tgz#4c9a060bdd0acfea0e21044c8aa3f8d682d9e1f7"
+  integrity sha512-2j0s46NQHph4qMoYmUcS0gkbhmbfe/aI/AdqDuA6xEilDZ5+DwqjBlB3iBnEvhG4nNf70jSKgv3oWumQvQw1Vg==
   dependencies:
+    "@dao-xyz/orbit-db-store" "^0.0.8"
     "@types/elliptic" "^6.4.6"
     "@types/events" "^1.2.0"
     "@types/ipfs" "https://git@github.com/lukas2005/types-ipfs.git"
-    orbit-db "^0.28.4"
+    orbit-db "^0.28.6"
 
 "@dao-xyz/borsh@^2.1.3":
   version "2.1.3"
@@ -1284,13 +1285,29 @@
     bs58 "^4.0.0"
     text-encoding-utf-8 "^1.0.2"
 
-"@dao-xyz/bquery@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@dao-xyz/bquery/-/bquery-0.0.10.tgz#c81cf81ac0e326f7be0272a181e718879c055576"
-  integrity sha512-9SY1vVtcGgIEuVPZ+z25UcCmjwJz97kWqpN8I7Nt0VGDQEe5qI52LSqXg2rNEeITb0SfQqVHbOdSLHYlr7GodQ==
+"@dao-xyz/bquery@^0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/bquery/-/bquery-0.0.22.tgz#fe494d05d00eea672fcd5fb5643160576af38356"
+  integrity sha512-Fd8lt8lcLWXL4m0TNZW+NyqGu02cy7YDWo+KEfB3Dtc2FNzyg6VXuApQgJ0wfPTfbDXHBJM+RnZrl+8BTTOy7w==
   dependencies:
     "@dao-xyz/borsh" "^2.1.3"
+    "@dao-xyz/peer-test-utils" "^0.0.11"
+    "@dao-xyz/time" "^0.0.4"
     uuid "^8.3.2"
+
+"@dao-xyz/ipfs-log@^5.5.5":
+  version "5.5.5"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/ipfs-log/-/ipfs-log-5.5.5.tgz#82e8de662eafeca7862d0579196ac581de9327c4"
+  integrity sha512-uNcC1ZwnNLXW3qW3Le2AAMqC7cMf/OlU4FSXeAYfP3C3pDtaqU85OoqFuodXDoQ7130dySMFEYt1x4RqQSJbFA==
+  dependencies:
+    json-stringify-deterministic "^1.0.1"
+    multihashing-async "^2.0.1"
+    orbit-db-identity-provider "^0.3.1"
+    orbit-db-io "^1.0.1"
+    p-do-whilst "^1.1.0"
+    p-each-series "^2.1.0"
+    p-map "^4.0.0"
+    p-whilst "^2.1.0"
 
 "@dao-xyz/ipfs-pinning-adapter@^0.1.13":
   version "0.1.13"
@@ -1303,85 +1320,129 @@
     nft.storage "5.2.2"
     patch-package "^6.4.7"
 
-"@dao-xyz/orbit-db-bdocstore@^0.0.39":
-  version "0.0.39"
-  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-bdocstore/-/orbit-db-bdocstore-0.0.39.tgz#3671100725daaf86fdf99cdd3aa9f51198eeef9f"
-  integrity sha512-8AOsLW+kKts1jVU3m9pc6VBl+wtdaYYEurmbB6CpvUaL9fAkMO4HieQd7aIgn/SDG1Cyt8PyYk+ySgsSRESO8g==
+"@dao-xyz/orbit-db-bdocstore@^0.0.54":
+  version "0.0.54"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-bdocstore/-/orbit-db-bdocstore-0.0.54.tgz#0afac954add48b038ff7952998b3df7bb0f74073"
+  integrity sha512-Tdo2uIU2PKLgJLbi1mbSpcO5SuCZX2a4Bv9GNmU2EIyBs/Zb+/1TwKfRvqIjN6CnWJSSW/8bTWN9J5omaoVGqA==
   dependencies:
     "@dao-xyz/borsh" "^2.1.3"
-    "@dao-xyz/bquery" "^0.0.10"
-    "@dao-xyz/orbit-db-query-store" "^0.0.14"
+    "@dao-xyz/bquery" "^0.0.22"
+    "@dao-xyz/orbit-db-query-store" "^0.0.29"
+    "@dao-xyz/orbit-db-store" "^0.0.9"
     p-map "~1.1.1"
     uuid "^8.3.2"
 
-"@dao-xyz/orbit-db-bfeedstore@^0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-bfeedstore/-/orbit-db-bfeedstore-0.0.23.tgz#b0237290b32418c957af285bf859439f8ff9970b"
-  integrity sha512-BTP7m2eFUuYmMPz0BS+pGznGJ/1h4p72cjpoxkEns+/EhoqBtgyzfsafEnKdlgU6y59G3f/oAdorEMk0aTQT1Q==
+"@dao-xyz/orbit-db-bfeedstore@^0.0.38":
+  version "0.0.38"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-bfeedstore/-/orbit-db-bfeedstore-0.0.38.tgz#65a5d4f6fd048e80fb3c00786bf8cf5989e127d6"
+  integrity sha512-eIGnlTxImuJHZexhEodxU6ny+Rchr+REOU07155KOTzCt9JNFn3R1ZYsIlXXBIbmPwwx2qYwCdB2WiafTlFHTQ==
   dependencies:
     "@dao-xyz/borsh" "^2.1.3"
-    "@dao-xyz/orbit-db-query-store" "^0.0.14"
+    "@dao-xyz/orbit-db-query-store" "^0.0.29"
+    "@dao-xyz/orbit-db-store" "^0.0.9"
 
-"@dao-xyz/orbit-db-bkvstore@^0.0.31":
-  version "0.0.31"
-  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-bkvstore/-/orbit-db-bkvstore-0.0.31.tgz#a87b9ab2e139d198ef4a1671201b8665cb2e5165"
-  integrity sha512-PLHPFuuIgNkH23vQAKFctq0IX46+pxVTVNEsJdgGqHD2EqXj2smbCIRMZ3zpiL6PV+gZDCecZS/0aLFa93FHoA==
+"@dao-xyz/orbit-db-bkvstore@^0.0.46":
+  version "0.0.46"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-bkvstore/-/orbit-db-bkvstore-0.0.46.tgz#26e341fa647bb4120217022cde73fea1065e55c1"
+  integrity sha512-FezAOZUPF/HagYgO0cYA3uBCH03IGpJDIg9TbLqldU/sysvZXg9TnfWmIPX5RNaRKyxjxpinsoFF1FM9/Aqkrg==
   dependencies:
     "@dao-xyz/borsh" "^2.1.3"
-    "@dao-xyz/orbit-db-query-store" "^0.0.14"
+    "@dao-xyz/orbit-db-query-store" "^0.0.29"
+    "@dao-xyz/orbit-db-store" "^0.0.9"
 
-"@dao-xyz/orbit-db-bstores@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-bstores/-/orbit-db-bstores-0.0.7.tgz#ba36140999e5015d217eca972916b517445e391b"
-  integrity sha512-qxU9/RgPnA4zht5J6S6W/s0Hxsyihaz/5SGBpbHMc39u9xEaqHS41IGLzI6SBXqCML8awT92TSzHh7FobMGadg==
+"@dao-xyz/orbit-db-bstores@^0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-bstores/-/orbit-db-bstores-0.0.17.tgz#5a2c154964e5819b059dd57aa4e1cd8e8cfc6758"
+  integrity sha512-EE5qZvjq92rp5z6/uVxg1CbK945RSgEXWEarek1C3RzCjsB+KF/SCPos/+hsGy2hkRx8hzQF7S68UdJthVQYsQ==
   dependencies:
     "@dao-xyz/borsh" "^2.1.3"
+    "@dao-xyz/orbit-db-store" "^0.0.9"
 
-"@dao-xyz/orbit-db-pubsub@^0.6.3":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-pubsub/-/orbit-db-pubsub-0.6.3.tgz#74af361fd471bbd492e95198bfd851a1dcb702c6"
-  integrity sha512-QcEWX6bcbGyhqMP0Iz2Q8FLRLLvjzkcLBTM71e2qvigehxiXtkXWFz5giP3srr+UhFxC5ZQV+3shQSX5RCKHpw==
+"@dao-xyz/orbit-db-pubsub@^0.6.4":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-pubsub/-/orbit-db-pubsub-0.6.4.tgz#4b00fb07d08e073282655b5ef128bacb0e565c6e"
+  integrity sha512-dQJU/VwS/gpqYgbVXAJEny9/CawMwCj4XpAuXkhB65piNCmxwUTWx/bMfmTUogT2bS+DbOzoxAoz0CASe9TjFg==
   dependencies:
     ipfs-pubsub-peer-monitor "~0.0.5"
     logplease "~1.2.14"
     p-series "^1.1.0"
 
-"@dao-xyz/orbit-db-query-store@^0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-query-store/-/orbit-db-query-store-0.0.14.tgz#7f086e9f5d9c9cca65a6ea77ba0fd88c1592c853"
-  integrity sha512-I7ROguocplH76yB4l6AyxMBFT1SxfYTKUnvshpjcPujg8ME+H3cqtj8EhNOllSNreuinhd4k0WpFsfaM/7A9yQ==
+"@dao-xyz/orbit-db-query-store@^0.0.29":
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-query-store/-/orbit-db-query-store-0.0.29.tgz#ceefa70e456942e4f56fdd512cdd876dbfa986af"
+  integrity sha512-cTEF3Y1lZUTxJYyLfh1tV5jWqILWU4OAwK3NoZxz91310FJsLo+F2UrE8U78RDQ3aB18RLCTm0wS2k0le9q8OQ==
   dependencies:
     "@dao-xyz/borsh" "^2.1.3"
-    "@dao-xyz/bquery" "^0.0.10"
-    "@dao-xyz/orbit-db-bstores" "^0.0.7"
+    "@dao-xyz/bquery" "^0.0.22"
+    "@dao-xyz/orbit-db-bstores" "^0.0.17"
+    "@dao-xyz/orbit-db-store" "^0.0.9"
     p-map "~1.1.1"
     uuid "^8.3.2"
 
-"@dao-xyz/orbit-db-stringstore@^0.0.27":
-  version "0.0.27"
-  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-stringstore/-/orbit-db-stringstore-0.0.27.tgz#3d0044528c5552fde861e87c2587cf78fe4c3316"
-  integrity sha512-7XWGS+KnhfZE0CykvVtfvMosv8vVEWlpveeqHOZNsOnvjiRzLyPuuUIiISkxyEErbEbzLn7NwpXnDlIOJiuLxQ==
+"@dao-xyz/orbit-db-store@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-store/-/orbit-db-store-0.0.8.tgz#1f3d9c9b30f7aac23294eceb0e976e9bf35cd09c"
+  integrity sha512-dnt8GQ+tr5H+d7WMV5rUpdrf56Wcf2gE9ieFQFMIA9w+4Qd2w94MpVleO/5ECFWF6T2UiapXyTMLAtsFLPh1sg==
   dependencies:
-    "@dao-xyz/borsh" "^2.1.3"
-    "@dao-xyz/bquery" "^0.0.10"
-    "@dao-xyz/orbit-db-query-store" "^0.0.14"
+    "@dao-xyz/ipfs-log" "^5.5.5"
+    it-to-stream "^1.0.0"
+    logplease "^1.2.14"
+    p-each-series "^2.1.0"
+    p-map "^4.0.0"
+    p-queue "^6.6.2"
+    readable-stream "~3.6.0"
 
-"@dao-xyz/shard@^0.0.80":
-  version "0.0.80"
-  resolved "https://registry.yarnpkg.com/@dao-xyz/shard/-/shard-0.0.80.tgz#3451d6a5d160d7fd256c959d9916bacefaaddce9"
-  integrity sha512-PmUgZGfvY0Y28lgcnF56WGFuwwan/8Ncy5mCL68TFv2CAH5IAqsaaD+9B9YCKMoUZfnsANVNCqQRSVyD2H3KUA==
+"@dao-xyz/orbit-db-store@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-store/-/orbit-db-store-0.0.9.tgz#9d48c8757273ef4a35485d2903c43f3c21a21f91"
+  integrity sha512-ASgoCtvz/Sn72BraiBHJSh/6pCxmimBhm/s1+lPw7Uuh8DhlJzjkuXzfkbZ2TT038IN5AnxgQVL+4cfzxcR2AA==
+  dependencies:
+    "@dao-xyz/ipfs-log" "^5.5.5"
+    it-to-stream "^1.0.0"
+    logplease "^1.2.14"
+    orbit-db-io "1.0.2"
+    p-each-series "^2.1.0"
+    p-map "^4.0.0"
+    p-queue "^6.6.2"
+    readable-stream "~3.6.0"
+
+"@dao-xyz/orbit-db-stringstore@^0.0.42":
+  version "0.0.42"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/orbit-db-stringstore/-/orbit-db-stringstore-0.0.42.tgz#9d68a2c12b12af623c3032b1d5c1fa8bccbd2494"
+  integrity sha512-/uncn+oMisNIVZeiNg21e8q2ftVFldp391IGTWUqrhdeMgzjZqBCyH+oWczwvOAKJalvqe6fvcgxj2ILLLroig==
   dependencies:
     "@dao-xyz/borsh" "^2.1.3"
-    "@dao-xyz/orbit-db-bdocstore" "^0.0.39"
-    "@dao-xyz/orbit-db-bfeedstore" "^0.0.23"
-    "@dao-xyz/orbit-db-bkvstore" "^0.0.31"
-    "@dao-xyz/orbit-db-pubsub" "^0.6.3"
+    "@dao-xyz/bquery" "^0.0.22"
+    "@dao-xyz/orbit-db-query-store" "^0.0.29"
+    "@dao-xyz/orbit-db-store" "^0.0.9"
+    "@dao-xyz/peer-test-utils" "^0.0.11"
+    "@dao-xyz/time" "^0.0.4"
+
+"@dao-xyz/peer-test-utils@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/peer-test-utils/-/peer-test-utils-0.0.11.tgz#37efe0770b7a8a19feccb9399de70dd06941c1f2"
+  integrity sha512-1b3oqGk9DJC72712mEwuFxHvBPSIGLgQOd+QAGTaziKHNSO6iPIlhGx45sjkv00WXmXGblmZEiFlZz6UpMqrOQ==
+  dependencies:
+    "@dao-xyz/time" "^0.0.4"
+    orbit-db "^0.28.6"
+
+"@dao-xyz/shard@^0.0.99":
+  version "0.0.99"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/shard/-/shard-0.0.99.tgz#4cb18787aed9a2153ae7a983be65624071205be0"
+  integrity sha512-+WJq3u2834VPMHm9Uq76LccRB91ny5D+NPluABhT5LrioAFImRBvOlqItgGtxo6Pkm1ofROhEUAr7jbEz/2GIA==
+  dependencies:
+    "@dao-xyz/borsh" "^2.1.3"
+    "@dao-xyz/orbit-db-bdocstore" "^0.0.54"
+    "@dao-xyz/orbit-db-bfeedstore" "^0.0.38"
+    "@dao-xyz/orbit-db-bkvstore" "^0.0.46"
+    "@dao-xyz/orbit-db-pubsub" "^0.6.4"
+    "@dao-xyz/time" "^0.0.4"
     "@solana/web3.js" "^1.41.3"
     bn.js "^5.2.0"
     bs58 "^4.0.1"
     buffer "^6.0.3"
     crypto-browserify "^3.12.0"
-    orbit-db "^0.28.4"
+    orbit-db "^0.28.6"
     orbit-db-access-controllers "^0.3.2"
     orbit-db-docstore "^1.12.0"
     orbit-db-identity-provider "^0.4.0"
@@ -1389,13 +1450,13 @@
     reflect-metadata "^0.1.13"
     tweetnacl "^1.0.3"
 
-"@dao-xyz/social-interface@^0.0.56":
-  version "0.0.56"
-  resolved "https://registry.yarnpkg.com/@dao-xyz/social-interface/-/social-interface-0.0.56.tgz#b65401e7328eafd35a2c3faff1758fca28cb3424"
-  integrity sha512-/jpGysfDBiB+nQo+ZTzdjTpFfxO4vPOypp7D0iVt306A3mkicd2gAsDYP+tol/nerUIfGFzg451C9W8riek2eA==
+"@dao-xyz/social-interface@^0.0.73":
+  version "0.0.73"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/social-interface/-/social-interface-0.0.73.tgz#312ff1113e128f7b52929209c2df080a6447e9c2"
+  integrity sha512-CcslpN91ybHgTJYTSjukDcmI+iKKjFgYpmmswo+Zp4Appa4+e9jmlB1hVbhbzBvDaVcf+Aoh/f8kvvpP9iUvSw==
   dependencies:
-    "@dao-xyz/orbit-db-stringstore" "^0.0.27"
-    "@dao-xyz/shard" "^0.0.80"
+    "@dao-xyz/orbit-db-stringstore" "^0.0.42"
+    "@dao-xyz/shard" "^0.0.99"
     bn.js "^5.2.0"
     bs58 "^4.0.1"
     buffer "^6.0.3"
@@ -1403,6 +1464,14 @@
     ipfs-http-client "^56.0.1"
     reflect-metadata "^0.1.13"
     tweetnacl "^1.0.3"
+
+"@dao-xyz/time@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/time/-/time-0.0.4.tgz#9b3b8fc18c5199028b84d4889624d0989801ed31"
+  integrity sha512-Pn+SYD2Eu+1hIQNFwPzbnms7P5OjDVk52O5yW1U8nuug+Wd6mzszXu9jY9QzabnmSonldLs13yIRZngtVMrtDA==
+  dependencies:
+    "@dao-xyz/borsh" "^2.1.3"
+    uuid "^8.3.2"
 
 "@date-io/core@^2.14.0":
   version "2.14.0"
@@ -13947,7 +14016,7 @@ orbit-db-identity-provider@^0.4.0:
     path-browserify "^1.0.1"
     stream-browserify "^3.0.0"
 
-orbit-db-io@^1.0.1, orbit-db-io@^1.0.2:
+orbit-db-io@1.0.2, orbit-db-io@^1.0.1, orbit-db-io@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/orbit-db-io/-/orbit-db-io-1.0.2.tgz#88cde30f9de8b9b99e74d264d4d33363abad4906"
   integrity sha512-+tz5Yt/tFoblnAeSTeb+7hVH4w1sKcieuUaUObDbYbWrMgMI8qJ+WN9O3PLgeuLUaN9TSkgb+UoSRUd+366qBA==
@@ -14019,7 +14088,7 @@ orbit-db-store@^4.3.4:
     p-queue "^6.6.2"
     readable-stream "~3.6.0"
 
-orbit-db@^0.28.4:
+orbit-db@^0.28.6:
   version "0.28.6"
   resolved "https://registry.yarnpkg.com/orbit-db/-/orbit-db-0.28.6.tgz#46c16a155544e4904ed1ed870b384d037dbbfeff"
   integrity sha512-0rBtKhhTQiMvnPTLKS7Yu9rahNP2CLRvZEhlMEsxyfOsFLB5TiEfDayVBItfZ2oxhqamOumyItSwE9eBF0veIA==

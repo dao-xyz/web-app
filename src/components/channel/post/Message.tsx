@@ -34,12 +34,11 @@ export const Message: FC<{ post: Shard<PostInterface>, commentsCount: number }> 
             await db.init(post)
             console.log('query!')
             db.toStringRemote((content) => {
-                console.log('Succeeded to load content');
+                console.log('Succeeded to load content', content);
                 setContent(content)
             });
 
         }
-        console.log('laod!')
         load();
         /* .catch((error) => {
             console.log('failed to load conent', error.toString())

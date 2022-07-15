@@ -2,11 +2,11 @@
   "name": "dao-xyz",
   "version": "0.1.1",
   "private": false,
-  "homepage": "http://dao.xyz",
+  "homepage": "https://dao-xyz.github.io/web-app/",
   "license": "Apache-2.0",
   "dependencies": {
     "@dao-xyz/ipfs-pinning-adapter": "^0.1.13",
-    "@dao-xyz/social-interface": "^0.0.56",
+    "@dao-xyz/social-interface": "^0.0.73",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.8.2",
@@ -88,12 +88,11 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.16.4",
-    "@dao-xyz-types/orbit-db": "^0.0.8",
+    "@dao-xyz-types/orbit-db": "^0.0.21",
     "@types/styled-components": "^5.1.15",
     "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
     "gh-pages": "^3.2.3",
-    "ipfs-core-types": "^0.10.3",
-    "patch-package": "^6.4.7"
+    "ipfs-core-types": "^0.10.3"
   }
 }

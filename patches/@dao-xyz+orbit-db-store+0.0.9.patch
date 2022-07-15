@@ -1,0 +1,37 @@
+diff --git a/node_modules/@dao-xyz/orbit-db-store/lib/esm/replicator.mjs b/node_modules/@dao-xyz/orbit-db-store/lib/esm/replicator.mjs
+index 9d81e23..24160f9 100644
+--- a/node_modules/@dao-xyz/orbit-db-store/lib/esm/replicator.mjs
++++ b/node_modules/@dao-xyz/orbit-db-store/lib/esm/replicator.mjs
+@@ -9,7 +9,7 @@ export class Replicator {
+         this._concurrency = concurrency || defaultConcurrency;
+         // Tasks processing queue where each log sync request is
+         // added as a task that fetches the log
+-        this._q = new PQueue({ concurrency: this._concurrency });
++        this._q = new PQueue.default({ concurrency: this._concurrency });
+         /* Internal caches */
+         // For storing fetched logs before "load is complete".
+         // Cleared when processing is complete.
+diff --git a/node_modules/@dao-xyz/orbit-db-store/lib/esm/store.mjs b/node_modules/@dao-xyz/orbit-db-store/lib/esm/store.mjs
+index afdf890..0e68dd5 100644
+--- a/node_modules/@dao-xyz/orbit-db-store/lib/esm/store.mjs
++++ b/node_modules/@dao-xyz/orbit-db-store/lib/esm/store.mjs
+@@ -55,7 +55,7 @@ export class Store {
+         // _addOperation and log-joins queue. Adding ops and joins to the queue
+         // makes sure they get processed sequentially to avoid race conditions
+         // between writes and joins (coming from Replicator)
+-        this._queue = new PQueue({ concurrency: 1 });
++        this._queue = new PQueue.default({ concurrency: 1 });
+         // Create the index
+         this._index = new this.options.Index(this.address.root);
+         // Replication progress info
+@@ -276,8 +276,8 @@ export class Store {
+         };
+         return mapSeries(heads, saveToIpfs)
+             .then(async (saved) => {
+-            return this._replicator.load(saved.filter(e => e !== null));
+-        });
++                return this._replicator.load(saved.filter(e => e !== null));
++            });
+     }
+     loadMoreFrom(amount, entries) {
+         this._replicator.load(entries);

@@ -95,13 +95,11 @@ export function NewPost(props: { previewable?: boolean, parentPost: Shard<PostIn
             await props.parentPost.interface.comments.load()
         }
         await props.parentPost.interface.comments.db.write((x) => props.parentPost.interface.comments.db.db.put(x, { pin: true }), newShard)
-        console.log('db to put ', props.parentPost.interface.comments.db.db.address.toString());
 
         let store = (newShard.interface.content as TextContent).db;
         await store.load();
-        await store.write((obj) => store.db.add(obj, { offset: 0 }), 'hello world')
-
-
+        console.log('xyz', text)
+        await store.write((obj) => store.db.add(obj, { offset: 0 }), text)
         try {
 
             /*            console.log(newShard.cid);
